@@ -58,9 +58,25 @@ class _MainScreenState extends State<MainScreen> {
   Widget _buildNavigator(int index, Widget rootPage) {
     return Navigator(
       key: navigatorKeys[index],
+      observers: [MyNavigatorObserver()],
       onGenerateRoute: (routeSettings) {
         return MaterialPageRoute(builder: (context) => rootPage);
       },
     );
+  }
+
+
+}
+
+//for peace of mind
+class MyNavigatorObserver extends NavigatorObserver {
+  @override
+  void didPush(Route route, Route? previousRoute) {
+    debugPrint('    STACK: Pushed ${route.settings.name}');
+  }
+
+  @override
+  void didPop(Route route, Route? previousRoute) {
+    debugPrint('    STACK: Popped ${route.settings.name}');
   }
 }
