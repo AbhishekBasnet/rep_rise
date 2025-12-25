@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rep_rise/presentation/screens/home_screen.dart';
+import 'package:rep_rise/presentation/screens/main_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        '/': (context) => const HomeScreen(),
+        '/': (context) => const MainScreen(),
       },
     );
   }
