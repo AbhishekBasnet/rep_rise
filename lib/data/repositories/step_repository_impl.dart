@@ -1,9 +1,10 @@
 
 import '../../core/services/health_steps_service.dart';
 import '../../domain/entity/step_entity.dart';
-import '../../domain/repository/step_repository.dart';
+import '../../domain/repositories/step_repository.dart';
 import '../data_sources/step_remote_data_source.dart';
 import '../model/step_model.dart';
+
 
 
 class StepRepositoryImpl implements StepRepository {
@@ -15,14 +16,14 @@ class StepRepositoryImpl implements StepRepository {
     required this.remoteDataSource
   }): _healthService = healthService;
 
+  DateTime now = DateTime.now();
+  late String formattedDate = "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
   @override
   Future<void> syncSteps() async {
     // service handle the hardware/plugin logic
     final int totalStepsToday = await _healthService.getTotalStepsToday();
-
-    // Wrap it in domain model
     final model = StepModel(
-      date: DateTime.now(),
+      date: formattedDate,
       stepCount: totalStepsToday,
     );
 

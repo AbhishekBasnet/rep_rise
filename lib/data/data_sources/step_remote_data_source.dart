@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:rep_rise/core/network/api_client.dart';
 import 'package:rep_rise/data/model/step_model.dart';
 
@@ -7,9 +8,10 @@ class StepRemoteDataSource {
   Future<void> postSteps(StepModel stepModel) async {
     try{
       await apiClient.dio.post(
-        '/steps/update',
+        '/api/v1/steps/',
         data: stepModel.toJson(),
       );
+      debugPrint("    ${stepModel.stepCount} steps synced to backend.");
     } catch (e) {
       throw Exception("   Failed ti sync steps to backend: $e");
     }
