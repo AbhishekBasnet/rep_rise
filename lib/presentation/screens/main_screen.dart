@@ -64,8 +64,6 @@ class _MainScreenState extends State<MainScreen> {
       },
     );
   }
-
-
 }
 
 //for peace of mind
