@@ -1,5 +1,5 @@
 class StepEntity {
-  final String date;
+  final DateTime date;
   final int stepCount;
 
   const StepEntity({

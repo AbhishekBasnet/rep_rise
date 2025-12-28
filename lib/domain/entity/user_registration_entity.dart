@@ -4,7 +4,7 @@ class UserRegistrationEntity {
   final String password;
   final double height;
   final double weight;
-  final String birthDate;
+  final DateTime birthDate;
   final double activityLevel;
   final String fitnessGoal;
 

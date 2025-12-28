@@ -1,7 +1,9 @@
+import 'package:rep_rise/core/util/date_formatter.dart';
+
 import '../../domain/entity/user_registration_entity.dart';
 
-class RegisterModel extends UserRegistrationEntity {
-  RegisterModel({
+class UserRegistrationModel extends UserRegistrationEntity {
+  UserRegistrationModel({
     required super.username,
     required super.email,
     required super.password,
@@ -20,7 +22,7 @@ class RegisterModel extends UserRegistrationEntity {
       "profile": {
         "height": height,
         "weight": weight,
-        "birth_date": birthDate,
+        "birth_date": birthDate.toBackendFormat,
         "activity_level": activityLevel,
         "fitness_goal": fitnessGoal,
       }

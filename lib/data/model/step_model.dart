@@ -1,4 +1,5 @@
 import '../../domain/entity/step_entity.dart';
+import '../../core/util/date_formatter.dart';
 
 class StepModel extends StepEntity {
   StepModel({required super.date, required super.stepCount});
@@ -12,7 +13,7 @@ class StepModel extends StepEntity {
 
   Map<String, dynamic> toJson() {
     return {
-      'date': date,
+      'date': date.toBackendFormat,
       'step_count': stepCount,
     };
   }
