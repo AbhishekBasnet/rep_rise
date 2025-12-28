@@ -3,6 +3,7 @@ import 'package:rep_rise/data/model/user_registration_model.dart';
 
 import '../../core/network/api_client.dart';
 import '../../core/services/token_service.dart';
+import '../../domain/entity/user_registration_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../model/auth_model.dart';
 
@@ -58,32 +59,43 @@ class AuthRepositoryImpl implements AuthRepository {
 
 
 
+// lib/data/repositories/auth_repository_impl.dart
+
   @override
-  Future<void> register(UserRegistrationModel newUser) async {
+  Future<void> register(UserRegistrationEntity newUser) async { // Accepts Entity
     try {
-      // Use the toJson() method you defined in UserRegistrationModel
+      // 1. Convert Entity to Model so we can use .toJson()
+      final userModel = UserRegistrationModel(
+        username: newUser.username,
+        email: newUser.email,
+        password: newUser.password,
+        height: newUser.height,
+        weight: newUser.weight,
+        birthDate: newUser.birthDate,
+        activityLevel: newUser.activityLevel,
+        fitnessGoal: newUser.fitnessGoal,
+      );
+
+      // 2. Send the JSON to the backend
       final response = await apiClient.dio.post(
         'auth/register/',
-        data: newUser.toJson(),
+        data: userModel.toJson(), // The model handles the JSON structure
       );
 
       if (response.statusCode == 201 || response.statusCode == 200) {
-        // backends return tokens immediately upon successful registration
         final authData = AuthResponseModel.fromJson(response.data);
-
-        //  Save tokens securely
         await tokenService.saveTokens(
           access: authData.access,
           refresh: authData.refresh,
         );
       }
     } on DioException catch (e) {
-      // Extract specific backend error messages if available
       final errorMessage = e.response?.data['detail'] ??
           e.response?.data['message'] ??
           "Registration failed";
       throw Exception(errorMessage);
     }
   }
+
 
 }
