@@ -17,40 +17,59 @@ class _MainScreenState extends State<MainScreen> {
     GlobalKey<NavigatorState>(), // Home
     GlobalKey<NavigatorState>(), //Workout
     GlobalKey<NavigatorState>(), //Steps
-    GlobalKey<NavigatorState>(), //Settings
+    GlobalKey<NavigatorState>(), //Profile
   ];
 
   void _onItemTapped(int index) {
-    if(_selectedIndex == index){
+    if (_selectedIndex == index) {
       navigatorKeys[index].currentState?.popUntil((route) => route.isFirst);
-    }else{
+    } else {
       setState(() {
         _selectedIndex = index;
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: [
-          _buildNavigator(0, const HomeScreen()),
-          _buildNavigator(1, const WorkoutScreen()),
-          _buildNavigator(2, const StepsScreen()),
-          _buildNavigator(3, const SettingsScreen()),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        type: BottomNavigationBarType.fixed,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.fitness_center), label: 'Workout'),
-          BottomNavigationBarItem(icon: Icon(Icons.snowshoeing), label: 'Steps'),
-          BottomNavigationBarItem(icon: Icon(Icons.photo_camera_front_outlined), label: 'Profile'),
-        ],
+    return PopScope(
+      // android ko back button lae directly exit gardaina
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+
+        // Try to pop the current tab's navigator first
+        final NavigatorState? currentNavigator = navigatorKeys[_selectedIndex].currentState;
+        if (currentNavigator != null && currentNavigator.canPop()) {
+          currentNavigator.pop();
+        } else {
+          // If the tab is at the root, you can choose to exit or switch to home tab
+          if (_selectedIndex != 0) {
+            setState(() => _selectedIndex = 0);
+          }
+        }
+      },
+      child: Scaffold(
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: [
+            _buildNavigator(0, const HomeScreen()),
+            _buildNavigator(1, const WorkoutScreen()),
+            _buildNavigator(2, const StepsScreen()),
+            _buildNavigator(3, const SettingsScreen()),
+          ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          type: BottomNavigationBarType.fixed,
+          items: [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(icon: Icon(Icons.fitness_center), label: 'Workout'),
+            BottomNavigationBarItem(icon: Icon(Icons.snowshoeing), label: 'Steps'),
+            BottomNavigationBarItem(icon: Icon(Icons.photo_camera_front_outlined), label: 'Profile'),
+          ],
+        ),
       ),
     );
   }
@@ -58,9 +77,15 @@ class _MainScreenState extends State<MainScreen> {
   Widget _buildNavigator(int index, Widget rootPage) {
     return Navigator(
       key: navigatorKeys[index],
-      observers: [MyNavigatorObserver()],
       onGenerateRoute: (routeSettings) {
-        return MaterialPageRoute(builder: (context) => rootPage);
+        // Professional way: Allow pushing specific routes within the tab
+        return MaterialPageRoute(
+          settings: routeSettings,
+          builder: (context) {
+            //TODO: can add a switch statement here for sub-pages in this tab
+            return rootPage;
+          },
+        );
       },
     );
   }

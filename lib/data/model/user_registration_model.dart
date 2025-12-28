@@ -7,11 +7,7 @@ class UserRegistrationModel extends UserRegistrationEntity {
     required super.username,
     required super.email,
     required super.password,
-    required super.height,
-    required super.weight,
-    required super.birthDate,
-    required super.activityLevel,
-    required super.fitnessGoal,
+
   });
 
   Map<String, dynamic> toJson() {
@@ -19,13 +15,7 @@ class UserRegistrationModel extends UserRegistrationEntity {
       "username": username,
       "password": password,
       "email": email,
-      "profile": {
-        "height": height,
-        "weight": weight,
-        "birth_date": birthDate.toBackendFormat,
-        "activity_level": activityLevel,
-        "fitness_goal": fitnessGoal,
-      }
+
     };
   }
 }

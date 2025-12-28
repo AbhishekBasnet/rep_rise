@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../provider/auth_provider.dart';
+import '../../provider/auth_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,20 +13,15 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   void _handleLogin() async {
-
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final success = await authProvider.login(
-      _usernameController.text.trim(),
-      _passwordController.text.trim(),
-    );
+    final success = await authProvider.login(_usernameController.text.trim(), _passwordController.text.trim());
 
     if (mounted && success) {
       Navigator.pushReplacementNamed(context, '/');
@@ -63,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: authProvider.isLoading
                       ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
                       : const Text('Login'),
-                )
+                ),
               ],
             ),
           ),

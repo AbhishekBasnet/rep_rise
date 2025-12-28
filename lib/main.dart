@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rep_rise/presentation/provider/auth_provider.dart';
-import 'package:rep_rise/presentation/screens/login_screen.dart';
+import 'package:rep_rise/presentation/screens/auth/login_screen.dart';
+import 'package:rep_rise/presentation/screens/auth/register_new_user_screen.dart';
 import 'package:rep_rise/presentation/screens/main_screen.dart';
 
 import 'core/network/api_client.dart';
+import 'core/services/expired_token_login_navigation.dart';
 import 'core/services/token_service.dart';
 import 'data/repositories/auth_repository_impl.dart';
 
@@ -33,11 +35,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Rep Rise',
-      // REMOVE: home: const LoginScreen(),
-      initialRoute: '/login_screen', // Set your starting point here
+      navigatorKey: NavigationService.navigatorKey,
+      initialRoute: '/register_new_user_screen',
       routes: {
         '/': (context) => const MainScreen(),
-        '/login_screen': (context) => const LoginScreen(),
+        '/register_new_user_screen': (context) => const RegisterNewUserScreen(),
       },
     );
   }
@@ -47,6 +49,7 @@ class MyApp extends StatelessWidget {
   // @override
   // Widget build(BuildContext context) {
   //   return MaterialApp(
+//      navigatorKey: NavigationService.navigatorKey,
   //     routes: {
   //       '/': (context) => const MainScreen(),
   //       '/login_screen': (context) => const LoginScreen(),

@@ -16,24 +16,26 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> login(String username, String password) async {
     try {
-      final response = await apiClient.dio.post('auth/login/', data: {'username': username, 'password': password});
+      final response = await apiClient.dio.post(
+        'auth/login/',
+        data: {'username': username, 'password': password},
+        options: Options(extra: {'requiresAuth': false}),
+      );
 
-      if (response.statusCode == 200) {
-        final authData = AuthResponseModel.fromJson(response.data);
-
-        // The next API call will trigger the Interceptor, which reads this token.
-        await tokenService.saveTokens(access: authData.access, refresh: authData.refresh);
-      }
+      await tokenService.saveTokens(access: response.data['access'], refresh: response.data['refresh']);
     } on DioException catch (e) {
       throw Exception(e.response?.data['detail'] ?? "Login failed");
     }
   }
 
-
   @override
   Future<void> logout(String refreshToken) async {
     try {
-      await apiClient.dio.post('auth/logout/', data: {'refresh': refreshToken});
+      await apiClient.dio.post(
+        'auth/logout/',
+        data: {'refresh': refreshToken},
+        options: Options(extra: {'requiresAuth': false}),
+      );
     } on DioException catch (e) {
       throw Exception(e.response);
     } finally {
@@ -44,57 +46,37 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> refreshToken(String refreshToken) async {
     try {
-      final response = await apiClient.dio.post('auth/token/refresh/', data: {'refresh': refreshToken});
+      final response = await apiClient.dio.post(
+        'auth/token/refresh/',
+        data: {'refresh': refreshToken},
+        options: Options(extra: {'requiresAuth': false}),
+      );
+
       if (response.statusCode == 200) {
         final authData = AuthResponseModel.fromJson(response.data);
-
-        // Save the new tokens. The Interceptor will automatically pick them up.
-        await tokenService.saveTokens(access: authData.access, refresh: authData.refresh);
-      }
-    } on DioException catch (e) {
-      await tokenService.clearTokens();
-      throw Exception("Session expired. Please login again. Error: ${e.response?.data['detail'] ?? e.message}");
-    }
-  }
-
-
-
-
-  @override
-  Future<void> register(UserRegistrationEntity newUser) async { // Accepts Entity
-    try {
-      // 1. Convert Entity to Model so we can use .toJson()
-      final userModel = UserRegistrationModel(
-        username: newUser.username,
-        email: newUser.email,
-        password: newUser.password,
-        height: newUser.height,
-        weight: newUser.weight,
-        birthDate: newUser.birthDate,
-        activityLevel: newUser.activityLevel,
-        fitnessGoal: newUser.fitnessGoal,
-      );
-
-      // 2. Send the JSON to the backend
-      final response = await apiClient.dio.post(
-        'auth/register/',
-        data: userModel.toJson(), // The model handles the JSON structure
-      );
-
-      if (response.statusCode == 201 || response.statusCode == 200) {
-        final authData = AuthResponseModel.fromJson(response.data);
         await tokenService.saveTokens(
-          access: authData.access,
-          refresh: authData.refresh,
+            access: authData.access,
+            refresh: authData.refresh
         );
       }
     } on DioException catch (e) {
-      final errorMessage = e.response?.data['detail'] ??
-          e.response?.data['message'] ??
-          "Registration failed";
-      throw Exception(errorMessage);
+      await tokenService.clearTokens();
+      throw Exception("Session expired. Please login again. ${e.response?.data['detail']}");
     }
   }
 
 
+  @override
+  Future<void> register(UserRegistrationEntity user) async {
+    try {
+      await apiClient.dio.post(
+        'auth/register/',
+        data: {'username': user.username, 'email': user.email, 'password': user.password},
+        options: Options(extra: {'requiresAuth': false}),
+      );
+    } on DioException catch (e) {
+      final message = e.response?.data['detail'] ?? "Registration failed";
+      throw Exception(message);
+    }
+  }
 }
