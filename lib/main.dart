@@ -4,6 +4,7 @@ import 'package:rep_rise/presentation/provider/auth_provider.dart';
 import 'package:rep_rise/presentation/screens/auth/login_screen.dart';
 import 'package:rep_rise/presentation/screens/auth/register_new_user_screen.dart';
 import 'package:rep_rise/presentation/screens/main_screen.dart';
+import 'package:rep_rise/presentation/screens/root_wrapper.dart';
 
 import 'core/network/api_client.dart';
 import 'core/services/expired_token_login_navigation.dart';
@@ -20,7 +21,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => AuthProvider(authRepository: authRepository),
+          create: (_) => AuthProvider(authRepository: authRepository , tokenService: tokenService),
         ),
       ],
       child: const MyApp(),
@@ -32,28 +33,29 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Rep Rise',
-      navigatorKey: NavigationService.navigatorKey,
-      initialRoute: '/register_new_user_screen',
-      routes: {
-        '/': (context) => const MainScreen(),
-        '/register_new_user_screen': (context) => const RegisterNewUserScreen(),
-      },
-    );
-  }
-
-
-
-  // @override
   // Widget build(BuildContext context) {
   //   return MaterialApp(
-//      navigatorKey: NavigationService.navigatorKey,
+  //     title: 'Rep Rise',
+  //     navigatorKey: NavigationService.navigatorKey,
+  //     initialRoute: '/register_new_user_screen',
   //     routes: {
   //       '/': (context) => const MainScreen(),
-  //       '/login_screen': (context) => const LoginScreen(),
+  //       '/register_new_user_screen': (context) => const RegisterNewUserScreen(),
   //     },
   //   );
   // }
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+     navigatorKey: NavigationService.navigatorKey,
+      home: const RootWrapper(),
+      routes: {
+        '/login_screen': (context) => const LoginScreen(),
+        '/main': (context) => const MainScreen(),
+      },
+    );
+  }
 }
