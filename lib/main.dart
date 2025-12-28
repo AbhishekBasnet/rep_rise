@@ -34,13 +34,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Rep Rise',
       // REMOVE: home: const LoginScreen(),
-
-      // USE THIS INSTEAD:
-      initialRoute: '/login',
-
+      initialRoute: '/login_screen', // Set your starting point here
       routes: {
-        '/login': (context) => const LoginScreen(),
-        '/main': (context) => const MainScreen(),
+        '/': (context) => const MainScreen(),
+        '/login_screen': (context) => const LoginScreen(),
       },
     );
   }

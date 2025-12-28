@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:rep_rise/domain/entity/user_registration_entity.dart';
-import '../../data/model/user_registration_model.dart';
 import '../../domain/repositories/auth_repository.dart';
 
 class AuthProvider extends ChangeNotifier {
@@ -65,7 +64,7 @@ class AuthProvider extends ChangeNotifier {
   // --- Helpers ---
   void _setLoading(bool value) {
     _isLoading = value;
-    notifyListeners(); // This triggers the UI to rebuild
+    notifyListeners();
   }
 
   void _clearError() {

@@ -53,13 +53,12 @@ class AuthRepositoryImpl implements AuthRepository {
       }
     } on DioException catch (e) {
       await tokenService.clearTokens();
-      throw Exception("Session expired. Please login again.");
+      throw Exception("Session expired. Please login again. Error: ${e.response?.data['detail'] ?? e.message}");
     }
   }
 
 
 
-// lib/data/repositories/auth_repository_impl.dart
 
   @override
   Future<void> register(UserRegistrationEntity newUser) async { // Accepts Entity
