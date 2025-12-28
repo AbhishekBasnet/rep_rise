@@ -8,7 +8,7 @@ class StepRemoteDataSource {
   Future<void> postSteps(StepModel stepModel) async {
     try{
       await apiClient.dio.post(
-        '/api/v1/steps/',
+        'steps/',
         data: stepModel.toJson(),
       );
       debugPrint("    ${stepModel.stepCount} steps synced to backend.");
