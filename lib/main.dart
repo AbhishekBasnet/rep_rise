@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rep_rise/presentation/provider/auth_provider.dart';
+import 'package:rep_rise/presentation/screens/login_screen.dart';
 import 'package:rep_rise/presentation/screens/main_screen.dart';
 
 import 'core/network/api_client.dart';
@@ -31,9 +32,28 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Rep Rise',
+      // REMOVE: home: const LoginScreen(),
+
+      // USE THIS INSTEAD:
+      initialRoute: '/login',
+
       routes: {
-        '/': (context) => const MainScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/main': (context) => const MainScreen(),
       },
     );
   }
+
+
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return MaterialApp(
+  //     routes: {
+  //       '/': (context) => const MainScreen(),
+  //       '/login_screen': (context) => const LoginScreen(),
+  //     },
+  //   );
+  // }
 }
