@@ -13,11 +13,11 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  // 1. Move the key HERE so it persists
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   void _handleLogin() async {
-    // 2. Use the persistent class key
+
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -29,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (mounted && success) {
-      Navigator.pushReplacementNamed(context, '/'); // Match the route in main.dart
+      Navigator.pushReplacementNamed(context, '/');
     }
   }
 
@@ -42,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
-            key: _formKey, // 3. IMPORTANT: Connect the key to the Form
+            key: _formKey,
             child: Column(
               children: [
                 TextFormField(
