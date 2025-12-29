@@ -1,5 +1,5 @@
 import '../../domain/entity/step_entity.dart';
-import '../../core/util/date_formatter.dart';
+import '../../core/util/extension/date_formatter.dart';
 
 class StepModel extends StepEntity {
   StepModel({required super.date, required super.stepCount});
