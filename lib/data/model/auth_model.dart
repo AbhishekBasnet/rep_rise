@@ -1,7 +1,7 @@
 class AuthResponseModel {
   final String access;
   final String refresh;
-  final int userId;
+  final String userId;
 
   AuthResponseModel({required this.access, required this.refresh, required this.userId});
 

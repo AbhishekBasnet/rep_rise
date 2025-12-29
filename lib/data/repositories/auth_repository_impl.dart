@@ -16,13 +16,13 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> login(String username, String password) async {
     try {
-      final response = await apiClient.dio.post(
+      final response = await apiClient.post(
         'auth/login/',
         data: {'username': username, 'password': password},
         options: Options(extra: {'requiresAuth': false}),
       );
 
-      await tokenService.saveTokens(access: response.data['access'], refresh: response.data['refresh']);
+      await tokenService.saveTokens(access: response.data['access'], refresh: response.data['refresh'],userId: response.data['user_id']);
     } on DioException catch (e) {
       throw Exception(e.response?.data['detail'] ?? "Login failed");
     }
@@ -31,7 +31,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> logout(String refreshToken) async {
     try {
-      await apiClient.dio.post(
+      await apiClient.post(
         'auth/logout/',
         data: {'refresh': refreshToken},
         options: Options(extra: {'requiresAuth': false}),
@@ -46,7 +46,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> refreshToken(String refreshToken) async {
     try {
-      final response = await apiClient.dio.post(
+      final response = await apiClient.post(
         'auth/token/refresh/',
         data: {'refresh': refreshToken},
         options: Options(extra: {'requiresAuth': false}),
@@ -56,7 +56,8 @@ class AuthRepositoryImpl implements AuthRepository {
         final authData = AuthResponseModel.fromJson(response.data);
         await tokenService.saveTokens(
             access: authData.access,
-            refresh: authData.refresh
+            refresh: authData.refresh,
+            userId: authData.userId,
         );
       }
     } on DioException catch (e) {
@@ -69,7 +70,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> register(UserRegistrationEntity user) async {
     try {
-      await apiClient.dio.post(
+      await apiClient.post(
         'auth/register/',
         data: {'username': user.username, 'email': user.email, 'password': user.password},
         options: Options(extra: {'requiresAuth': false}),

@@ -7,7 +7,7 @@ class StepRemoteDataSource {
   StepRemoteDataSource({required this.apiClient});
   Future<void> postSteps(StepModel stepModel) async {
     try{
-      await apiClient.dio.post(
+      await apiClient.post(
         'steps/',
         data: stepModel.toJson(),
       );
