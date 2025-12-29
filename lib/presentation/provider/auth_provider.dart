@@ -35,6 +35,9 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> checkAuthStatus() async {
     _isAuthenticated = await checkAuthStatusUseCase.execute();
+    debugPrint('    --- AUTH STATUS CHECK on auth provider while reloading ---');
+    debugPrint('    isAuthenticated: $_isAuthenticated');
+    debugPrint('    --- END AUTH STATUS CHECK ---');
 
     _isInitialized = true;
     notifyListeners();

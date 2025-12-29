@@ -14,35 +14,32 @@ class CheckAuthStatusUseCase {
   Future<bool> execute() async {
     final accessToken = await tokenService.getAccessToken();
     final refreshToken = await tokenService.getRefreshToken();
+    debugPrint('    before checking token null on restart');
+    debugPrint('    Access Token: \n$accessToken');
+    debugPrint('    Refresh Token: \n$refreshToken');
+    if (accessToken == null || refreshToken == null) {
+      debugPrint('No tokens found. User needs to login.');
+      return false;
+    }
 
-    if (accessToken != null && refreshToken != null) {
-      bool isAccessTokenExpired = JwtDecoder.isExpired(accessToken);
-      bool isRefreshTokenExpired = JwtDecoder.isExpired(refreshToken);
+    bool isRefreshTokenExpired = JwtDecoder.isExpired(refreshToken);
+    if (isRefreshTokenExpired) {
+      debugPrint('Refresh token expired. Redirecting to login.');
+      return false;
+    }
 
-      if (isRefreshTokenExpired) {
-        debugPrint('    --- AUTH DEBUG START (in check auth UseCase)---');
-        debugPrint('    TOKEN STATUS: Refresh token Expired! Redirecting to Login.');
-        debugPrint('    Access Token: \n$accessToken');
-        debugPrint('    Refresh Token: \n$refreshToken');
-        debugPrint('    --- AUTH DEBUG END ---');
+    bool isAccessTokenExpired = JwtDecoder.isExpired(accessToken);
+    if (isAccessTokenExpired) {
+      try {
+        debugPrint('Access token expired. Attempting refresh...');
+        await authRepository.refreshToken(refreshToken);
+        return true;
+      } catch (e) {
+        debugPrint('Token refresh failed: $e');
         return false;
       }
-      if (isAccessTokenExpired) {
-        debugPrint('    --- AUTH DEBUG START (in check auth UseCase)---');
-        debugPrint('    TOKEN STATUS: Access token Expired! Redirecting to Login.');
-        debugPrint('    Using Refresh Token to get new access token. RefreshToken: \n$refreshToken');
-        debugPrint('    Old Access Token: $accessToken');
-        try {
-          await authRepository.refreshToken(refreshToken);
-          debugPrint('    --- AUTH DEBUG END ---');
-          return true;
-        } catch (e) {
-          debugPrint('    Failed to refresh token: $e');
-          debugPrint('    --- AUTH DEBUG END ---');
-          return false;
-        }
-      }
     }
-    return false;
+    debugPrint('Both tokens are valid. Authenticated!');
+    return true;
   }
 }
