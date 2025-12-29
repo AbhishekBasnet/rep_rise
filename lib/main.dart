@@ -34,18 +34,6 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  // Widget build(BuildContext context) {
-  //   return MaterialApp(
-  //     title: 'Rep Rise',
-  //     navigatorKey: NavigationService.navigatorKey,
-  //     initialRoute: '/register_new_user_screen',
-  //     routes: {
-  //       '/': (context) => const MainScreen(),
-  //       '/register_new_user_screen': (context) => const RegisterNewUserScreen(),
-  //     },
-  //   );
-  // }
-  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: NavigationService.navigatorKey,
