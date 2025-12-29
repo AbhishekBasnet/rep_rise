@@ -1,85 +1,63 @@
 import 'package:flutter/material.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:rep_rise/domain/entity/user_registration_entity.dart';
-import '../../core/services/token_service.dart';
-import '../../domain/repositories/auth_repository.dart';
+import 'package:rep_rise/domain/usecase/auth/login_usecase.dart';
+import 'package:rep_rise/domain/usecase/auth/logout_usecase.dart';
+import 'package:rep_rise/domain/usecase/auth/register_usecase.dart';
+import '../../domain/usecase/auth/check_auth_status_usecase.dart';
 
 class AuthProvider extends ChangeNotifier {
-  final AuthRepository authRepository;
-  final TokenService tokenService;
+  final CheckAuthStatusUseCase checkAuthStatusUseCase;
+  final LoginUseCase loginUseCase;
+  final RegisterUseCase registerUseCase;
+  final LogoutUseCase logoutUseCase;
 
-  AuthProvider({required this.authRepository, required this.tokenService}){
+  AuthProvider({
+    required this.checkAuthStatusUseCase,
+    required this.loginUseCase,
+    required this.registerUseCase,
+    required this.logoutUseCase
+  }) {
     checkAuthStatus();
   }
-
 
   bool _isLoading = false;
   String? _errorMessage;
   bool _isAuthenticated = false;
   bool _isInitialized = false;
 
-
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
   bool get isAuthenticated => _isAuthenticated;
-  bool get isInitialized => _isInitialized;
+  bool get isInitialized => _isInitialized; /// for root wrapper, don't delete
 
   // --- Actions ---
 
   Future<void> checkAuthStatus() async {
-    // Fetch tokens from FlutterSecureStorage
-    final accessToken = await tokenService.getAccessToken();
-    final refreshToken = await tokenService.getRefreshToken();
+    _isAuthenticated = await checkAuthStatusUseCase.execute();
 
-    if (accessToken != null) {
-      bool isExpired = JwtDecoder.isExpired(accessToken);
-      if (isExpired) {
-        debugPrint('--- AUTH DEBUG START (on Auth Provider)---');
-        debugPrint('TOKEN STATUS: Expired! Redirecting to Login.');
-        debugPrint('--- Tokens expired ---');
-        debugPrint('Access Token: $accessToken');
-        debugPrint('Refresh Token: ${refreshToken ?? "NULL"}');
-        debugPrint('--- AUTH DEBUG END ---');
-        _isAuthenticated = false;
-      } else {
-        _isAuthenticated = true;
-
-        // Debug Printing
-        debugPrint('--- AUTH DEBUG START (on Auth Provider)---');
-        debugPrint('--- Tokens arent expired ---');
-        debugPrint('Access Token: $accessToken');
-        debugPrint('Refresh Token: ${refreshToken ?? "NULL"}');
-        debugPrint('--- AUTH DEBUG END ---');
-      }
-    }
-
-
-
-    // Basic check: if access token exists, we assume authenticated for now
-
-    _isAuthenticated = accessToken != null;
     _isInitialized = true;
     notifyListeners();
   }
 
-
   /// Handles user login
   Future<bool> login(String username, String password) async {
     _setLoading(true);
+    _clearError();
+
     try {
-      await authRepository.login(username, password);
-      _isAuthenticated = true;
+      final success = await loginUseCase.execute(username, password);
+      _isAuthenticated = success;
       notifyListeners();
       return true;
     } catch (e) {
       _isAuthenticated = false;
+      _errorMessage = e.toString().replaceFirst('Exception: ', '');
       return false;
     } finally {
       _setLoading(false);
     }
   }
-
 
   /// Handles user registration
   Future<bool> register(UserRegistrationEntity newUser) async {
@@ -87,26 +65,32 @@ class AuthProvider extends ChangeNotifier {
     _clearError();
 
     try {
-      await authRepository.register(newUser);
-      _setLoading(false);
+      await registerUseCase.execute(newUser);
       return true;
     } catch (e) {
       _errorMessage = e.toString().replaceFirst('Exception: ', '');
-      _setLoading(false);
       return false;
+    } finally {
+      _setLoading(false);
     }
   }
 
+
   /// Handles user logout
   Future<void> logout(String refreshToken) async {
-    await authRepository.logout(refreshToken);
-    await tokenService.clearTokens(); // Clear local storage
-    _isAuthenticated = false;
-    notifyListeners();
+    _setLoading(true);
+    try {
+
+      await logoutUseCase.execute(refreshToken);
+      _isAuthenticated = false;
+      _clearError();
+    } catch (e) {
+      _errorMessage = e.toString().replaceFirst('Exception: ', '');
+    } finally {
+      _setLoading(false);
+      notifyListeners();
+    }
   }
-
-
-
   // --- Helpers ---
   void _setLoading(bool value) {
     _isLoading = value;
