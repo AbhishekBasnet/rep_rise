@@ -26,7 +26,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => LoginUseCase(sl()));
   sl.registerLazySingleton(() => RegisterUseCase(sl()));
   sl.registerLazySingleton(() => LogoutUseCase(authRepository: sl(), tokenService: sl()));
-  sl.registerLazySingleton(() => CheckAuthStatusUseCase(tokenService: sl()));
+  sl.registerLazySingleton(() => CheckAuthStatusUseCase(tokenService: sl(),authRepository: sl()));
 
   sl.registerFactory(() => AuthProvider(
     checkAuthStatusUseCase: sl(),

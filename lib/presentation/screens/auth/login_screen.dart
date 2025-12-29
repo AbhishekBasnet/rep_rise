@@ -23,9 +23,19 @@ class _LoginScreenState extends State<LoginScreen> {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final success = await authProvider.login(_usernameController.text.trim(), _passwordController.text.trim());
 
-    if (mounted && success) {
-      Navigator.pushReplacementNamed(context, '/');
+    if (mounted) {
+      if (success) {
+        Navigator.pushReplacementNamed(context, '/');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(authProvider.errorMessage ?? 'Login Failed'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
+
   }
 
   @override

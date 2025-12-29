@@ -1,21 +1,22 @@
 import 'package:dio/dio.dart';
 import 'package:rep_rise/core/services/expired_token_login_navigation.dart';
 import '../services/token_service.dart';
+import '../exception/api_exception.dart';
 
 class ApiClient {
   static const String baseApiUrl = "http://10.0.2.2:8000/api/v1/";
-  final Dio _dio;// private so no one can touch it directly out side api client
+  final Dio _dio; // private so no one can touch it directly out side api client
   final TokenService _tokenService;
 
   ApiClient(this._tokenService)
-      : _dio = Dio(
-    BaseOptions(
-      baseUrl: baseApiUrl,
-      connectTimeout: const Duration(seconds: 5),
-      receiveTimeout: const Duration(seconds: 3),
-      headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
-    ),
-  ) {
+    : _dio = Dio(
+        BaseOptions(
+          baseUrl: baseApiUrl,
+          connectTimeout: const Duration(seconds: 5),
+          receiveTimeout: const Duration(seconds: 3),
+          headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+        ),
+      ) {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
@@ -37,10 +38,9 @@ class ApiClient {
 
                 final newAccess = response.data['access'];
                 final newRefresh = response.data['refresh'];
-                final userId   = response.data['user_id'];
+                final userId = response.data['user_id'];
 
-
-                await _tokenService.saveTokens(access: newAccess, refresh: newRefresh,userId: userId);
+                await _tokenService.saveTokens(access: newAccess, refresh: newRefresh, userId: userId);
 
                 e.requestOptions.headers['Authorization'] = 'Bearer $newAccess';
                 final clonedRequest = await _dio.fetch(e.requestOptions);
@@ -57,7 +57,6 @@ class ApiClient {
       ),
     );
   }
-
 
   Future<Response> post(String path, {dynamic data, Map<String, dynamic>? queryParameters, Options? options}) async {
     try {
@@ -76,6 +75,15 @@ class ApiClient {
   }
 
   Exception _handleError(DioException e) {
-    return Exception(e.response?.data['message'] ?? "An unexpected network error occurred.");
+    final data = e.response?.data;
+    String message = "    An unexpected network error occurred.";
+    String? code;
+
+    if (data is Map) {
+      message = data['    detail'] ?? data['    message'] ?? message;
+      code = data['   code'];
+    }
+
+    return ApiException(message: message, code: code, statusCode: e.response?.statusCode, fullData: data);
   }
 }
