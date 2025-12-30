@@ -56,7 +56,7 @@ class _MainScreenState extends State<MainScreen> {
             _buildNavigator(0, const HomeScreen()),
             _buildNavigator(1, const WorkoutScreen()),
             _buildNavigator(2, const StepsScreen()),
-            _buildNavigator(3, const SettingsScreen()),
+            _buildNavigator(3, const ProfileHomeScreen()),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
