@@ -13,7 +13,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
   cupertino_icons: ^1.0.8
   health: ^13.2.1
   fl_chart: ^1.1.1
@@ -23,6 +22,7 @@ dependencies:
   provider: ^6.1.5+1
   jwt_decoder: ^2.0.1
   get_it: ^9.2.0
+  google_fonts: ^6.3.3
 
 dev_dependencies:
   flutter_test:
@@ -31,6 +31,27 @@ dev_dependencies:
   flutter_lints: ^6.0.0
 
 flutter:
+  fonts:
+    - family: NataSans
+      fonts:
+        - asset: assets/fonts/static/NataSans-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/static/NataSans-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/static/NataSans-Light.ttf
+          weight: 300
+        - asset: assets/fonts/static/NataSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/static/NataSans-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/static/NataSans-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/static/NataSans-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/static/NataSans-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/static/NataSans-Black.ttf
+          weight: 900
 
 
   uses-material-design: true

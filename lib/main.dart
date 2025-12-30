@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rep_rise/core/theme/app_theme.dart';
 import 'package:rep_rise/presentation/provider/auth_provider.dart';
 import 'package:rep_rise/presentation/screens/auth/login_screen.dart';
 import 'package:rep_rise/presentation/screens/main_screen.dart';
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: NavigationService.navigatorKey,
+      theme: AppTheme.lightTheme,
       home: const RootWrapper(),
       routes: {'/login_screen': (context) => const LoginScreen(), '/main': (context) => const MainScreen()},
     );
