@@ -28,7 +28,8 @@ class ApiClient {
           return handler.next(options);
         },
         onError: (DioException e, handler) async {
-          if (e.response?.statusCode == 401 && e.requestOptions.extra['requiresAuth'] != false) {
+          final bool isLogout = e.requestOptions.extra['isLogoutRequest'] ?? false;
+          if (e.response?.statusCode == 401 && e.requestOptions.extra['requiresAuth'] != false && !isLogout) {
             final refreshToken = await _tokenService.getRefreshToken();
 
             if (refreshToken != null) {
@@ -52,6 +53,7 @@ class ApiClient {
               }
             }
           }
+
           return handler.next(e);
         },
       ),
@@ -80,8 +82,8 @@ class ApiClient {
     String? code;
 
     if (data is Map) {
-      message = data['    detail'] ?? data['    message'] ?? message;
-      code = data['   code'];
+      message = data['detail'] ?? data['message'] ?? message;
+      code = data['code'];
     }
 
     return ApiException(message: message, code: code, statusCode: e.response?.statusCode, fullData: data);

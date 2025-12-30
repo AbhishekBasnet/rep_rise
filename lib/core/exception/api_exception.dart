@@ -2,6 +2,7 @@ class ApiException implements Exception {
   final String message;
   final String? code;
   final int? statusCode;
+  final String? detail;
   final dynamic fullData;
 
   ApiException({
@@ -9,6 +10,7 @@ class ApiException implements Exception {
     this.code,
     this.statusCode,
     this.fullData,
+    this.detail,
   });
 
   @override

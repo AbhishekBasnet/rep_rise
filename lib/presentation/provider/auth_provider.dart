@@ -11,6 +11,7 @@ class AuthProvider extends ChangeNotifier {
   final RegisterUseCase registerUseCase;
   final LogoutUseCase logoutUseCase;
 
+
   AuthProvider({
     required this.checkAuthStatusUseCase,
     required this.loginUseCase,
@@ -80,20 +81,21 @@ class AuthProvider extends ChangeNotifier {
 
 
   /// Handles user logout
-  Future<void> logout(String refreshToken) async {
+  Future<bool> logout() async {
     _setLoading(true);
     try {
-
-      await logoutUseCase.execute(refreshToken);
+      await logoutUseCase.execute();
       _isAuthenticated = false;
       _clearError();
+      return true;
     } catch (e) {
       _errorMessage = e.toString().replaceFirst('Exception: ', '');
+      return false;
     } finally {
       _setLoading(false);
-      notifyListeners();
     }
   }
+
   // --- Helpers ---
   void _setLoading(bool value) {
     _isLoading = value;

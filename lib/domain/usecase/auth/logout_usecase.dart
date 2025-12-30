@@ -3,16 +3,13 @@ import '../../../core/services/token_service.dart';
 
 class LogoutUseCase {
   final AuthRepository authRepository;
-  final TokenService tokenService;
 
   LogoutUseCase({
     required this.authRepository,
-    required this.tokenService,
   });
 
-  Future<void> execute(String refreshToken) async {
-    await authRepository.logout(refreshToken);
+  Future<void> execute() async {
 
-    await tokenService.clearTokens();
+    await authRepository.logout();
   }
 }

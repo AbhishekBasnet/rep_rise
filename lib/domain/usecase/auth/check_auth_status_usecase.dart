@@ -38,6 +38,7 @@ class CheckAuthStatusUseCase {
     if (isAccessTokenExpired) {
       try {
         debugPrint('    Access Token Expired on: ${accessToken.expirationStatus}');
+        debugPrint('    Refresh Token Status: ${refreshToken.expirationStatus}');
         debugPrint('    Status: Access token expired. Attempting refresh...');
         await authRepository.refreshToken(refreshToken);
 

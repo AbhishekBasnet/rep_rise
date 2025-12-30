@@ -1,20 +1,17 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:rep_rise/data/model/user_registration_model.dart';
 
 import '../../core/network/api_client.dart';
 import '../../core/exception/api_exception.dart';
 import '../../core/services/token_service.dart';
 import '../../domain/entity/user_registration_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
-import '../model/auth_model.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final ApiClient apiClient;
   final TokenService tokenService;
 
   AuthRepositoryImpl(this.apiClient, this.tokenService);
-
 
   @override
   Future<void> login(String username, String password) async {
@@ -38,7 +35,6 @@ class AuthRepositoryImpl implements AuthRepository {
       debugPrint('    \nUser Id: ${response.data['user_id']}');
       debugPrint('    Access Token: \n${response.data['access']}');
       debugPrint('    Refresh Token: \n${response.data['refresh']}');
-
     } on DioException catch (e) {
       debugPrint('    --- LOGIN ERROR (Backend Response) ---');
       if (e.response != null) {
@@ -52,17 +48,19 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
-
   @override
-  Future<void> logout(String refreshToken) async {
+  Future<void> logout() async {
     try {
-      await apiClient.post(
-        'auth/logout/',
-        data: {'refresh': refreshToken},
-        options: Options(extra: {'requiresAuth': false}),
-      );
-    } on DioException catch (e) {
-      throw Exception(e.response);
+      final refreshToken = await tokenService.getRefreshToken();
+      if (refreshToken != null) {
+        await apiClient.post(
+          'auth/logout/',
+          data: {'refresh': refreshToken},
+          options: Options(extra: {'requiresAuth': false,'isLogoutRequest': true}),
+        );
+      }
+    } catch (e) {
+      debugPrint('Server logout failed, but we will clear local data anyway.');
     } finally {
       await tokenService.clearTokens();
     }
@@ -74,7 +72,7 @@ class AuthRepositoryImpl implements AuthRepository {
       final response = await apiClient.post(
         'auth/token/refresh/',
         data: {'refresh': refreshToken},
-        options: Options(extra: {'requiresAuth': false}),
+        options: Options(extra: {'requiresAuth': false, }),
       );
 
       if (response.statusCode == 200) {
@@ -89,6 +87,7 @@ class AuthRepositoryImpl implements AuthRepository {
       // NOW YOU HAVE FULL ACCESS!
       debugPrint('--- AUTH REFRESH ERROR (Backend Response) ---');
       debugPrint('Message: ${e.message}');
+      debugPrint('Detail: ${e.detail}');
       debugPrint('Code: ${e.code}');
       debugPrint('Status: ${e.statusCode}');
 
@@ -101,8 +100,6 @@ class AuthRepositoryImpl implements AuthRepository {
       rethrow;
     }
   }
-
-
 
   @override
   Future<void> register(UserRegistrationEntity user) async {

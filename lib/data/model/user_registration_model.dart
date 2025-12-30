@@ -1,4 +1,3 @@
-import 'package:rep_rise/core/util/extension/date_formatter.dart';
 
 import '../../domain/entity/user_registration_entity.dart';
 
