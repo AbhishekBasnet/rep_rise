@@ -19,6 +19,7 @@ class ProfileWheelPicker extends StatelessWidget {
     final initialIndex = initialValue - minValue;
     return ListWheelScrollView.useDelegate(
       controller: FixedExtentScrollController(initialItem: initialIndex),
+      physics: const FixedExtentScrollPhysics(),
       itemExtent: 60,
       onSelectedItemChanged: (index) {
         final actualNumber = minValue + index;

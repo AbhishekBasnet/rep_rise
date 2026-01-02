@@ -40,7 +40,7 @@ class CreateProfileScreen extends StatelessWidget {
                     const Spacer(),
                     SizedBox(width: double.infinity,
                       child: ElevatedButton(onPressed: () {
-                        debugPrint("User has finished selecting age: ${provider.age}");
+                        debugPrint("    User has finished selecting age: ${provider.age}");
 
                       }, child: Text('Next')),
                     )

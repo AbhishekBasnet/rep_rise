@@ -3,6 +3,13 @@ class UserProfileDataEntity {
   final int weight;
   final int height;
   final int stepGoal;
+  final String gender;
 
-  const UserProfileDataEntity({required this.age, required this.weight, required this.height, required this.stepGoal});
+  const UserProfileDataEntity({
+    required this.age,
+    required this.weight,
+    required this.height,
+    required this.stepGoal,
+    required this.gender,
+  });
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  static const Color primaryBlue = Color(0xFF0052CC);
+  static const Color primaryPurple = Color(0xFF6F61C0);
   static const Color secondaryGrey = Color(0xFFF4F5F7);
 
   static const Color appBackgroundColor = Color(0xFFEEF1DA);
@@ -28,7 +28,7 @@ class AppTheme {
         titleLarge: TextStyle(fontWeight: FontWeight.w600, fontSize: 22, color: Colors.black),
 
         // MEDIUM (500) - For buttons or highlighted list items
-        labelLarge: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: primaryBlue),
+        labelLarge: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: primaryPurple),
 
         // REGULAR (400) - standard reading text
         bodyLarge: TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: Colors.black87),
@@ -58,14 +58,14 @@ class AppTheme {
 
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: primaryBlue,
+          backgroundColor: primaryPurple,
           foregroundColor: Colors.white,
           textStyle: const TextStyle(fontWeight: FontWeight.w500),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        selectedItemColor: primaryBlue,
+        selectedItemColor: primaryPurple,
         unselectedItemColor: Colors.grey,
         backgroundColor: Colors.white,
 

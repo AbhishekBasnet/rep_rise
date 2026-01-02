@@ -6,14 +6,10 @@ class UserProfileDataModel extends UserProfileDataEntity {
     required super.weight,
     required super.height,
     required super.stepGoal,
+    required super.gender,
   });
 
   Map<String, dynamic> toJson() {
-    return {
-      "age": age,
-      "weight": weight,
-      "height": height,
-      "stepGoal": stepGoal,
-    };
+    return {"age": age, "weight": weight, "height": height, "stepGoal": stepGoal};
   }
 }
