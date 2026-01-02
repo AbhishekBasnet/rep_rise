@@ -11,6 +11,7 @@
 │   │   ├── health_steps_service.dart
 │   │   └── token_service.dart
 │   ├── theme
+│   │   └── app_theme.dart
 │   └── util
 │       └── extension
 │           ├── date_formatter.dart
@@ -22,6 +23,7 @@
 │   │   ├── auth_model.dart
 │   │   ├── login_user_model.dart
 │   │   ├── step_model.dart
+│   │   ├── user_profile_data_model.dart
 │   │   └── user_registration_model.dart
 │   └── repositories
 │       ├── auth_repository_impl.dart
@@ -29,6 +31,7 @@
 ├── domain
 │   ├── entity
 │   │   ├── step_entity.dart
+│   │   ├── user_profile_data_entity.dart
 │   │   └── user_registration_entity.dart
 │   ├── repositories
 │   │   ├── auth_repository.dart
@@ -43,7 +46,8 @@
 ├── main.dart
 ├── presentation
 │   ├── provider
-│   │   └── auth_provider.dart
+│   │   ├── auth_provider.dart
+│   │   └── profile_setup_provide.dart
 │   ├── screens
 │   │   ├── auth
 │   │   │   ├── login_screen.dart
@@ -51,9 +55,14 @@
 │   │   ├── home_screen.dart
 │   │   ├── main_screen.dart
 │   │   ├── profile
+│   │   │   ├── create_profile
+│   │   │   │   └── profile_age_screen.dart
+│   │   │   ├── create_profile_screen.dart
+│   │   │   ├── font_test_screen.dart
 │   │   │   └── profile_home_screen.dart
 │   │   ├── root_wrapper.dart
 │   │   ├── steps_screen.dart
 │   │   └── workout_screen.dart
 │   └── widgets
+│       └── profile_wheel_picker.dart
 └── tree.txt

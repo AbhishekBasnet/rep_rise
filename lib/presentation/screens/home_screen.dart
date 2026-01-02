@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rep_rise/presentation/screens/auth/register_new_user_screen.dart';
 import 'package:rep_rise/presentation/screens/profile/font_test_screen.dart';
 
 import '../provider/auth_provider.dart';
@@ -24,11 +25,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (mounted) setState(() => _isProcessing = false);
   }
+
   void _testFont() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const FontTestScreen()),
-    );
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const FontTestScreen()));
+  }
+
+  void _testRegistration() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterNewUserScreen()));
   }
 
   @override
@@ -45,6 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: authProvider.isLoading ? CircularProgressIndicator() : Text('Logout'),
             ),
             ElevatedButton(onPressed: _testFont, child: Text('Test Fonts')),
+            ElevatedButton(onPressed: _testRegistration, child: Text('Test Registration')),
           ],
         ),
       ),

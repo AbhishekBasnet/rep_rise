@@ -50,9 +50,8 @@ class AppTheme {
         titleTextStyle: TextStyle(
           fontFamily: 'NataSans',
           fontWeight: FontWeight.w600,
-          fontSize: 20,
+          fontSize: 22,
           color: appContentColor,
-          letterSpacing: 0.7,
         ),
         iconTheme: IconThemeData(color: appContentColor),
       ),
@@ -69,6 +68,7 @@ class AppTheme {
         selectedItemColor: primaryBlue,
         unselectedItemColor: Colors.grey,
         backgroundColor: Colors.white,
+
       ),
     );
   }
