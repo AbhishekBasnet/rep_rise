@@ -70,4 +70,9 @@ class ProfileSetupProvider extends ChangeNotifier {
     _currentPage = index;
     notifyListeners();
   }
+  @override
+  void dispose() {
+    _pageController.dispose(); // Always clean up your controller!
+    super.dispose();
+  }
 }
