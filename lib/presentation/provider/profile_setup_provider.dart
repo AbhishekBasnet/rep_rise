@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
 class ProfileSetupProvider extends ChangeNotifier{
-  int _age = 18;
+  int _age = 25;
   int get age => _age;
 
   void setAge(int newAge){

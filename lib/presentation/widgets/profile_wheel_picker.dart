@@ -22,7 +22,9 @@ class ProfileWheelPicker extends StatelessWidget {
       itemExtent: 60,
       onSelectedItemChanged: (index) {
         final actualNumber = minValue + index;
+        onChanged(actualNumber);
       },
+
       childDelegate: ListWheelChildBuilderDelegate(
         childCount: maxValue - minValue + 1,
         builder: (context, index ) => Text("${minValue + index}"),
