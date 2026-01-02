@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rep_rise/core/theme/app_theme.dart';
 import 'package:rep_rise/presentation/provider/auth_provider.dart';
+import 'package:rep_rise/presentation/provider/profile_setup_provider.dart';
 import 'package:rep_rise/presentation/screens/auth/login_screen.dart';
 import 'package:rep_rise/presentation/screens/main_screen.dart';
 import 'package:rep_rise/presentation/screens/root_wrapper.dart';
@@ -18,6 +19,7 @@ void main() async{
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => sl<AuthProvider>()),
+        ChangeNotifierProvider(create: (_) => sl<ProfileSetupProvider>()),
       ],
       child: const MyApp(),
     ),

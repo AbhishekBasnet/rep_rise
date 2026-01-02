@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rep_rise/presentation/screens/profile/create_profile_screen.dart';
+import 'package:rep_rise/presentation/screens/profile/profile/create_profile/create_profile_screen.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../provider/auth_provider.dart';

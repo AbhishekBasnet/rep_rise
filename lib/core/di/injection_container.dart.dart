@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:rep_rise/presentation/provider/profile_setup_provider.dart';
 
 import '../../data/repositories/auth_repository_impl.dart';
 import '../../domain/repositories/auth_repository.dart';
@@ -28,6 +29,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => LogoutUseCase(authRepository: sl()));
   sl.registerLazySingleton(() => CheckAuthStatusUseCase(tokenService: sl(),authRepository: sl()));
 
+  sl.registerFactory(() => ProfileSetupProvider());
   sl.registerFactory(() => AuthProvider(
     checkAuthStatusUseCase: sl(),
     loginUseCase: sl(),

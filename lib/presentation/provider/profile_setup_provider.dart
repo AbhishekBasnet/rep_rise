@@ -59,8 +59,8 @@ class ProfileSetupProvider extends ChangeNotifier {
     notifyListeners();
   }
   void goToPreviousPage(){
-    if(!isLastPage){
-      _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+    if(currentPage>0){
+      _pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
     }
     _currentPage--;
     notifyListeners();
