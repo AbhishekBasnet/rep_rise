@@ -72,7 +72,7 @@ class ProfileSetupProvider extends ChangeNotifier {
   }
   @override
   void dispose() {
-    _pageController.dispose(); // Always clean up your controller!
+    _pageController.dispose();
     super.dispose();
   }
 }
