@@ -21,7 +21,7 @@ class CreateProfileScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 _topProgressBar(provider),
-                _middleContainer(provider),
+                _middlePageView(provider),
                 _footerNavigationButtons(context, provider),
               ],
             ),
@@ -38,16 +38,21 @@ class CreateProfileScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          IconButton(
-            onPressed: () {
-              if (provider.currentPage > 0) {
-                provider.goToPreviousPage();
-              }
-            },
-            icon: const Icon(Icons.arrow_back),
-            tooltip: "Go Back",
+          Visibility(
+            visible: provider.currentPage > 0,
+            maintainAnimation: true,
+            maintainState: true,
+            maintainSize: true,
+            child: IconButton(
+              onPressed: () {
+                if (provider.currentPage > 0) {
+                  provider.goToPreviousPage();
+                }
+              },
+              icon: const Icon(Icons.arrow_back),
+              tooltip: "Go Back",
+            ),
           ),
-          SizedBox(width: 20),
           Expanded(
             child: LinearProgressIndicator(
               value: (provider.currentPage + 1) / 5,
@@ -63,7 +68,7 @@ class CreateProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _middleContainer(ProfileSetupProvider provider) {
+  Widget _middlePageView(ProfileSetupProvider provider) {
     return Expanded(
       child: PageView(
         controller: provider.pageController,
