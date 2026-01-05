@@ -38,31 +38,40 @@ class CreateProfileScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Visibility(
-            visible: provider.currentPage > 0,
-            maintainAnimation: true,
-            maintainState: true,
-            maintainSize: true,
-            child: IconButton(
-              onPressed: () {
-                if (provider.currentPage > 0) {
-                  provider.goToPreviousPage();
-                }
-              },
-              icon: const Icon(Icons.arrow_back),
-              tooltip: "Go Back",
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: Visibility(
+              visible: provider.currentPage > 0,
+              maintainAnimation: true,
+              maintainState: true,
+              maintainSize: true,
+              child: IconButton(
+                onPressed: () {
+                  if (provider.currentPage > 0) {
+                    provider.goToPreviousPage();
+                  }
+                },
+                icon: const Icon(Icons.arrow_back),
+                tooltip: "Go Back",
+              ),
             ),
           ),
           Expanded(
-            child: LinearProgressIndicator(
-              value: (provider.currentPage + 1) / 5,
-              backgroundColor: Colors.blueGrey,
-              color: Colors.purple,
-              minHeight: 8,
-              borderRadius: BorderRadius.circular(4),
+            child: TweenAnimationBuilder<double>(
+              tween: Tween<double>(begin: 0, end: (provider.currentPage+1)/5),
+              duration: Duration(milliseconds: 450),
+
+              builder: (context, tweenAnimationValue,_)=> LinearProgressIndicator(
+                value: tweenAnimationValue,
+                backgroundColor: Colors.grey.shade300,
+                color: Colors.blueAccent,
+                minHeight: 12,
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
+
           ),
-          Padding(padding: EdgeInsetsGeometry.symmetric(horizontal: 30), child: Text('${provider.currentPage + 1}/5')),
+          Padding(padding: const EdgeInsets.symmetric(horizontal: 30), child: Text('${provider.currentPage + 1}/5')),
         ],
       ),
     );

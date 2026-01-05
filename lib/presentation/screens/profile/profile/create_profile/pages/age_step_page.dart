@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rep_rise/core/theme/app_theme.dart';
 
 import '../../../../../provider/profile_setup_provider.dart';
 import '../profile_wheel_picker.dart';
@@ -17,9 +18,20 @@ class AgeStepPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text('How old are you?'),
-              Text('This helps us create you personalized plan.'),
-              Text('Selected age: ${provider.age} years'),
+              Column(
+                children: [
+                  const Text('How old are you?', style: AppTheme.profileSetupHeader),
+                  const SizedBox(height: 7,),
+                  const Text('This helps us create you personalized plan.', style: AppTheme.profileSetupSubHeader),
+                  const SizedBox(height: 20,),
+                  Text.rich(
+                    TextSpan(
+                      text: 'Selected age: ',
+                      children: [TextSpan(text: '${provider.age} years', )],
+                    ),
+                  ),
+                ],
+              ),
               Expanded(
                 child: ProfileWheelPicker(
                   minValue: 18,

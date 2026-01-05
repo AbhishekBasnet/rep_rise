@@ -12,23 +12,27 @@ class GenderStepPage extends StatelessWidget {
         return Padding(
           padding: EdgeInsetsGeometry.all(16),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+
               Text('Select your Gender'),
-              SizedBox(height: 50),
-              _GenderCard(
-                isSelected: provider.gender == Gender.male,
-                label: 'Male',
-                icon: Icons.male,
-                onTap: () => provider.setGender(Gender.male),
-              ),
-              SizedBox(height: 50),
-              _GenderCard(
-                isSelected: provider.gender == Gender.female,
-                label: 'Female',
-                icon: Icons.female,
-                onTap: () => provider.setGender(Gender.female),
+              Column(
+                children: [
+                  _GenderCard(
+                    isSelected: provider.gender == Gender.male,
+                    label: 'Male',
+                    icon: Icons.male,
+                    onTap: () => provider.setGender(Gender.male),
+                  ),
+                  SizedBox(height: 50),
+                  _GenderCard(
+                    isSelected: provider.gender == Gender.female,
+                    label: 'Female',
+                    icon: Icons.female,
+                    onTap: () => provider.setGender(Gender.female),
+                  ),
+                ],
               ),
               // const Spacer(),
               SizedBox(height: 20),

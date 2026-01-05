@@ -7,6 +7,19 @@ class AppTheme {
   static const Color appBackgroundColor = Color(0xFFEEF1DA);
   static const Color appContentColor = Color(0xFF1E201E);
 
+  //--------------- Text styles for profile setup ------------------
+  static const TextStyle profileSetupHeader = TextStyle(
+    fontSize: 28,
+    fontWeight: FontWeight.w700,
+    color: Colors.black,
+  );
+
+  static const TextStyle profileSetupSubHeader = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    color: Colors.grey,
+  );
+
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
@@ -30,8 +43,10 @@ class AppTheme {
         // MEDIUM (500) - For buttons or highlighted list items
         labelLarge: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: primaryPurple),
 
+        bodyMedium: TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.black87),
+
         // REGULAR (400) - standard reading text
-        bodyLarge: TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: Colors.black87),
+        bodyLarge: TextStyle(fontWeight: FontWeight.w500, fontSize: 18, color: Colors.black87),
 
         // LIGHT (300) - For "de-emphasized" or secondary info
         bodySmall: TextStyle(fontWeight: FontWeight.w300, fontSize: 12, color: Colors.grey),
@@ -42,6 +57,8 @@ class AppTheme {
         // THIN (100) - Specialized artistic text
         displaySmall: TextStyle(fontWeight: FontWeight.w100, fontSize: 36),
       ),
+
+
 
       appBarTheme: const AppBarTheme(
         backgroundColor: appBackgroundColor,
@@ -68,7 +85,6 @@ class AppTheme {
         selectedItemColor: primaryPurple,
         unselectedItemColor: Colors.grey,
         backgroundColor: Colors.white,
-
       ),
     );
   }
