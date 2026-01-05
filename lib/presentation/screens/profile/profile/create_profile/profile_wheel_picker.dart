@@ -4,6 +4,7 @@ class ProfileWheelPicker extends StatelessWidget {
   final int minValue;
   final int maxValue;
   final int initialValue;
+  final int step;
   final Function(int) onChanged;
 
   const ProfileWheelPicker({
@@ -12,23 +13,26 @@ class ProfileWheelPicker extends StatelessWidget {
     required this.maxValue,
     required this.initialValue,
     required this.onChanged,
+    this.step = 1,
   });
 
   @override
   Widget build(BuildContext context) {
-    final initialIndex = initialValue - minValue;
+    final int childCount = ((maxValue - minValue) ~/ step) + 1;
+
+    final initialIndex = (initialValue - minValue) ~/ step;
     return ListWheelScrollView.useDelegate(
       controller: FixedExtentScrollController(initialItem: initialIndex),
       physics: const FixedExtentScrollPhysics(),
       itemExtent: 60,
       onSelectedItemChanged: (index) {
-        final actualNumber = minValue + index;
+        final actualNumber = minValue + (index * step);
         onChanged(actualNumber);
       },
 
       childDelegate: ListWheelChildBuilderDelegate(
-        childCount: maxValue - minValue + 1,
-        builder: (context, index ) => Text("${minValue + index}"),
+        childCount: childCount,
+        builder: (context, index) => Text("${minValue + (index * step)}"),
       ),
     );
   }

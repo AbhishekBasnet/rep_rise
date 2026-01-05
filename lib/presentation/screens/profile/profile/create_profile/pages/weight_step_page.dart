@@ -24,8 +24,8 @@ class WeightStepPage extends StatelessWidget {
                   minValue: 35,
                   maxValue: 100,
                   initialValue: provider.weight,
-                  onChanged: (newAge) {
-                    provider.setAge(newAge);
+                  onChanged: (newWeight) {
+                    provider.setWeight(newWeight);
                   },
                 ),
               ),

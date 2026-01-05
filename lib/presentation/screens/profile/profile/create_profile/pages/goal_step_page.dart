@@ -21,11 +21,12 @@ class GoalStepPage extends StatelessWidget {
               Text('Selected age: ${provider.goalSteps} per day'),
               Expanded(
                 child: ProfileWheelPicker(
-                  minValue: 0,
+                  step: 500,
+                  minValue: 1000,
                   maxValue: 10000,
                   initialValue: provider.goalSteps,
-                  onChanged: (newAge) {
-                    provider.setAge(newAge);
+                  onChanged: (newGoalSteps) {
+                    provider.setGoalSteps(newGoalSteps);
                   },
                 ),
               ),

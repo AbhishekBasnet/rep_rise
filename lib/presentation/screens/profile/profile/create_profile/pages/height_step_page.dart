@@ -24,8 +24,8 @@ class HeightStepPage extends StatelessWidget {
                   minValue: 50,
                   maxValue: 300,
                   initialValue: provider.height,
-                  onChanged: (newAge) {
-                    provider.setAge(newAge);
+                  onChanged: (newHeight) {
+                    provider.setHeight(newHeight);
                   },
                 ),
               ),
