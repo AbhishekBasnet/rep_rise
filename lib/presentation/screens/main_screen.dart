@@ -43,7 +43,7 @@ class _MainScreenState extends State<MainScreen> {
         if (currentNavigator != null && currentNavigator.canPop()) {
           currentNavigator.pop();
         } else {
-          // If the tab is at the root, you can choose to exit or switch to home tab
+          // If the tab is at the root, choose to exit or switch to home tab
           if (_selectedIndex != 0) {
             setState(() => _selectedIndex = 0);
           }

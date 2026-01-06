@@ -1,12 +1,8 @@
-// lib/root_wrapper.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rep_rise/presentation/screens/profile/profile/create_profile/create_profile_screen.dart';
-
-import '../provider/auth_provider.dart';
-import 'auth/login_screen.dart';
-import 'main_screen.dart';
-
+import 'package:rep_rise/presentation/provider/auth_provider.dart';
+import 'package:rep_rise/presentation/screens/auth/login_screen.dart';
+import 'package:rep_rise/presentation/screens/main_screen.dart';
 
 class RootWrapper extends StatelessWidget {
   const RootWrapper({super.key});
@@ -22,8 +18,7 @@ class RootWrapper extends StatelessWidget {
     }
 
     if (authProvider.isAuthenticated) {
-      // return const MainScreen();
-      return const CreateProfileScreen();
+      return const MainScreen();
     } else {
       return const LoginScreen();
     }
