@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rep_rise/core/theme/app_theme.dart';
 import 'package:rep_rise/presentation/provider/profile_setup_provider.dart';
 
 class GenderStepPage extends StatelessWidget {
@@ -16,7 +17,7 @@ class GenderStepPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
 
-              Text('Select your Gender'),
+              Text('Select your Gender',style: AppTheme.profileSetupHeader,),
               Column(
                 children: [
                   _GenderCard(
@@ -77,7 +78,7 @@ class _GenderCard extends StatelessWidget {
             child: Icon(icon, size: isSelected ? 80 : 50, color: isSelected ? Colors.white : Colors.grey),
           ),
           SizedBox(height: 20,),
-          Text(label),
+          isSelected ? Text(label, style: TextStyle(fontSize: 22, ),) : Text(label, style: TextStyle(fontSize: 15),),
         ],
       ),
     );

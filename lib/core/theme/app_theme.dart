@@ -6,20 +6,56 @@ class AppTheme {
 
   static const Color appBackgroundColor = Color(0xFFEEF1DA);
   static const Color appContentColor = Color(0xFF1E201E);
+  static const Color wheelPurple =  Color(0xFF7F56D9);
 
   //--------------- Text styles for profile setup ------------------
+
   static const TextStyle profileSetupHeader = TextStyle(
-    fontSize: 28,
+    fontSize: 22,
     fontWeight: FontWeight.w700,
     color: Colors.black,
   );
 
+  static const TextStyle profileSetupHeader2 = TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.w700,
+    color: Colors.black,
+  );
+  static const TextStyle profileSetupHeader3 = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.w500,
+    color: Colors.black,
+  );
   static const TextStyle profileSetupSubHeader = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.w500,
-    color: Colors.grey,
+    color: Colors.black54,
+  );
+  static const TextStyle profileSetupWheelSelectedText = TextStyle(
+      fontSize: 22,
+      fontWeight: FontWeight.w600,
+      color: wheelPurple,
+      letterSpacing: 1.5
+  );
+  static const TextStyle profileSetupWheelNumberUnselected = TextStyle(
+    fontSize: 25,
+    fontWeight: FontWeight.w600,
+    color: Colors.black,
+    letterSpacing: 1.5
+  );
+  static const TextStyle profileSetupWheelNumberSelected = TextStyle(
+      fontSize: 40,
+      fontWeight: FontWeight.w800,
+      color: wheelPurple,
+      letterSpacing: 1.5
   );
 
+  static const TextStyle profileSetupWheelUnitSelected = TextStyle(
+      fontSize: 20,
+      fontWeight: FontWeight.w600,
+      color: Colors.black54,
+      letterSpacing: 1.5
+  );
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,

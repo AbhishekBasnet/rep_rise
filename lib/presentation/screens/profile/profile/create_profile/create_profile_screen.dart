@@ -33,7 +33,7 @@ class CreateProfileScreen extends StatelessWidget {
 
   Widget _topProgressBar(ProfileSetupProvider provider) {
     return Padding(
-      padding: const EdgeInsetsGeometry.symmetric(horizontal: 24, vertical: 10),
+      padding: const EdgeInsetsGeometry.symmetric(horizontal: 10, ),
 
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

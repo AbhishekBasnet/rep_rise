@@ -21,19 +21,21 @@ class AgeStepPage extends StatelessWidget {
               Column(
                 children: [
                   const Text('How old are you?', style: AppTheme.profileSetupHeader),
-                  const SizedBox(height: 7,),
+                  const SizedBox(height: 5,),
                   const Text('This helps us create you personalized plan.', style: AppTheme.profileSetupSubHeader),
-                  const SizedBox(height: 20,),
+                  const SizedBox(height: 10,),
                   Text.rich(
                     TextSpan(
                       text: 'Selected age: ',
-                      children: [TextSpan(text: '${provider.age} years', )],
+                      children: [TextSpan(text: '${provider.age} years', style:AppTheme.profileSetupWheelSelectedText)],
+                      style: AppTheme.profileSetupHeader3
                     ),
                   ),
                 ],
               ),
               Expanded(
                 child: ProfileWheelPicker(
+                  unit: '      years',
                   minValue: 18,
                   maxValue: 100,
                   initialValue: provider.age,

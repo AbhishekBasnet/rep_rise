@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+import 'package:rep_rise/core/theme/app_theme.dart';
 import 'package:rep_rise/presentation/provider/profile_setup_provider.dart';
 import 'package:rep_rise/presentation/screens/profile/profile/create_profile/profile_wheel_picker.dart';
 
@@ -16,11 +17,20 @@ class GoalStepPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text('What is your daily goal steps?'),
-              Text('This helps us create you personalized plan.'),
-              Text('Selected age: ${provider.goalSteps} per day'),
+              Text('What is your daily goal steps?',style: AppTheme.profileSetupHeader,),
+              SizedBox(height: 5,),
+              Text('This helps us create you personalized plan.',style: AppTheme.profileSetupSubHeader,),
+              SizedBox(height: 10,),
+              Text.rich(
+                TextSpan(
+                    text: 'Selected age: ',
+                    children: [TextSpan(text: '${provider.goalSteps} steps', style:AppTheme.profileSetupWheelSelectedText)],
+                    style: AppTheme.profileSetupHeader3
+                ),
+              ),
               Expanded(
                 child: ProfileWheelPicker(
+                  unit: '             steps',
                   step: 500,
                   minValue: 1000,
                   maxValue: 10000,
