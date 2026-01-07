@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:rep_rise/domain/entity/user_profile_data_entity.dart';
 import 'package:rep_rise/domain/entity/user_registration_entity.dart';
+import 'package:rep_rise/domain/usecase/auth/check_usern_name_usecase.dart';
 import 'package:rep_rise/domain/usecase/auth/login_usecase.dart';
 import 'package:rep_rise/domain/usecase/auth/logout_usecase.dart';
 import 'package:rep_rise/domain/usecase/auth/register_usecase.dart';
+import 'package:rep_rise/domain/usecase/profile/create_profile_usecase.dart';
 import '../../domain/usecase/auth/check_auth_status_usecase.dart';
 
 class AuthProvider extends ChangeNotifier {
@@ -10,13 +13,16 @@ class AuthProvider extends ChangeNotifier {
   final LoginUseCase loginUseCase;
   final RegisterUseCase registerUseCase;
   final LogoutUseCase logoutUseCase;
-
+  final CheckUsernameUseCase checkUsernameUseCase;
+  final CreateProfileUseCase createProfileUseCase;
 
   AuthProvider({
     required this.checkAuthStatusUseCase,
     required this.loginUseCase,
     required this.registerUseCase,
-    required this.logoutUseCase
+    required this.logoutUseCase,
+    required this.checkUsernameUseCase,
+    required this.createProfileUseCase,
   }) {
     checkAuthStatus();
   }
@@ -30,9 +36,9 @@ class AuthProvider extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
 
   bool get isAuthenticated => _isAuthenticated;
-  bool get isInitialized => _isInitialized; /// for root wrapper, don't delete
+  bool get isInitialized => _isInitialized;
 
-  // --- Actions ---
+  /// for root wrapper, don't delete
 
   Future<void> checkAuthStatus() async {
     _isAuthenticated = await checkAuthStatusUseCase.execute();
@@ -44,7 +50,6 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Handles user login
   Future<bool> login(String username, String password) async {
     _setLoading(true);
     _clearError();
@@ -63,24 +68,6 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  /// Handles user registration
-  Future<bool> register(UserRegistrationEntity newUser) async {
-    _setLoading(true);
-    _clearError();
-
-    try {
-      await registerUseCase.execute(newUser);
-      return true;
-    } catch (e) {
-      _errorMessage = e.toString().replaceFirst('Exception: ', '');
-      return false;
-    } finally {
-      _setLoading(false);
-    }
-  }
-
-
-  /// Handles user logout
   Future<bool> logout() async {
     _setLoading(true);
     try {
@@ -96,7 +83,51 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  // --- Helpers ---
+  Future<bool> checkUsername(String username) async {
+    _setLoading(true);
+    _clearError();
+    try {
+      final isAvailable = await checkUsernameUseCase.execute(username);
+
+      if (!isAvailable) {
+        _errorMessage = "This username is already taken";
+      }
+
+      return isAvailable;
+    } catch (e) {
+      _errorMessage = e.toString().replaceFirst('Exception: ', '');
+      return false;
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<bool> registerAndSetupProfile({
+    required UserRegistrationEntity user,
+    required UserProfileEntity profile,
+  }) async {
+    _setLoading(true);
+    _clearError();
+
+    try {
+      debugPrint('    Step 1: Registering & Auto-logging in...');
+      await registerUseCase.execute(user);
+
+      debugPrint('    Step 2: Creating profile...');
+      await createProfileUseCase.execute(profile);
+
+      _isAuthenticated = true;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString().replaceFirst('Exception: ', '');
+      _isAuthenticated = false;
+      return false;
+    } finally {
+      _setLoading(false);
+    }
+  }
+
   void _setLoading(bool value) {
     _isLoading = value;
     notifyListeners();

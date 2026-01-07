@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rep_rise/presentation/screens/auth/register_new_user_screen.dart';
 
 import '../../provider/auth_provider.dart';
 
@@ -28,14 +29,10 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushReplacementNamed(context, '/');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(authProvider.errorMessage ?? 'Login Failed'),
-            backgroundColor: Colors.red,
-          ),
+          SnackBar(content: Text(authProvider.errorMessage ?? 'Login Failed'), backgroundColor: Colors.red),
         );
       }
     }
-
   }
 
   @override
@@ -68,6 +65,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: authProvider.isLoading
                       ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
                       : const Text('Login'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: ((_) => RegisterNewUserScreen())));
+                  },
+                  child: Text("Register"),
                 ),
               ],
             ),

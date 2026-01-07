@@ -1,4 +1,9 @@
 import 'package:get_it/get_it.dart';
+import 'package:rep_rise/data/repositories/profile_repository_impl.dart';
+import 'package:rep_rise/domain/entity/user_profile_data_entity.dart';
+import 'package:rep_rise/domain/repositories/profile_repository.dart';
+import 'package:rep_rise/domain/usecase/auth/check_usern_name_usecase.dart';
+import 'package:rep_rise/domain/usecase/profile/create_profile_usecase.dart';
 import 'package:rep_rise/presentation/provider/profile_setup_provider.dart';
 
 import '../../data/repositories/auth_repository_impl.dart';
@@ -18,22 +23,38 @@ Future<void> init() async {
   sl.registerLazySingleton(() => TokenService());
   sl.registerLazySingleton(() => ApiClient(sl()));
 
-  // Repositories
+
+// --- Repositories ---
   sl.registerLazySingleton<AuthRepository>(
-          () => AuthRepositoryImpl(sl(), sl())
+        () => AuthRepositoryImpl(sl(), sl()),
   );
+
+  // register the Interface <ProfileRepository>, but we return the Implementation (ProfileRepositoryImpl)
+  sl.registerLazySingleton<ProfileRepository>(
+        () => ProfileRepositoryImpl(sl()),
+  );
+
+
 
   // Use Cases
   sl.registerLazySingleton(() => LoginUseCase(sl()));
   sl.registerLazySingleton(() => RegisterUseCase(sl()));
   sl.registerLazySingleton(() => LogoutUseCase(authRepository: sl()));
-  sl.registerLazySingleton(() => CheckAuthStatusUseCase(tokenService: sl(),authRepository: sl()));
+  sl.registerLazySingleton(() => CheckAuthStatusUseCase(tokenService: sl(), authRepository: sl()));
+  sl.registerLazySingleton(() => CheckUsernameUseCase(sl()));
+  sl.registerLazySingleton(() => CreateProfileUseCase(sl()));
 
+// --- Providers ---
   sl.registerFactory(() => ProfileSetupProvider());
-  sl.registerFactory(() => AuthProvider(
-    checkAuthStatusUseCase: sl(),
-    loginUseCase: sl(),
-    registerUseCase: sl(),
-    logoutUseCase: sl(),
-  ));
+
+  sl.registerFactory(
+        () => AuthProvider(
+      checkAuthStatusUseCase: sl(),
+      loginUseCase: sl(),
+      registerUseCase: sl(),
+      logoutUseCase: sl(),
+      checkUsernameUseCase: sl(),
+      createProfileUseCase: sl(),
+    ),
+  );
 }

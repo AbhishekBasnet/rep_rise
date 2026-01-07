@@ -10,6 +10,6 @@ class LogoutUseCase {
 
   Future<void> execute() async {
 
-    await authRepository.logout();
+    await authRepository.logout();//TODO tokens arent being saved on local storage on registration
   }
 }

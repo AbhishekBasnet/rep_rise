@@ -23,7 +23,7 @@ class HeightStepPage extends StatelessWidget {
               const SizedBox(height: 10,),
               Text.rich(
                 TextSpan(
-                    text: 'Selected age: ',
+                    text: 'Selected height: ',
                     children: [TextSpan(text: '${provider.height} cm', style:AppTheme.profileSetupWheelSelectedText)],
                     style: AppTheme.profileSetupHeader3
                 ),

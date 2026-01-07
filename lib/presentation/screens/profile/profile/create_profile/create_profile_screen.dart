@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rep_rise/domain/entity/user_profile_data_entity.dart';
+import 'package:rep_rise/domain/entity/user_registration_entity.dart';
+import 'package:rep_rise/presentation/provider/auth_provider.dart';
 import 'package:rep_rise/presentation/provider/profile_setup_provider.dart';
 import 'package:rep_rise/presentation/screens/profile/profile/create_profile/pages/age_step_page.dart';
 import 'package:rep_rise/presentation/screens/profile/profile/create_profile/pages/gender_step_page.dart';
@@ -8,7 +11,8 @@ import 'package:rep_rise/presentation/screens/profile/profile/create_profile/pag
 import 'package:rep_rise/presentation/screens/profile/profile/create_profile/pages/weight_step_page.dart';
 
 class CreateProfileScreen extends StatelessWidget {
-  const CreateProfileScreen({super.key});
+  final UserRegistrationEntity userRegistrationData;
+  const CreateProfileScreen({super.key, required this.userRegistrationData});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +26,7 @@ class CreateProfileScreen extends StatelessWidget {
               children: [
                 _topProgressBar(provider),
                 _middlePageView(provider),
-                _footerNavigationButtons(context, provider),
+                _footerNavigationButtons(context, provider, userRegistrationData),
               ],
             ),
           ),
@@ -33,7 +37,7 @@ class CreateProfileScreen extends StatelessWidget {
 
   Widget _topProgressBar(ProfileSetupProvider provider) {
     return Padding(
-      padding: const EdgeInsetsGeometry.symmetric(horizontal: 10, ),
+      padding: const EdgeInsetsGeometry.symmetric(horizontal: 10),
 
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -58,10 +62,10 @@ class CreateProfileScreen extends StatelessWidget {
           ),
           Expanded(
             child: TweenAnimationBuilder<double>(
-              tween: Tween<double>(begin: 0, end: (provider.currentPage+1)/5),
+              tween: Tween<double>(begin: 0, end: (provider.currentPage + 1) / 5),
               duration: Duration(milliseconds: 450),
 
-              builder: (context, tweenAnimationValue,_)=> LinearProgressIndicator(
+              builder: (context, tweenAnimationValue, _) => LinearProgressIndicator(
                 value: tweenAnimationValue,
                 backgroundColor: Colors.grey.shade300,
                 color: Colors.blueAccent,
@@ -69,7 +73,6 @@ class CreateProfileScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-
           ),
           Padding(padding: const EdgeInsets.symmetric(horizontal: 30), child: Text('${provider.currentPage + 1}/5')),
         ],
@@ -88,7 +91,11 @@ class CreateProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _footerNavigationButtons(BuildContext context, ProfileSetupProvider provider) {
+  Widget _footerNavigationButtons(
+    BuildContext context,
+    ProfileSetupProvider provider,
+    UserRegistrationEntity userRegistrationSData,
+  ) {
     return Padding(
       padding: const EdgeInsetsGeometry.all(24),
       child: Row(
@@ -97,19 +104,47 @@ class CreateProfileScreen extends StatelessWidget {
           SizedBox(
             width: 200,
             child: ElevatedButton(
-              onPressed: () {
-                if (provider.isLastPage) {
-                  debugPrint('    On last page, call trigger for api');
-                } else {
-                  provider.goToNextPage();
-                  debugPrint('    continue button pressed: on page view index ${provider.currentPage}');
-                }
-              },
+              onPressed: () => _submitUserData(context, provider),
               child: Text(provider.isLastPage ? 'Finish' : 'Continue'),
             ),
           ),
         ],
       ),
     );
+  }
+
+  Future<void> _submitUserData(BuildContext context, ProfileSetupProvider provider) async {
+    if (provider.isLastPage) {
+      debugPrint('    On last page, triggering FINAL API call...');
+
+      final profileData = UserProfileEntity(
+        age: provider.age,
+        weight: provider.weight,
+        height: provider.height,
+        gender: provider.gender.name,
+        stepGoal: provider.goalSteps,
+        bmi: 0.00,
+      );
+
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+      final success = await authProvider.registerAndSetupProfile(
+        user: userRegistrationData,
+        profile: profileData,
+      );
+
+      if (context.mounted) {
+        if (success) {
+          Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(authProvider.errorMessage ?? "Setup failed")),
+          );
+        }
+      }
+    } else {
+      provider.goToNextPage();
+      debugPrint('    continue button pressed: on page view index ${provider.currentPage}');
+    }
   }
 }

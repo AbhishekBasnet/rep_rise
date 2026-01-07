@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
-enum Gender{male,female}
+
+enum Gender { male, female }
 
 class ProfileSetupProvider extends ChangeNotifier {
   int _age = 25;
@@ -8,6 +9,7 @@ class ProfileSetupProvider extends ChangeNotifier {
   int _weight = 50;
   int _height = 150;
   int _currentPage = 0;
+
 
   int get goalSteps => _goalSteps;
   Gender get gender => _gender;
@@ -18,8 +20,7 @@ class ProfileSetupProvider extends ChangeNotifier {
   int get currentPage => _currentPage;
   final PageController _pageController = PageController();
   PageController get pageController => _pageController;
-  bool get isLastPage => _currentPage ==4;
-
+  bool get isLastPage => _currentPage == 4;
 
 
   void setGoalSteps(int goalSteps) {
@@ -46,30 +47,34 @@ class ProfileSetupProvider extends ChangeNotifier {
     _age = newAge;
     notifyListeners();
   }
+
   void setPage(int currentPage) {
-    _currentPage=currentPage;
+    _currentPage = currentPage;
     notifyListeners();
   }
 
-  void goToNextPage(){
-    if(!isLastPage){
+  void goToNextPage() {
+    if (!isLastPage) {
       _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
     }
     _currentPage++;
     notifyListeners();
   }
-  void goToPreviousPage(){
-    if(currentPage>0){
+
+  void goToPreviousPage() {
+    if (currentPage > 0) {
       _pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
     }
     _currentPage--;
     notifyListeners();
   }
+
   //if the user swipes manually instead of clicking buttons
   void onPageChanged(int index) {
     _currentPage = index;
     notifyListeners();
   }
+
   @override
   void dispose() {
     _pageController.dispose();

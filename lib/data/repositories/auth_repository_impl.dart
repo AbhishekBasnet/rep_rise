@@ -56,7 +56,7 @@ class AuthRepositoryImpl implements AuthRepository {
         await apiClient.post(
           'auth/logout/',
           data: {'refresh': refreshToken},
-          options: Options(extra: {'requiresAuth': false,'isLogoutRequest': true}),
+          options: Options(extra: {'requiresAuth': false, 'isLogoutRequest': true}),
         );
       }
     } catch (e) {
@@ -72,7 +72,7 @@ class AuthRepositoryImpl implements AuthRepository {
       final response = await apiClient.post(
         'auth/token/refresh/',
         data: {'refresh': refreshToken},
-        options: Options(extra: {'requiresAuth': false, }),
+        options: Options(extra: {'requiresAuth': false}),
       );
 
       if (response.statusCode == 200) {
@@ -104,14 +104,53 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> register(UserRegistrationEntity user) async {
     try {
-      await apiClient.post(
+      final response = await apiClient.post(
         'auth/register/',
-        data: {'username': user.username, 'email': user.email, 'password': user.password},
+        data: {
+          'username': user.username,
+          'email': user.email,
+          'password': user.password
+        },
         options: Options(extra: {'requiresAuth': false}),
       );
+
+      debugPrint('    --- REGISTRATION SUCCESS ---');
+      debugPrint(response.data.toString());
+
+      await tokenService.saveTokens(
+        access: response.data['access'],
+        refresh: response.data['refresh'],
+        userId: response.data['user_id'].toString(),
+      );
+
+      debugPrint('    --- TOKENS SAVED (Auto-Login) ---');
+
     } on DioException catch (e) {
       final message = e.response?.data['detail'] ?? "Registration failed";
       throw Exception(message);
     }
   }
+
+
+  @override
+  Future<bool> checkUsername(String userName) async {
+    try {
+      final response = await apiClient.get(
+        'auth/check-username/',
+        queryParameters: {'username': userName},
+        options: Options(extra: {'requiresAuth': false}),
+      );
+
+      if (response.data != null && response.data['available'] is bool) {
+        return response.data['available'];
+      }
+      return false;
+
+    } on DioException catch (e) {
+      final message = e.response?.data['detail'] ?? "Error checking username";
+      throw Exception(message);
+    }
+  }
+
+
 }

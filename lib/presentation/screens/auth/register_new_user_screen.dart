@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rep_rise/presentation/screens/profile/profile/create_profile/create_profile_screen.dart';
 
 import '../../../domain/entity/user_registration_entity.dart';
 import '../../provider/auth_provider.dart';
@@ -17,27 +18,85 @@ class _RegisterNewUserScreenState extends State<RegisterNewUserScreen> {
   final TextEditingController _emailController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  void _handleRegister() async {
+  final FocusNode _usernameFocusNode = FocusNode();
+  bool _isCheckingUsername = false;
+  bool? _isUsernameAvailable;
+  String? _usernameError;
+
+  @override
+  void initState() {
+    super.initState();
+    _usernameFocusNode.addListener(_onUsernameFocusChange);
+  }
+
+  @override
+  void dispose() {
+    _usernameFocusNode.removeListener(_onUsernameFocusChange);
+    _usernameFocusNode.dispose();
+    _usernameController.dispose();
+    _passwordController.dispose();
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  void _onUsernameFocusChange() async {
+    if (!_usernameFocusNode.hasFocus) {
+      final username = _usernameController.text.trim();
+
+      if (username.isEmpty) return;
+
+      setState(() {
+        _isCheckingUsername = true;
+        _usernameError = null;
+        _isUsernameAvailable = null;
+      });
+
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    try {
+      final success = await authProvider.checkUsername(username);
+
+
+      if (mounted) {
+        setState(() {
+          _isCheckingUsername = false;
+          _isUsernameAvailable = success;
+          if (!success) {
+            _usernameError = authProvider.errorMessage;
+          }
+        });
+      }
+    } catch(e){
+      _usernameError = e.toString();
+    }
+
+    }
+  }
+
+  void _handleNextStep() {
+    if (_isUsernameAvailable == false) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fix the username errors first')),
+      );
+      return;
+    }
+
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final newUser = UserRegistrationEntity(
+    final incompleteUser = UserRegistrationEntity(
       username: _usernameController.text.trim(),
       email: _emailController.text.trim(),
       password: _passwordController.text.trim(),
     );
-    final success = await authProvider.register(newUser);
-    if (mounted) {
-      if (success) {
-        Navigator.pushReplacementNamed(context, '/');
-      } else {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(authProvider.errorMessage ?? 'Registration Failed')));
-      }
-    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CreateProfileScreen(userRegistrationData: incompleteUser),
+      ),
+    );
   }
 
   @override
@@ -48,6 +107,7 @@ class _RegisterNewUserScreenState extends State<RegisterNewUserScreen> {
           padding: EdgeInsetsGeometry.all(16),
           child: Form(
             key: _formKey,
+
             child: Column(
               children: [
                 SizedBox(height: 16),
@@ -55,8 +115,21 @@ class _RegisterNewUserScreenState extends State<RegisterNewUserScreen> {
                 SizedBox(height: 16),
                 TextFormField(
                   controller: _usernameController,
+                  focusNode: _usernameFocusNode,
+
                   validator: (value) => (value == null || value.isEmpty) ? 'Enter Username' : null,
-                  decoration: const InputDecoration(labelText: 'Username', border: OutlineInputBorder()),
+                  decoration: InputDecoration(
+                    labelText: 'Username',
+                    errorText: _usernameError,
+                    border: const OutlineInputBorder(),
+                    suffixIcon: _isCheckingUsername
+                        ? const CircularProgressIndicator()
+                        : _isUsernameAvailable == true
+                        ? const Icon(Icons.check_circle, color: Colors.green)
+                        : _isUsernameAvailable == false
+                        ? const Icon(Icons.error, color: Colors.red)
+                        : null,
+                  ),
                 ),
                 SizedBox(height: 16),
                 TextFormField(
@@ -72,7 +145,7 @@ class _RegisterNewUserScreenState extends State<RegisterNewUserScreen> {
                   decoration: const InputDecoration(labelText: 'Password', border: OutlineInputBorder()),
                 ),
                 SizedBox(height: 16),
-                ElevatedButton(onPressed: _handleRegister, child: const Text('Register')),
+                ElevatedButton(onPressed: _handleNextStep, child: const Text('Register')),
               ],
             ),
           ),

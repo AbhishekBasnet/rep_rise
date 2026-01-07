@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
       navigatorKey: NavigationService.navigatorKey,
       theme: AppTheme.lightTheme,
       home: const RootWrapper(),
-      routes: {'/login_screen': (context) => const LoginScreen(), '/main': (context) => const MainScreen()},
+      routes: {'/login_screen': (context) => const LoginScreen(), '/main': (context) => const MainScreen(), },
     );
   }
 }

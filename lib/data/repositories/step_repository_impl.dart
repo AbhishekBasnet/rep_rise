@@ -15,11 +15,11 @@ class StepRepositoryImpl implements StepRepository {
   Future<void> syncSteps() async {
     // service handle the hardware/plugin logic
     final int totalStepsToday = await _healthService.getTotalStepsToday();
-    final model = StepModel(date: DateTime.now(), stepCount: totalStepsToday);
+    final stepModel = StepModel(date: DateTime.now(), stepCount: totalStepsToday);
 
 
 
-    await remoteDataSource.postSteps(model);
+    await remoteDataSource.postSteps(stepModel);
   }
 
   @override

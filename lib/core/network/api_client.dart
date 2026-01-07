@@ -76,6 +76,14 @@ class ApiClient {
     }
   }
 
+  Future<Response> patch(String path, {dynamic data, Map<String, dynamic>? queryParameters, Options? options}) async {
+    try {
+      return await _dio.patch(path, data: data, queryParameters: queryParameters, options: options);
+    } on DioException catch (e) {
+      throw _handleError(e);
+    }
+  }
+
   Exception _handleError(DioException e) {
     final data = e.response?.data;
     String message = "    An unexpected network error occurred.";
