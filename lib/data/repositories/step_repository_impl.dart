@@ -1,30 +1,38 @@
-import '../../core/services/health_steps_service.dart';
-import '../../domain/entity/step_entity.dart';
-import '../../domain/repositories/step_repository.dart';
-import '../data_sources/step_remote_data_source.dart';
-import '../model/step_model.dart';
+
+
+import 'package:rep_rise/core/services/health_steps_service.dart';
+import 'package:rep_rise/data/data_sources/step_remote_data_source.dart';
+import 'package:rep_rise/domain/entity/steps/step_entity.dart';
+import 'package:rep_rise/domain/entity/steps/step_summary_entity.dart';
+import 'package:rep_rise/domain/repositories/step_repository.dart';
 
 class StepRepositoryImpl implements StepRepository {
-  final HealthService _healthService;
   final StepRemoteDataSource remoteDataSource;
+  final HealthService healthService;
 
-  StepRepositoryImpl({required HealthService healthService, required this.remoteDataSource})
-    : _healthService = healthService;
+  StepRepositoryImpl({required this.remoteDataSource, required this.healthService});
 
   @override
-  Future<void> syncSteps() async {
-    // service handle the hardware/plugin logic
-    final int totalStepsToday = await _healthService.getTotalStepsToday();
-    final stepModel = StepModel(date: DateTime.now(), stepCount: totalStepsToday);
-
-
-
-    await remoteDataSource.postSteps(stepModel);
+  Future<StepEntity> getDailySteps() async {
+    final model = await remoteDataSource.getDailySteps();
+    return model;
   }
 
   @override
-  Future<List<StepEntity>> getStepHistory(String period) {
-    // TODO: implement getStepHistory
-    throw UnimplementedError();
+  Future<List<StepEntity>> getWeeklySteps() async {
+    final models = await remoteDataSource.getWeeklySteps();
+    return models;
+  }
+
+  @override
+  Future<StepSummaryEntity> getMonthlyStats(int year, int month) async {
+    final model = await remoteDataSource.getMonthlyStats(year, month);
+    return model;
+  }
+
+  @override
+  Future<void> syncSteps() async {
+    final int deviceSteps = await healthService.getTotalStepsToday();
+    await remoteDataSource.postSteps(deviceSteps, DateTime.now());
   }
 }

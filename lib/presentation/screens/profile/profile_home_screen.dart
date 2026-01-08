@@ -16,8 +16,6 @@ class _ProfileHomeScreenState extends State<ProfileHomeScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            Text('Profile Home Screen'),
-            ElevatedButton(onPressed: () {}, child: Text('Setup Profile')),
           ],
         ),
       ),

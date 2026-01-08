@@ -1,7 +1,11 @@
 import 'package:get_it/get_it.dart';
+import 'package:rep_rise/core/services/health_steps_service.dart';
+import 'package:rep_rise/data/data_sources/step_remote_data_source.dart';
 import 'package:rep_rise/data/repositories/profile_repository_impl.dart';
+import 'package:rep_rise/data/repositories/step_repository_impl.dart';
 import 'package:rep_rise/domain/entity/user_profile_data_entity.dart';
 import 'package:rep_rise/domain/repositories/profile_repository.dart';
+import 'package:rep_rise/domain/repositories/step_repository.dart';
 import 'package:rep_rise/domain/usecase/auth/check_usern_name_usecase.dart';
 import 'package:rep_rise/domain/usecase/profile/create_profile_usecase.dart';
 import 'package:rep_rise/presentation/provider/profile_setup_provider.dart';
@@ -22,12 +26,18 @@ Future<void> init() async {
   // Services
   sl.registerLazySingleton(() => TokenService());
   sl.registerLazySingleton(() => ApiClient(sl()));
+  sl.registerLazySingleton(() => HealthService());
+  sl.registerLazySingleton(() => StepRemoteDataSource(client: sl()));
 
 
 // --- Repositories ---
   sl.registerLazySingleton<AuthRepository>(
         () => AuthRepositoryImpl(sl(), sl()),
   );
+  sl.registerLazySingleton<StepRepository>(() => StepRepositoryImpl(
+    remoteDataSource: sl(),
+    healthService: sl(),
+  ));
 
   // register the Interface <ProfileRepository>, but we return the Implementation (ProfileRepositoryImpl)
   sl.registerLazySingleton<ProfileRepository>(

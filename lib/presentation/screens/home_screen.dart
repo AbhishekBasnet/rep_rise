@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rep_rise/core/di/injection_container.dart.dart';
+import 'package:rep_rise/domain/repositories/step_repository.dart';
 import 'package:rep_rise/presentation/screens/auth/register_new_user_screen.dart';
 import 'package:rep_rise/presentation/screens/profile/font_test_screen.dart';
+import 'package:rep_rise/presentation/screens/step_api_test_screen.api.dart';
 
 import '../provider/auth_provider.dart';
 
@@ -14,7 +17,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _isProcessing = false;
-
   void _handleLogout() async {
     if (_isProcessing) return;
 
@@ -33,7 +35,16 @@ class _HomeScreenState extends State<HomeScreen> {
   void _testRegistration() {
     Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterNewUserScreen()));
   }
-
+  void _testStepsApi() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => StepApiTestScreen(
+          repository: sl<StepRepository>(),
+        ),
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
@@ -49,6 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             ElevatedButton(onPressed: _testFont, child: Text('Test Fonts')),
             ElevatedButton(onPressed: _testRegistration, child: Text('Test Registration')),
+            ElevatedButton(onPressed: _testStepsApi, child: Text('Test Steps API')),
           ],
         ),
       ),
