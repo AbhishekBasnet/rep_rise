@@ -78,7 +78,6 @@ class _MainScreenState extends State<MainScreen> {
     return Navigator(
       key: navigatorKeys[index],
       onGenerateRoute: (routeSettings) {
-        // Professional way: Allow pushing specific routes within the tab
         return MaterialPageRoute(
           settings: routeSettings,
           builder: (context) {
@@ -91,7 +90,6 @@ class _MainScreenState extends State<MainScreen> {
   }
 }
 
-//for peace of mind
 class MyNavigatorObserver extends NavigatorObserver {
   @override
   void didPush(Route route, Route? previousRoute) {

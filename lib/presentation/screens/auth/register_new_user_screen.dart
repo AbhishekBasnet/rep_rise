@@ -99,6 +99,7 @@ class _RegisterNewUserScreenState extends State<RegisterNewUserScreen> {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,7 +108,6 @@ class _RegisterNewUserScreenState extends State<RegisterNewUserScreen> {
           padding: EdgeInsetsGeometry.all(16),
           child: Form(
             key: _formKey,
-
             child: Column(
               children: [
                 SizedBox(height: 16),
@@ -116,7 +116,6 @@ class _RegisterNewUserScreenState extends State<RegisterNewUserScreen> {
                 TextFormField(
                   controller: _usernameController,
                   focusNode: _usernameFocusNode,
-
                   validator: (value) => (value == null || value.isEmpty) ? 'Enter Username' : null,
                   decoration: InputDecoration(
                     labelText: 'Username',

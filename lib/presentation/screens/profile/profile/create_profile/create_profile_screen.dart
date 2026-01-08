@@ -135,7 +135,7 @@ class CreateProfileScreen extends StatelessWidget {
 
       if (context.mounted) {
         if (success) {
-          Navigator.pushNamedAndRemoveUntil(context, '/main', (route) => false);
+          Navigator.of(context).popUntil((route) => route.isFirst);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(authProvider.errorMessage ?? "Setup failed")),
