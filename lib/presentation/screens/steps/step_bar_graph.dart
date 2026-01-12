@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:rep_rise/core/theme/app_theme.dart';
 
 class StepBarGraph extends StatelessWidget {
   const StepBarGraph({super.key});
@@ -7,19 +8,13 @@ class StepBarGraph extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsetsGeometry.symmetric(horizontal: 10),
+      // margin: const EdgeInsetsGeometry.symmetric(horizontal: 5),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         // Optional: Adds a subtle shadow like the card in the image
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.5),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: [AppTheme.stepsCardBoxShadow],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,11 +25,7 @@ class StepBarGraph extends StatelessWidget {
             children: [
               const Text(
                 "Statistics",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -80,19 +71,11 @@ class StepBarGraph extends StatelessWidget {
                       return BarTooltipItem(
                         // The Text inside the bubble
                         '${rod.toY.toInt()}\n',
-                        const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
+                        const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14),
                         children: [
                           const TextSpan(
                             text: 'steps',
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 10,
-                              fontWeight: FontWeight.normal,
-                            ),
+                            style: TextStyle(color: Colors.grey, fontSize: 10, fontWeight: FontWeight.normal),
                           ),
                         ],
                       );
@@ -134,11 +117,7 @@ class StepBarGraph extends StatelessWidget {
                             padding: const EdgeInsets.only(top: 5.0),
                             child: Text(
                               days[value.toInt()],
-                              style: const TextStyle(
-                                color: Colors.grey,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: const TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
                             ),
                           );
                         }
@@ -154,7 +133,7 @@ class StepBarGraph extends StatelessWidget {
                   _makeBar(1, 6600, isSelected: false),
                   _makeBar(2, 4200, isSelected: false),
                   _makeBar(3, 5800, isSelected: false),
-                  _makeBar(4, 5289, isSelected: true),  // The Highlighted one!
+                  _makeBar(4, 5289, isSelected: true), // The Highlighted one!
                   _makeBar(5, 7500, isSelected: false),
                   _makeBar(6, 6200, isSelected: false),
                 ],

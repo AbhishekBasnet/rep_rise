@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rep_rise/core/theme/app_theme.dart';
 
 class StepsCounterMonthly extends StatelessWidget {
   const StepsCounterMonthly({super.key});
@@ -6,20 +7,17 @@ class StepsCounterMonthly extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  Container(
-      margin: const EdgeInsets.only(left: 10, right: 10, bottom: 20),
 
-      padding: const EdgeInsets.all(20),
+      // margin: const EdgeInsetsGeometry.symmetric(horizontal: 5),
+
+      padding: const EdgeInsets.symmetric(vertical: 10),
 
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20), // Matching your other cards
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 10,
-            offset: Offset(0, 4),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(20),
+
+        boxShadow: [AppTheme.stepsCardBoxShadow],
+
       ),
 
       child: Column(

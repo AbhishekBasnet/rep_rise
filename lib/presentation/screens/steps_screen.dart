@@ -10,19 +10,22 @@ class StepsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Steps Screen')),
-      body: SafeArea(
-        child: SizedBox(
-          width: double.infinity,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              StepCounterGraph(),
-              StepBarGraph(),
-              StepsCounterMonthly()
-            ],
+      body: CustomScrollView(
+        slivers: [
+          SliverFillRemaining(
+            // fills the space , if not, make the child scrollable: sano screen ko lagi
+            hasScrollBody: false,
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+                children: const [StepCounterCircularGraph(), StepBarGraph(), StepsCounterMonthly()],
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
