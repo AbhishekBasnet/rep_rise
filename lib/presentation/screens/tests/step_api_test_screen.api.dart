@@ -100,7 +100,7 @@ class _StepApiTestScreenState extends State<StepApiTestScreen> {
       appBar: AppBar(title: const Text("API Connectivity Test")),
       body: Column(
         children: [
-          // BUTTONS
+
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: Wrap(
@@ -123,7 +123,7 @@ class _StepApiTestScreenState extends State<StepApiTestScreen> {
             ),
           ),
           const Divider(height: 1),
-          // CONSOLE
+
           Expanded(
             child: Container(
               width: double.infinity,

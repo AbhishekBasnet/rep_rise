@@ -56,6 +56,16 @@ class AppTheme {
       color: Colors.black54,
       letterSpacing: 1.5
   );
+
+  //--------------- Text styles for steps screen  ------------------
+
+  static const TextStyle stepsProgressNumber = TextStyle(
+      fontSize: 30,
+      fontWeight: FontWeight.w700,
+      color: Colors.black87,
+      letterSpacing: 1.5
+  );
+
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,

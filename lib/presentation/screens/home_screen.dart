@@ -4,7 +4,7 @@ import 'package:rep_rise/core/di/injection_container.dart.dart';
 import 'package:rep_rise/domain/repositories/step_repository.dart';
 import 'package:rep_rise/presentation/screens/auth/register_new_user_screen.dart';
 import 'package:rep_rise/presentation/screens/profile/font_test_screen.dart';
-import 'package:rep_rise/presentation/screens/step_api_test_screen.api.dart';
+import 'package:rep_rise/presentation/screens/tests/step_api_test_screen.api.dart';
 
 import '../provider/auth_provider.dart';
 

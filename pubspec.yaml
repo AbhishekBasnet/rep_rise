@@ -24,6 +24,7 @@ dependencies:
   get_it: ^9.2.0
   google_fonts: ^6.3.3
   percent_indicator: ^4.2.5
+  syncfusion_flutter_gauges: ^32.1.22
 
 dev_dependencies:
   flutter_test:
