@@ -6,10 +6,7 @@ class StepsCounterMonthly extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Container(
-
-      // margin: const EdgeInsetsGeometry.symmetric(horizontal: 5),
-
+    return Container(
       padding: const EdgeInsets.symmetric(vertical: 10),
 
       decoration: BoxDecoration(
@@ -17,7 +14,6 @@ class StepsCounterMonthly extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
 
         boxShadow: [AppTheme.stepsCardBoxShadow],
-
       ),
 
       child: Column(
@@ -25,30 +21,19 @@ class StepsCounterMonthly extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.directions_walk,
-                color: Colors.purpleAccent,
-                size: 28,
-              ),
+              Icon(Icons.directions_walk, color: Colors.purpleAccent, size: 28),
               SizedBox(width: 10),
 
               Text(
                 "256,480",
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black87),
               ),
             ],
           ),
 
           SizedBox(height: 8),
 
-          Text(
-            "Total steps this month",
-
-          ),
+          Text("Total steps this month"),
         ],
       ),
     );

@@ -26,6 +26,7 @@ dependencies:
   percent_indicator: ^4.2.5
   syncfusion_flutter_gauges: ^32.1.22
   flutter_screenutil: ^5.9.3
+  equatable: ^2.0.8
 
 dev_dependencies:
   flutter_test:

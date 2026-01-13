@@ -137,4 +137,11 @@ class AuthProvider extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
   }
+
+
+  void handleExpiredToken() {
+    _isAuthenticated = false;
+    _errorMessage = "Session expired. Please login again.";
+    notifyListeners(); // This triggers the RootWrapper to rebuild
+  }
 }

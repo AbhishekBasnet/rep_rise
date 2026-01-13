@@ -61,13 +61,11 @@ class ApiClient {
                 final newRefresh = response.data['refresh'] ?? refreshToken;
 
                 // Check if backend returned user_id. If null, retrieve the known one from storage.
-                // NOTE: Most refresh endpoints DO NOT return user_id.
-                String userId = response.data['user_id'];
-
+                String? userId = response.data['user_id'] ?? await _tokenService.getUserId();
                 // --- SAFETY CHECKS END ---
 
                 await _tokenService.saveTokens(
-                    access: newAccess, refresh: newRefresh, userId: userId);
+                    access: newAccess, refresh: newRefresh, userId: userId!);
 
                 debugPrint('--- Token Refreshed. Retrying original request ---');
 

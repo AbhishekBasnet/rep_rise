@@ -1,4 +1,6 @@
-class StepSummaryEntity {
+import 'package:equatable/equatable.dart';
+
+class StepSummaryEntity  extends Equatable{
   final int totalSteps;
   final int totalGoal;
   final double avgGoal;
@@ -8,4 +10,8 @@ class StepSummaryEntity {
     required this.totalGoal,
     required this.avgGoal,
 });
+
+  @override
+  List<Object?> get props => [totalGoal,totalSteps,avgGoal];
+
 }

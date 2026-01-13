@@ -2,6 +2,7 @@
 
 import 'package:rep_rise/core/services/health_steps_service.dart';
 import 'package:rep_rise/data/data_sources/step_remote_data_source.dart';
+import 'package:rep_rise/data/model/steps/step_model.dart';
 import 'package:rep_rise/domain/entity/steps/step_entity.dart';
 import 'package:rep_rise/domain/entity/steps/step_summary_entity.dart';
 import 'package:rep_rise/domain/repositories/step_repository.dart';
@@ -14,14 +15,14 @@ class StepRepositoryImpl implements StepRepository {
 
   @override
   Future<StepEntity> getDailySteps() async {
-    final model = await remoteDataSource.getDailySteps();
-    return model;
+    final StepModel stepModel = await remoteDataSource.getDailySteps();
+    return stepModel.toEntity();
   }
 
   @override
   Future<List<StepEntity>> getWeeklySteps() async {
-    final models = await remoteDataSource.getWeeklySteps();
-    return models;
+    final List<StepModel> stepModel = await remoteDataSource.getWeeklySteps();
+    return stepModel.map((model) => model.toEntity()).toList();
   }
 
   @override

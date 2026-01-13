@@ -13,7 +13,6 @@ class StepBarGraph extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        // Optional: Adds a subtle shadow like the card in the image
         boxShadow: [AppTheme.stepsCardBoxShadow],
       ),
       child: Column(
@@ -144,7 +143,7 @@ class StepBarGraph extends StatelessWidget {
       ),
     );
   }
-
+// Helper Functions
   BarChartGroupData _makeBar(int x, double y, {required bool isSelected}) {
     return BarChartGroupData(
       x: x,
@@ -164,4 +163,6 @@ class StepBarGraph extends StatelessWidget {
       ],
     );
   }
+  //Helper Widget
+
 }

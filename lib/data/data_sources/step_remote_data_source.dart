@@ -8,20 +8,20 @@ class StepRemoteDataSource {
 
   StepRemoteDataSource({required this.client});
 
-  Future<StepEntryModel> getDailySteps() async {
+  Future<StepModel> getDailySteps() async {
     try {
       final response = await client.get('steps/analytics/', queryParameters: {'period': 'daily'});
-      return StepEntryModel.fromJson(response.data);
+      return StepModel.fromJson(response.data);
     } catch (e) {
       throw ApiException(message: "Failed to fetch daily steps: $e");
     }
   }
 
-  Future<List<StepEntryModel>> getWeeklySteps() async {
+  Future<List<StepModel>> getWeeklySteps() async {
     try {
       final response = await client.get('steps/analytics/', queryParameters: {'period': 'weekly'});
 
-      return (response.data as List).map((e) => StepEntryModel.fromJson(e)).toList();
+      return (response.data as List).map((e) => StepModel.fromJson(e)).toList();
     } catch (e) {
       throw ApiException(message: "Failed to fetch weekly steps: $e");
     }

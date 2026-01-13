@@ -67,6 +67,7 @@ class AppTheme {
     offset: const Offset(0, 4),
   );
 
+
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,

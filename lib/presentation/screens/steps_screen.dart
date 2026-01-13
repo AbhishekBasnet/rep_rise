@@ -21,7 +21,7 @@ class StepsScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
-                children: const [StepCounterCircularGraph(), StepBarGraph(), StepsCounterMonthly()],
+                children: const [StepCounterCircularProgress(), StepBarGraph(), StepsCounterMonthly()],
               ),
             ),
           ),
