@@ -1,7 +1,7 @@
 
 
 import 'package:rep_rise/core/services/health_steps_service.dart';
-import 'package:rep_rise/data/data_sources/step_remote_data_source.dart';
+import 'package:rep_rise/data/data_sources/remote/step_remote_data_source.dart';
 import 'package:rep_rise/data/model/steps/step_model.dart';
 import 'package:rep_rise/domain/entity/steps/step_entity.dart';
 import 'package:rep_rise/domain/entity/steps/step_summary_entity.dart';

@@ -1,5 +1,4 @@
 import '../../repositories/auth_repository.dart';
-import '../../../core/services/token_service.dart';
 
 class LogoutUseCase {
   final AuthRepository authRepository;

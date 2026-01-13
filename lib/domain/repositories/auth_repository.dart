@@ -1,4 +1,4 @@
-import 'package:rep_rise/domain/entity/user_registration_entity.dart';
+import 'package:rep_rise/domain/entity/auth/user_registration_entity.dart';
 
 
 abstract class AuthRepository {

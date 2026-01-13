@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rep_rise/core/network/api_client.dart';
 import 'package:rep_rise/data/model/user_profile_model.dart';
-import 'package:rep_rise/domain/entity/user_profile_data_entity.dart';
+import 'package:rep_rise/domain/entity/profile/user_profile_data_entity.dart';
 import 'package:rep_rise/domain/repositories/profile_repository.dart';
 
 class ProfileRepositoryImpl implements ProfileRepository {

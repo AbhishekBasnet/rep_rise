@@ -9,7 +9,7 @@ class StepEntity extends Equatable {
   double get progressPercentage {
     if (goal == 0) return 0.0;
     double percent = steps / goal;
-    return percent > 1.0 ? 1.0 : percent; // Clamp to max 100%
+    return percent > 1.0 ? 1.0 : percent;
   }
   @override
   List<Object?> get props => [date, steps, goal, dayName];

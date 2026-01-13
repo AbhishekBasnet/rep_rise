@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rep_rise/presentation/screens/steps/step_bar_graph.dart';
-import 'package:rep_rise/presentation/screens/steps/step_counter_graph.dart';
+import 'package:rep_rise/presentation/screens/steps/steps_circular_progress_bar.dart';
 import 'package:rep_rise/presentation/screens/steps/steps_counter_monthly.dart';
 
 class StepsScreen extends StatelessWidget {

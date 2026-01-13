@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rep_rise/domain/entity/user_profile_data_entity.dart';
-import 'package:rep_rise/domain/entity/user_registration_entity.dart';
+import 'package:rep_rise/domain/entity/profile/user_profile_data_entity.dart';
+import 'package:rep_rise/domain/entity/auth/user_registration_entity.dart';
 import 'package:rep_rise/presentation/provider/auth_provider.dart';
 import 'package:rep_rise/presentation/provider/profile_setup_provider.dart';
 import 'package:rep_rise/presentation/screens/profile/profile/create_profile/pages/age_step_page.dart';

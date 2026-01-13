@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import '../../core/network/api_client.dart';
 import '../../core/exception/api_exception.dart';
 import '../../core/services/token_service.dart';
-import '../../domain/entity/user_registration_entity.dart';
+import '../../domain/entity/auth/user_registration_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
