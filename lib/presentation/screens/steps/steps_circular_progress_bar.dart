@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:rep_rise/core/theme/app_theme.dart';
-import 'package:rep_rise/presentation/provider/step_provider.dart';
+import 'package:rep_rise/presentation/provider/step_provider/step_provider.dart';
 
 class StepCounterCircularProgress extends StatelessWidget {
   const StepCounterCircularProgress({super.key});
@@ -29,7 +29,7 @@ class StepCounterCircularProgress extends StatelessWidget {
             animationDuration: 1200,
             curve: Curves.easeOutCubic,
             circularStrokeCap: CircularStrokeCap.round,
-            progressColor: AppTheme.wheelPurple,
+            progressColor: AppTheme.purple,
             backgroundColor: Colors.grey.shade300,
             center: Column(
               mainAxisAlignment: MainAxisAlignment.center,

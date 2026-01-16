@@ -56,8 +56,8 @@ class _ProfileWheelPickerState extends State<ProfileWheelPicker> {
           margin: const EdgeInsetsGeometry.symmetric(horizontal: 60),
           decoration: BoxDecoration(
             border: Border(
-              top: BorderSide(color: AppTheme.wheelPurple, width: 1.0),
-              bottom: BorderSide(color: AppTheme.wheelPurple, width: 1.0),
+              top: BorderSide(color: AppTheme.purple, width: 1.0),
+              bottom: BorderSide(color: AppTheme.purple, width: 1.0),
             ),
           ),
         ),

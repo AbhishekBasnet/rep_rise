@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:rep_rise/core/exception/api_exception.dart';
 import 'package:rep_rise/core/network/api_client.dart';
 import 'package:rep_rise/data/model/steps/step_model.dart';
@@ -39,10 +40,11 @@ class StepRemoteDataSource {
     }
   }
 
-  Future<void> postSteps(int stepCount, DateTime date) async {
+  Future<void> postSteps(int stepCount, String date) async {
+
     try {
-      final dateString = DateFormat('yyyy-MM-dd').format(date);
-      await client.post('steps/', data: {'step_count': stepCount, 'date': dateString});
+
+      await client.post('steps/', data: {'step_count': stepCount, 'date': date});
     } catch (e) {
       throw ApiException(message: "Failed to sync steps: $e");
     }

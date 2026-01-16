@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 class StepSummaryEntity  extends Equatable{
   final int totalSteps;
   final int totalGoal;
-  final double avgGoal;
+  final int avgGoal;
 
   const StepSummaryEntity({
     required this.totalSteps,

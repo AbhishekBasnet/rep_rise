@@ -6,7 +6,8 @@ class AppTheme {
 
   static const Color appBackgroundColor = Color(0xFFEEF1DA);
   static const Color appContentColor = Color(0xFF1E201E);
-  static const Color wheelPurple = Color(0xFF7F56D9);
+  static const Color purple = Color(0xFF7F56D9);
+  static const Color lavender =  Color(0xFFD0BCFF);
 
   //--------------- Text styles for profile setup ------------------
 
@@ -30,7 +31,7 @@ class AppTheme {
   static const TextStyle profileSetupWheelSelectedText = TextStyle(
     fontSize: 22,
     fontWeight: FontWeight.w600,
-    color: wheelPurple,
+    color: purple,
     letterSpacing: 1.5,
   );
   static const TextStyle profileSetupWheelNumberUnselected = TextStyle(
@@ -42,7 +43,7 @@ class AppTheme {
   static const TextStyle profileSetupWheelNumberSelected = TextStyle(
     fontSize: 40,
     fontWeight: FontWeight.w800,
-    color: wheelPurple,
+    color: purple,
     letterSpacing: 1.5,
   );
 

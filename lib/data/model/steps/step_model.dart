@@ -1,19 +1,15 @@
 import 'package:rep_rise/domain/entity/steps/step_summary_entity.dart';
 import '../../../domain/entity/steps/step_entity.dart';
 
-
 class StepModel extends StepEntity {
-   const StepModel({required super.date, required super.steps, required super.goal, super.dayName});
-
-
-
+  const StepModel({required super.date, required super.steps, required super.goal, super.dayName});
 
   factory StepModel.fromJson(Map<String, dynamic> json) {
     return StepModel(
       date: DateTime.parse(json['date']),
       steps: (json['steps'] as num).toInt(),
 
-      goal: (json['goal'] ?? json['goal_per_day'] ?? 0) as int,
+      goal: (json['goal'] ?? 0) as int,
 
       dayName: json['day_name'],
     );
@@ -30,8 +26,7 @@ class StepSummaryModel extends StepSummaryEntity {
     return StepSummaryModel(
       totalSteps: (json['total_steps'] as num).toInt(),
       totalGoal: (json['total_goal'] as num).toInt(),
-
-      avgGoal: (json['avg_goal'] as num).toDouble(),
+      avgGoal: (json['avg_goal'] as num).toInt(),
     );
   }
 
