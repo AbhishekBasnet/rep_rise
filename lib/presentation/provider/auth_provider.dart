@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:rep_rise/domain/entity/user_profile_data_entity.dart';
-import 'package:rep_rise/domain/entity/user_registration_entity.dart';
-import 'package:rep_rise/domain/usecase/auth/check_usern_name_usecase.dart';
+import 'package:rep_rise/domain/entity/profile/user_profile_data_entity.dart';
+import 'package:rep_rise/domain/entity/auth/user_registration_entity.dart';
+import 'package:rep_rise/domain/usecase/auth/check_user_name_usecase.dart';
 import 'package:rep_rise/domain/usecase/auth/login_usecase.dart';
 import 'package:rep_rise/domain/usecase/auth/logout_usecase.dart';
 import 'package:rep_rise/domain/usecase/auth/register_usecase.dart';
@@ -136,5 +136,12 @@ class AuthProvider extends ChangeNotifier {
   void _clearError() {
     _errorMessage = null;
     notifyListeners();
+  }
+
+
+  void handleExpiredToken() {
+    _isAuthenticated = false;
+    _errorMessage = "Session expired. Please login again.";
+    notifyListeners(); // This triggers the RootWrapper to rebuild
   }
 }

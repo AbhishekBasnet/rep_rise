@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:rep_rise/core/theme/app_theme.dart';
 import 'package:rep_rise/presentation/provider/auth_provider.dart';
 import 'package:rep_rise/presentation/provider/profile_setup_provider.dart';
+import 'package:rep_rise/presentation/provider/step_provider/step_provider.dart';
 import 'package:rep_rise/presentation/screens/auth/login_screen.dart';
 import 'package:rep_rise/presentation/screens/main_screen.dart';
 import 'package:rep_rise/presentation/screens/root_wrapper.dart';
@@ -10,9 +11,7 @@ import 'package:rep_rise/presentation/screens/root_wrapper.dart';
 import 'core/di/injection_container.dart.dart';
 import 'core/services/expired_token_login_navigation.dart';
 
-
-void main() async{
-
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await init();
   runApp(
@@ -20,12 +19,12 @@ void main() async{
       providers: [
         ChangeNotifierProvider(create: (_) => sl<AuthProvider>()),
         ChangeNotifierProvider(create: (_) => sl<ProfileSetupProvider>()),
+        ChangeNotifierProvider(create: (_) => sl<StepProvider>()),
       ],
       child: const MyApp(),
     ),
   );
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -36,7 +35,7 @@ class MyApp extends StatelessWidget {
       navigatorKey: NavigationService.navigatorKey,
       theme: AppTheme.lightTheme,
       home: const RootWrapper(),
-      routes: {'/login_screen': (context) => const LoginScreen(), '/main': (context) => const MainScreen(), },
+      routes: {'/login_screen': (context) => const LoginScreen(), '/main': (context) => const MainScreen()},
     );
   }
 }

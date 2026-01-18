@@ -23,12 +23,25 @@ dependencies:
   jwt_decoder: ^2.0.1
   get_it: ^9.2.0
   google_fonts: ^6.3.3
+  percent_indicator: ^4.2.5
+  syncfusion_flutter_gauges: ^32.1.22
+  equatable: ^2.0.8
+  intl: ^0.20.2
+  drift: ^2.30.1
+  drift_flutter: ^0.2.8
+  path_provider: ^2.1.5
+  path: ^1.9.1
+  shared_preferences: ^2.5.4
+  drift_db_viewer: ^2.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^6.0.0
+  isar_community_generator: 3.3.0
+  drift_dev: ^2.30.1
+  build_runner: ^2.7.1
 
 flutter:
   fonts:

@@ -2,13 +2,39 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rep_rise/core/network/api_client.dart';
 import 'package:rep_rise/data/model/user_profile_model.dart';
-import 'package:rep_rise/domain/entity/user_profile_data_entity.dart';
+import 'package:rep_rise/domain/entity/profile/user_profile_data_entity.dart';
 import 'package:rep_rise/domain/repositories/profile_repository.dart';
 
 class ProfileRepositoryImpl implements ProfileRepository {
   final ApiClient apiClient;
 
   ProfileRepositoryImpl(this.apiClient);
+
+  /*
+ * FLOW: Profile Creation Process
+ * -----------------------------------------------------------------------------
+ * This method orchestrates the creation/update of a user profile by coordinating
+ * data transformation and network transport.
+ *
+ * 1. Data Transformation (Entity -> Model):
+ * The method accepts a raw domain entity ([UserProfileEntity]). It immediately
+ * converts this into a Data Transfer Object ([UserProfileModel]) using the
+ * `.fromEntity()` factory. This ensures the Domain layer remains decoupled
+ * from JSON serialization logic.
+ *
+ * 2. API Interaction:
+ * A PATCH request is issued to the endpoint `user/profile/` using the [ApiClient].
+ * The model is serialized to JSON (`.toJson()`) for the request body.
+ *
+ * 3. Error Handling & Parsing:
+ * The network call is wrapped in a try-catch block specifically targeting
+ * [DioException]. If the API returns an error (e.g., 400 Bad Request):
+ * - It inspects the `response.data`.
+ * - It attempts to extract a specific user-facing message (checking keys like 'detail').
+ * - If no specific key is found, it falls back to the first available value.
+ * - Finally, it re-throws a clean [Exception] to be consumed by the UI/Domain.
+ */
+
 
   @override
   Future<void> createProfile(UserProfileEntity profileEntity) async {

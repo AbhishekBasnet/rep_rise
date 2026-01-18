@@ -6,15 +6,12 @@ class AppTheme {
 
   static const Color appBackgroundColor = Color(0xFFEEF1DA);
   static const Color appContentColor = Color(0xFF1E201E);
-  static const Color wheelPurple =  Color(0xFF7F56D9);
+  static const Color purple = Color(0xFF7F56D9);
+  static const Color lavender =  Color(0xFFD0BCFF);
 
   //--------------- Text styles for profile setup ------------------
 
-  static const TextStyle profileSetupHeader = TextStyle(
-    fontSize: 22,
-    fontWeight: FontWeight.w700,
-    color: Colors.black,
-  );
+  static const TextStyle profileSetupHeader = TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: Colors.black);
 
   static const TextStyle profileSetupHeader2 = TextStyle(
     fontSize: 24,
@@ -32,30 +29,46 @@ class AppTheme {
     color: Colors.black54,
   );
   static const TextStyle profileSetupWheelSelectedText = TextStyle(
-      fontSize: 22,
-      fontWeight: FontWeight.w600,
-      color: wheelPurple,
-      letterSpacing: 1.5
+    fontSize: 22,
+    fontWeight: FontWeight.w600,
+    color: purple,
+    letterSpacing: 1.5,
   );
   static const TextStyle profileSetupWheelNumberUnselected = TextStyle(
     fontSize: 25,
     fontWeight: FontWeight.w600,
     color: Colors.black,
-    letterSpacing: 1.5
+    letterSpacing: 1.5,
   );
   static const TextStyle profileSetupWheelNumberSelected = TextStyle(
-      fontSize: 40,
-      fontWeight: FontWeight.w800,
-      color: wheelPurple,
-      letterSpacing: 1.5
+    fontSize: 40,
+    fontWeight: FontWeight.w800,
+    color: purple,
+    letterSpacing: 1.5,
   );
 
   static const TextStyle profileSetupWheelUnitSelected = TextStyle(
-      fontSize: 20,
-      fontWeight: FontWeight.w600,
-      color: Colors.black54,
-      letterSpacing: 1.5
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    color: Colors.black54,
+    letterSpacing: 1.5,
   );
+
+  //--------------- Styles for steps screen  ------------------
+
+  static const TextStyle stepsProgressNumber = TextStyle(
+    fontSize: 30,
+    fontWeight: FontWeight.w700,
+    color: Colors.black87,
+    letterSpacing: 1.5,
+  );
+  static final stepsCardBoxShadow = BoxShadow(
+    color: Colors.grey.withValues(alpha: 0.5),
+    blurRadius: 10,
+    offset: const Offset(0, 4),
+  );
+
+
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
@@ -93,8 +106,6 @@ class AppTheme {
         // THIN (100) - Specialized artistic text
         displaySmall: TextStyle(fontWeight: FontWeight.w100, fontSize: 36),
       ),
-
-
 
       appBarTheme: const AppBarTheme(
         backgroundColor: appBackgroundColor,

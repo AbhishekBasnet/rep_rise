@@ -1,4 +1,4 @@
-import 'package:rep_rise/domain/entity/user_profile_data_entity.dart';
+import 'package:rep_rise/domain/entity/profile/user_profile_data_entity.dart';
 import 'package:rep_rise/domain/repositories/profile_repository.dart';
 
 
