@@ -32,10 +32,60 @@ import '../services/token_service.dart';
 import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 
+/*
+ * ----------------------------------------------------------------------------
+ * Dependency Injection (DI) Configuration
+ * ----------------------------------------------------------------------------
+ * This module implements the Service Locator pattern using `GetIt` to decouple
+ * implementation details from the abstraction layers.
+ *
+ * Initialization Flow & Dependency Graph:
+ * ---------------------------------------
+ * The registration order strictly adheres to Clean Architecture principles,
+ * building the dependency graph from the bottom up:
+ *
+ * 1. External & Core Layer:
+ * - Foundation services (Database, Network Client, Hardware APIs).
+ * - These have no internal dependencies.
+ *
+ * 2. Data Layer:
+ * - Data Sources (Remote/Local) -> injected with Core services.
+ * - Repositories -> injected with Data Sources.
+ *
+ * 3. Domain Layer:
+ * - Use Cases -> injected with Repositories (Interfaces).
+ * - These encapsulate pure business logic.
+ *
+ * 4. Presentation Layer:
+ * - State Providers (ChangeNotifier/Bloc) -> injected with Use Cases.
+ * - Registered as Factories to ensure fresh state or disposal on demand.
+ *
+ * Note: `registerLazySingleton` is favored for memory optimization, ensuring
+ * objects are instantiated only upon the first request.
+ * ----------------------------------------------------------------------------
+ */
+
+/// The global Service Locator instance.
+///
+/// Use this instance to retrieve registered dependencies anywhere in the app.
+/// Example: `final repository = sl<AuthRepository>();`
 final sl = GetIt.instance;
 
+/// Asynchronously initializes the entire application dependency graph.
+///
+/// This method must be awaited in `main()` before `runApp` is called to ensure
+/// critical infrastructure (Database, API Clients) is ready.
+///
+/// Key responsibilities:
+/// * Resolves platform-specific paths for the Local Database (Drift).
+/// * Registers Singleton instances for Repositories and Services.
+/// * Registers Factory instances for UI Providers.
 Future<void> init() async {
-  // [A] --------- local db (draft) -----------
+  // ---------------------------------------------------------------------------
+  // Core & External Services
+  // ---------------------------------------------------------------------------
+  // Configuration for Drift (SQLite) running on a background isolate
+  // to prevent UI jank during heavy I/O operations.
   // Data Sources
   // 1. Local Database with persistence
   sl.registerLazySingleton<AppDatabase>(() {
@@ -49,13 +99,20 @@ Future<void> init() async {
   });
   sl.registerLazySingleton<StepLocalDataSource>(() => StepLocalDataSourceImpl(db: sl<AppDatabase>()));
 
-  // [B] ----------- Services -------------
+  // ---------------------------------------------------------------------------
+  // Infrastructure Services
+  // ---------------------------------------------------------------------------
+  // Low-level services for Token management, API communication, and Health APIs.
   sl.registerLazySingleton(() => TokenService());
   sl.registerLazySingleton(() => ApiClient(sl()));
   sl.registerLazySingleton(() => HealthService());
   sl.registerLazySingleton(() => StepRemoteDataSource(client: sl()));
 
-  // [C] -------- Repositories ---------
+  // ---------------------------------------------------------------------------
+  // Data Repositories
+  // ---------------------------------------------------------------------------
+  // Repositories hide the data origin (Local vs Remote) from the Domain layer.
+  // We register the Interface <T> but return the Implementation <TImpl>.
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl(), sl()));
   sl.registerLazySingleton<StepRepository>(
     () => StepRepositoryImpl(remoteDataSource: sl(), healthService: sl(), stepLocalDataSource: sl()),
@@ -63,7 +120,11 @@ Future<void> init() async {
   // register the Interface <ProfileRepository>, but we return the Implementation (ProfileRepositoryImpl)
   sl.registerLazySingleton<ProfileRepository>(() => ProfileRepositoryImpl(sl()));
 
-  // [D] ---------- Use Cases ------------
+  // ---------------------------------------------------------------------------
+  // Domain Use Cases
+  // ---------------------------------------------------------------------------
+  // Atomic business logic units. Each Use Case corresponds to a single
+  // user action or data calculation.
   //  Auth and Profile Use Cases
   sl.registerLazySingleton(() => LoginUseCase(sl()));
   sl.registerLazySingleton(() => RegisterUseCase(sl()));
@@ -77,7 +138,11 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetMonthlyStepUsecase(sl()));
   sl.registerLazySingleton(() => SyncStepsUseCase(sl()));
 
-  // [C] ---------- Providers ------------
+  // ---------------------------------------------------------------------------
+  // Presentation Layer (State Management)
+  // ---------------------------------------------------------------------------
+  // Registered as Factories (`registerFactory`) to ensure a new instance is
+  // created whenever the UI requires it (e.g., entering a screen).
   sl.registerFactory(() => ProfileSetupProvider());
 
   sl.registerFactory(

@@ -4,23 +4,64 @@ import 'package:rep_rise/core/services/expired_token_login_navigation.dart';
 import '../services/token_service.dart';
 import '../exception/api_exception.dart';
 
+/*
+     * -------------------------------------------------------------------------
+     * Authentication & Token Refresh Flow
+     * -------------------------------------------------------------------------
+     *
+     * This interceptor manages the JWT authentication lifecycle:
+     *
+     * 1. Request Interception:
+     * - Checks if the request requires authentication via [options.extra].
+     * - Injects the 'Authorization: Bearer <token>' header if a valid
+     * access token exists in [TokenService].
+     *
+     * 2. Error Interception (401 Unauthorized):
+     * - If the backend returns a 401, the [QueuedInterceptorsWrapper] locks
+     * the request queue to prevent race conditions (multiple concurrent refresh attempts).
+     *
+     * 3. Token Rotation Logic:
+     * - Retrieves the refresh token from secure storage.
+     * - Creates a *temporary* Dio instance to call the refresh endpoint.
+     * (Note: Using the main _dio instance here would trigger a circular interceptor loop).
+     * - If successful:
+     * a. Updates the [TokenService] with the new Access/Refresh tokens.
+     * b. Updates the header of the original failed request.
+     * c. Retries the original request transparently.
+     *
+     * 4. Failure Handling:
+     * - If the refresh token is expired, invalid, or revoked:
+     * a. Clears local storage.
+     * b. Forces a user logout via [NavigationService].
+     */
+
+/// A network client wrapper around [Dio] that handles HTTP requests,
+/// authentication, and error transformation.
+///
+/// This class is responsible for:
+/// * managing the base configuration (timeouts, headers).
+/// * injecting authentication tokens into requests.
+/// * automatically refreshing expired tokens (401 handling).
+/// * normalizing [DioException]s into domain-specific [ApiException]s.
+///
+/// Usage:
+/// ```dart
+/// final response = await apiClient.get('/endpoint');
+/// ```
 class ApiClient {
   static const String baseApiUrl = "http://10.0.2.2:8000/api/v1/";
   final Dio _dio;
   final TokenService _tokenService;
 
   ApiClient(this._tokenService)
-      : _dio = Dio(
-    BaseOptions(
-      baseUrl: baseApiUrl,
-      connectTimeout: const Duration(seconds: 5),
-      receiveTimeout: const Duration(seconds: 3),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-    ),
-  ) {
+    : _dio = Dio(
+        BaseOptions(
+          baseUrl: baseApiUrl,
+          connectTimeout: const Duration(seconds: 5),
+          receiveTimeout: const Duration(seconds: 3),
+          headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+        ),
+      ) {
     // QueuedInterceptorsWrapper lae api req pause garcha, if 401 if returned back from backend
     _dio.interceptors.add(
       QueuedInterceptorsWrapper(
@@ -35,49 +76,34 @@ class ApiClient {
           return handler.next(options);
         },
         onError: (DioException e, handler) async {
-          final bool isLogout =
-              e.requestOptions.extra['isLogoutRequest'] ?? false;
+          final bool isLogout = e.requestOptions.extra['isLogoutRequest'] ?? false;
 
-          if (e.response?.statusCode == 401 &&
-              e.requestOptions.extra['requiresAuth'] != false &&
-              !isLogout) {
-
+          if (e.response?.statusCode == 401 && e.requestOptions.extra['requiresAuth'] != false && !isLogout) {
             debugPrint('--- 401 Detected. Attempting Refresh ---');
 
             final refreshToken = await _tokenService.getRefreshToken();
 
             if (refreshToken != null) {
               try {
-                // Create a new Dio instance to avoid interceptor loops
                 final refreshDio = Dio(BaseOptions(baseUrl: baseApiUrl));
 
-                final response = await refreshDio.post('auth/token/refresh/',
-                    data: {'refresh': refreshToken});
+                final response = await refreshDio.post('auth/token/refresh/', data: {'refresh': refreshToken});
 
-                // --- SAFETY CHECKS START ---
                 final newAccess = response.data['access'];
 
-                // Check if backend rotated the refresh token. If null, keep the old one.
                 final newRefresh = response.data['refresh'] ?? refreshToken;
 
-                // Check if backend returned user_id. If null, retrieve the known one from storage.
                 String? userId = response.data['user_id'] ?? await _tokenService.getUserId();
-                // --- SAFETY CHECKS END ---
 
-                await _tokenService.saveTokens(
-                    access: newAccess, refresh: newRefresh, userId: userId!);
+                await _tokenService.saveTokens(access: newAccess, refresh: newRefresh, userId: userId!);
 
                 debugPrint('--- Token Refreshed. Retrying original request ---');
 
-                // Update the header with the new token
                 e.requestOptions.headers['Authorization'] = 'Bearer $newAccess';
 
-                // Retry the request
                 final clonedRequest = await _dio.fetch(e.requestOptions);
                 return handler.resolve(clonedRequest);
-
               } catch (refreshError) {
-                // Refresh failed (token likely explicitly revoked or expired)
                 debugPrint('--- Refresh Failed: $refreshError ---');
                 await _tokenService.clearTokens();
                 NavigationService.logoutAndRedirect();
@@ -90,7 +116,17 @@ class ApiClient {
         },
       ),
     );
-  }  Future<Response> post(String path, {dynamic data, Map<String, dynamic>? queryParameters, Options? options}) async {
+  }
+
+  /// Performs an HTTP POST request.
+  ///
+  /// [path] is the endpoint path (relative to the base URL).
+  /// [data] contains the body of the request (automatically JSON encoded).
+  /// [queryParameters] are appended to the URL.
+  /// [options] allow overriding headers or auth requirements (e.g., `requiresAuth: false`).
+  ///
+  /// Throws an [ApiException] if the request fails or returns a non-200 status.
+  Future<Response> post(String path, {dynamic data, Map<String, dynamic>? queryParameters, Options? options}) async {
     try {
       return await _dio.post(path, data: data, queryParameters: queryParameters, options: options);
     } on DioException catch (e) {
@@ -98,6 +134,13 @@ class ApiClient {
     }
   }
 
+  /// Performs an HTTP GET request.
+  ///
+  /// [path] is the endpoint path (relative to the base URL).
+  /// [queryParameters] are mapped to URL query strings.
+  ///
+  /// Returns a [Response] object containing the backend data.
+  /// Throws an [ApiException] on failure.
   Future<Response> get(String path, {Map<String, dynamic>? queryParameters, Options? options}) async {
     try {
       return await _dio.get(path, queryParameters: queryParameters, options: options);
@@ -106,6 +149,12 @@ class ApiClient {
     }
   }
 
+  /// Performs an HTTP PATCH request for partial updates.
+  ///
+  /// [path] is the endpoint path.
+  /// [data] contains the fields to be updated.
+  ///
+  /// Throws an [ApiException] on failure.
   Future<Response> patch(String path, {dynamic data, Map<String, dynamic>? queryParameters, Options? options}) async {
     try {
       return await _dio.patch(path, data: data, queryParameters: queryParameters, options: options);
@@ -114,6 +163,11 @@ class ApiClient {
     }
   }
 
+  /// Parses [DioException] and converts it into a standardized [ApiException].
+  ///
+  /// This method extracts error messages from the backend response structure
+  /// (handling 'detail', 'message', or 'code' fields) to provide a
+  /// user-friendly error description.
   Exception _handleError(DioException e) {
     final data = e.response?.data;
     String message = "    An unexpected network error occurred.";

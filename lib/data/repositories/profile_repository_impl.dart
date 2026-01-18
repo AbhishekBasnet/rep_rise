@@ -35,7 +35,14 @@ class ProfileRepositoryImpl implements ProfileRepository {
  * - Finally, it re-throws a clean [Exception] to be consumed by the UI/Domain.
  */
 
-
+  /// Creates or updates the user's profile on the remote server.
+  ///
+  /// This method performs a `PATCH` request to partial-update the profile resource.
+  ///
+  /// - [profileEntity]: The domain entity containing the user's profile data (age, weight, etc.).
+  ///
+  /// Throws an [Exception] containing the specific error message from the server
+  /// if the request fails (e.g., validation errors)
   @override
   Future<void> createProfile(UserProfileEntity profileEntity) async {
     try {

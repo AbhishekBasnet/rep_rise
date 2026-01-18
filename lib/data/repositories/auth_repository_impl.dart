@@ -7,6 +7,31 @@ import '../../core/services/token_service.dart';
 import '../../domain/entity/auth/user_registration_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 
+/*
+ * ----------------------------------------------------------------------------
+ * AuthRepositoryImpl
+ * ----------------------------------------------------------------------------
+ * A concrete implementation of [AuthRepository] that coordinates authentication
+ * state between the remote API and local secure storage.
+ *
+ * RESPONSIBILITIES:
+ * 1. Session Management: Handles Login, Logout, and Token Refresh flows.
+ * 2. Persistence: Automatically syncs tokens to [TokenService] upon successful
+ * authentication events (Login/Register).
+ * 3. Error Translation: Converts raw [DioException] and [ApiException] into
+ * domain-friendly exceptions.
+ *
+ * KEY FLOWS:
+ * - [login]: Authenticates and immediately persists Access/Refresh tokens.
+ * - [register]: Creates a user and performs an "Auto-Login" using the
+ * tokens returned in the registration response.
+ * - [refreshToken]: Handles token rotation. If the refresh token is invalid
+ * (server returns 'token_not_valid'), it forces a local session clear.
+ * - [logout]: Performs a best-effort server call to blacklist the token,
+ * but guarantees local data clearance via a finally block.
+ * ----------------------------------------------------------------------------
+ */
+
 class AuthRepositoryImpl implements AuthRepository {
   final ApiClient apiClient;
   final TokenService tokenService;
@@ -84,14 +109,12 @@ class AuthRepositoryImpl implements AuthRepository {
         debugPrint('    New Access Token: $newAccessToken');
       }
     } on ApiException catch (e) {
-      // NOW YOU HAVE FULL ACCESS!
       debugPrint('--- AUTH REFRESH ERROR (Backend Response) ---');
       debugPrint('Message: ${e.message}');
       debugPrint('Detail: ${e.detail}');
       debugPrint('Code: ${e.code}');
       debugPrint('Status: ${e.statusCode}');
 
-      // You can handle specific backend codes here
       if (e.code == "token_not_valid") {
         await tokenService.clearTokens();
         throw Exception("Session expired: ${e.message}");
@@ -106,11 +129,7 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final response = await apiClient.post(
         'auth/register/',
-        data: {
-          'username': user.username,
-          'email': user.email,
-          'password': user.password
-        },
+        data: {'username': user.username, 'email': user.email, 'password': user.password},
         options: Options(extra: {'requiresAuth': false}),
       );
 
@@ -124,13 +143,11 @@ class AuthRepositoryImpl implements AuthRepository {
       );
 
       debugPrint('    --- TOKENS SAVED (Auto-Login) ---');
-
     } on DioException catch (e) {
       final message = e.response?.data['detail'] ?? "Registration failed";
       throw Exception(message);
     }
   }
-
 
   @override
   Future<bool> checkUsername(String userName) async {
@@ -145,12 +162,9 @@ class AuthRepositoryImpl implements AuthRepository {
         return response.data['available'];
       }
       return false;
-
     } on DioException catch (e) {
       final message = e.response?.data['detail'] ?? "Error checking username";
       throw Exception(message);
     }
   }
-
-
 }

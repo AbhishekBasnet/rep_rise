@@ -2,6 +2,27 @@ import 'package:flutter/cupertino.dart';
 
 enum Gender { male, female }
 
+/*
+ * Manages the state and navigation logic for the multi-step Profile Setup Wizard.
+ *
+ * Architecture & Responsibilities:
+ * --------------------------------
+ * 1. Transient Data Accumulation:
+ * - Acts as a temporary holding area for profile attributes (Age, Weight, etc.)
+ * as the user progresses through the wizard steps. This data is not committed
+ * to the backend until the final submission step (handled by AuthProvider).
+ *
+ * 2. Navigation Control:
+ * - Encapsulates the `PageController` to synchronize the UI (`PageView`) with
+ * the business logic.
+ * - Manages the `_currentPage` index to drive UI elements like progress bars
+ * or "Next/Finish" button labels.
+ *
+ * Usage:
+ * - This provider should be scoped to the Profile Setup route to ensure
+ * state is reset when the wizard is exited or completed.
+ */
+
 class ProfileSetupProvider extends ChangeNotifier {
   int _age = 25;
   int _goalSteps = 5000;
@@ -9,7 +30,6 @@ class ProfileSetupProvider extends ChangeNotifier {
   int _weight = 50;
   int _height = 150;
   int _currentPage = 0;
-
 
   int get goalSteps => _goalSteps;
   Gender get gender => _gender;
@@ -21,7 +41,6 @@ class ProfileSetupProvider extends ChangeNotifier {
   final PageController _pageController = PageController();
   PageController get pageController => _pageController;
   bool get isLastPage => _currentPage == 4;
-
 
   void setGoalSteps(int goalSteps) {
     _goalSteps = goalSteps;
@@ -69,7 +88,9 @@ class ProfileSetupProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  //if the user swipes manually instead of clicking buttons
+  /// Synchronizes internal state when the user swipes the PageView manually.
+  ///
+  /// Must be assigned to the `onPageChanged` callback of the [PageView] widget.
   void onPageChanged(int index) {
     _currentPage = index;
     notifyListeners();
