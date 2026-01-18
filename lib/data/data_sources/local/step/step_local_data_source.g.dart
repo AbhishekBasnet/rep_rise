@@ -8,17 +8,6 @@ class $StepsTable extends Steps with TableInfo<$StepsTable, Step> {
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $StepsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-    'id',
-    aliasedName,
-    false,
-    hasAutoIncrement: true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'),
-  );
   static const VerificationMeta _dateMeta = const VerificationMeta('date');
   @override
   late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
@@ -47,7 +36,9 @@ class $StepsTable extends Steps with TableInfo<$StepsTable, Step> {
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
-  static const VerificationMeta _dayNameMeta = const VerificationMeta('dayName');
+  static const VerificationMeta _dayNameMeta = const VerificationMeta(
+    'dayName',
+  );
   @override
   late final GeneratedColumn<String> dayName = GeneratedColumn<String>(
     'day_name',
@@ -57,49 +48,72 @@ class $StepsTable extends Steps with TableInfo<$StepsTable, Step> {
     requiredDuringInsert: false,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, date, steps, goal, dayName];
+  List<GeneratedColumn> get $columns => [date, steps, goal, dayName];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'steps';
   @override
-  VerificationContext validateIntegrity(Insertable<Step> instance, {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<Step> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
     if (data.containsKey('date')) {
-      context.handle(_dateMeta, date.isAcceptableOrUnknown(data['date']!, _dateMeta));
+      context.handle(
+        _dateMeta,
+        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
+      );
     } else if (isInserting) {
       context.missing(_dateMeta);
     }
     if (data.containsKey('steps')) {
-      context.handle(_stepsMeta, steps.isAcceptableOrUnknown(data['steps']!, _stepsMeta));
+      context.handle(
+        _stepsMeta,
+        steps.isAcceptableOrUnknown(data['steps']!, _stepsMeta),
+      );
     } else if (isInserting) {
       context.missing(_stepsMeta);
     }
     if (data.containsKey('goal')) {
-      context.handle(_goalMeta, goal.isAcceptableOrUnknown(data['goal']!, _goalMeta));
+      context.handle(
+        _goalMeta,
+        goal.isAcceptableOrUnknown(data['goal']!, _goalMeta),
+      );
     }
     if (data.containsKey('day_name')) {
-      context.handle(_dayNameMeta, dayName.isAcceptableOrUnknown(data['day_name']!, _dayNameMeta));
+      context.handle(
+        _dayNameMeta,
+        dayName.isAcceptableOrUnknown(data['day_name']!, _dayNameMeta),
+      );
     }
     return context;
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  Set<GeneratedColumn> get $primaryKey => {date};
   @override
   Step map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Step(
-      id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      date: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
-      steps: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}steps'])!,
-      goal: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}goal'])!,
-      dayName: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}day_name']),
+      date: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}date'],
+      )!,
+      steps: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}steps'],
+      )!,
+      goal: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}goal'],
+      )!,
+      dayName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}day_name'],
+      ),
     );
   }
 
@@ -110,16 +124,19 @@ class $StepsTable extends Steps with TableInfo<$StepsTable, Step> {
 }
 
 class Step extends DataClass implements Insertable<Step> {
-  final int id;
   final DateTime date;
   final int steps;
   final int goal;
   final String? dayName;
-  const Step({required this.id, required this.date, required this.steps, required this.goal, this.dayName});
+  const Step({
+    required this.date,
+    required this.steps,
+    required this.goal,
+    this.dayName,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
     map['date'] = Variable<DateTime>(date);
     map['steps'] = Variable<int>(steps);
     map['goal'] = Variable<int>(goal);
@@ -131,18 +148,21 @@ class Step extends DataClass implements Insertable<Step> {
 
   StepsCompanion toCompanion(bool nullToAbsent) {
     return StepsCompanion(
-      id: Value(id),
       date: Value(date),
       steps: Value(steps),
       goal: Value(goal),
-      dayName: dayName == null && nullToAbsent ? const Value.absent() : Value(dayName),
+      dayName: dayName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dayName),
     );
   }
 
-  factory Step.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
+  factory Step.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Step(
-      id: serializer.fromJson<int>(json['id']),
       date: serializer.fromJson<DateTime>(json['date']),
       steps: serializer.fromJson<int>(json['steps']),
       goal: serializer.fromJson<int>(json['goal']),
@@ -153,7 +173,6 @@ class Step extends DataClass implements Insertable<Step> {
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
       'date': serializer.toJson<DateTime>(date),
       'steps': serializer.toJson<int>(steps),
       'goal': serializer.toJson<int>(goal),
@@ -161,17 +180,19 @@ class Step extends DataClass implements Insertable<Step> {
     };
   }
 
-  Step copyWith({int? id, DateTime? date, int? steps, int? goal, Value<String?> dayName = const Value.absent()}) =>
-      Step(
-        id: id ?? this.id,
-        date: date ?? this.date,
-        steps: steps ?? this.steps,
-        goal: goal ?? this.goal,
-        dayName: dayName.present ? dayName.value : this.dayName,
-      );
+  Step copyWith({
+    DateTime? date,
+    int? steps,
+    int? goal,
+    Value<String?> dayName = const Value.absent(),
+  }) => Step(
+    date: date ?? this.date,
+    steps: steps ?? this.steps,
+    goal: goal ?? this.goal,
+    dayName: dayName.present ? dayName.value : this.dayName,
+  );
   Step copyWithCompanion(StepsCompanion data) {
     return Step(
-      id: data.id.present ? data.id.value : this.id,
       date: data.date.present ? data.date.value : this.date,
       steps: data.steps.present ? data.steps.value : this.steps,
       goal: data.goal.present ? data.goal.value : this.goal,
@@ -182,7 +203,6 @@ class Step extends DataClass implements Insertable<Step> {
   @override
   String toString() {
     return (StringBuffer('Step(')
-          ..write('id: $id, ')
           ..write('date: $date, ')
           ..write('steps: $steps, ')
           ..write('goal: $goal, ')
@@ -192,12 +212,11 @@ class Step extends DataClass implements Insertable<Step> {
   }
 
   @override
-  int get hashCode => Object.hash(id, date, steps, goal, dayName);
+  int get hashCode => Object.hash(date, steps, goal, dayName);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Step &&
-          other.id == this.id &&
           other.date == this.date &&
           other.steps == this.steps &&
           other.goal == this.goal &&
@@ -205,64 +224,61 @@ class Step extends DataClass implements Insertable<Step> {
 }
 
 class StepsCompanion extends UpdateCompanion<Step> {
-  final Value<int> id;
   final Value<DateTime> date;
   final Value<int> steps;
   final Value<int> goal;
   final Value<String?> dayName;
+  final Value<int> rowid;
   const StepsCompanion({
-    this.id = const Value.absent(),
     this.date = const Value.absent(),
     this.steps = const Value.absent(),
     this.goal = const Value.absent(),
     this.dayName = const Value.absent(),
+    this.rowid = const Value.absent(),
   });
   StepsCompanion.insert({
-    this.id = const Value.absent(),
     required DateTime date,
     required int steps,
     this.goal = const Value.absent(),
     this.dayName = const Value.absent(),
+    this.rowid = const Value.absent(),
   }) : date = Value(date),
        steps = Value(steps);
   static Insertable<Step> custom({
-    Expression<int>? id,
     Expression<DateTime>? date,
     Expression<int>? steps,
     Expression<int>? goal,
     Expression<String>? dayName,
+    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
-      if (id != null) 'id': id,
       if (date != null) 'date': date,
       if (steps != null) 'steps': steps,
       if (goal != null) 'goal': goal,
       if (dayName != null) 'day_name': dayName,
+      if (rowid != null) 'rowid': rowid,
     });
   }
 
   StepsCompanion copyWith({
-    Value<int>? id,
     Value<DateTime>? date,
     Value<int>? steps,
     Value<int>? goal,
     Value<String?>? dayName,
+    Value<int>? rowid,
   }) {
     return StepsCompanion(
-      id: id ?? this.id,
       date: date ?? this.date,
       steps: steps ?? this.steps,
       goal: goal ?? this.goal,
       dayName: dayName ?? this.dayName,
+      rowid: rowid ?? this.rowid,
     );
   }
 
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
     if (date.present) {
       map['date'] = Variable<DateTime>(date.value);
     }
@@ -275,17 +291,20 @@ class StepsCompanion extends UpdateCompanion<Step> {
     if (dayName.present) {
       map['day_name'] = Variable<String>(dayName.value);
     }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
     return map;
   }
 
   @override
   String toString() {
     return (StringBuffer('StepsCompanion(')
-          ..write('id: $id, ')
           ..write('date: $date, ')
           ..write('steps: $steps, ')
           ..write('goal: $goal, ')
-          ..write('dayName: $dayName')
+          ..write('dayName: $dayName, ')
+          ..write('rowid: $rowid')
           ..write(')'))
         .toString();
   }
@@ -296,26 +315,27 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $StepsTable steps = $StepsTable(this);
   @override
-  Iterable<TableInfo<Table, Object?>> get allTables => allSchemaEntities.whereType<TableInfo<Table, Object?>>();
+  Iterable<TableInfo<Table, Object?>> get allTables =>
+      allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [steps];
 }
 
 typedef $$StepsTableCreateCompanionBuilder =
     StepsCompanion Function({
-      Value<int> id,
       required DateTime date,
       required int steps,
       Value<int> goal,
       Value<String?> dayName,
+      Value<int> rowid,
     });
 typedef $$StepsTableUpdateCompanionBuilder =
     StepsCompanion Function({
-      Value<int> id,
       Value<DateTime> date,
       Value<int> steps,
       Value<int> goal,
       Value<String?> dayName,
+      Value<int> rowid,
     });
 
 class $$StepsTableFilterComposer extends Composer<_$AppDatabase, $StepsTable> {
@@ -326,20 +346,29 @@ class $$StepsTableFilterComposer extends Composer<_$AppDatabase, $StepsTable> {
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnFilters<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnFilters(column));
+  ColumnFilters<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
 
-  ColumnFilters<DateTime> get date =>
-      $composableBuilder(column: $table.date, builder: (column) => ColumnFilters(column));
+  ColumnFilters<int> get steps => $composableBuilder(
+    column: $table.steps,
+    builder: (column) => ColumnFilters(column),
+  );
 
-  ColumnFilters<int> get steps => $composableBuilder(column: $table.steps, builder: (column) => ColumnFilters(column));
+  ColumnFilters<int> get goal => $composableBuilder(
+    column: $table.goal,
+    builder: (column) => ColumnFilters(column),
+  );
 
-  ColumnFilters<int> get goal => $composableBuilder(column: $table.goal, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<String> get dayName =>
-      $composableBuilder(column: $table.dayName, builder: (column) => ColumnFilters(column));
+  ColumnFilters<String> get dayName => $composableBuilder(
+    column: $table.dayName,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
-class $$StepsTableOrderingComposer extends Composer<_$AppDatabase, $StepsTable> {
+class $$StepsTableOrderingComposer
+    extends Composer<_$AppDatabase, $StepsTable> {
   $$StepsTableOrderingComposer({
     required super.$db,
     required super.$table,
@@ -347,22 +376,29 @@ class $$StepsTableOrderingComposer extends Composer<_$AppDatabase, $StepsTable> 
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnOrderings<int> get id => $composableBuilder(column: $table.id, builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnOrderings(column),
+  );
 
-  ColumnOrderings<DateTime> get date =>
-      $composableBuilder(column: $table.date, builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<int> get steps => $composableBuilder(
+    column: $table.steps,
+    builder: (column) => ColumnOrderings(column),
+  );
 
-  ColumnOrderings<int> get steps =>
-      $composableBuilder(column: $table.steps, builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<int> get goal => $composableBuilder(
+    column: $table.goal,
+    builder: (column) => ColumnOrderings(column),
+  );
 
-  ColumnOrderings<int> get goal =>
-      $composableBuilder(column: $table.goal, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<String> get dayName =>
-      $composableBuilder(column: $table.dayName, builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<String> get dayName => $composableBuilder(
+    column: $table.dayName,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
-class $$StepsTableAnnotationComposer extends Composer<_$AppDatabase, $StepsTable> {
+class $$StepsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $StepsTable> {
   $$StepsTableAnnotationComposer({
     required super.$db,
     required super.$table,
@@ -370,15 +406,17 @@ class $$StepsTableAnnotationComposer extends Composer<_$AppDatabase, $StepsTable
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumn<int> get id => $composableBuilder(column: $table.id, builder: (column) => column);
+  GeneratedColumn<DateTime> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get date => $composableBuilder(column: $table.date, builder: (column) => column);
+  GeneratedColumn<int> get steps =>
+      $composableBuilder(column: $table.steps, builder: (column) => column);
 
-  GeneratedColumn<int> get steps => $composableBuilder(column: $table.steps, builder: (column) => column);
+  GeneratedColumn<int> get goal =>
+      $composableBuilder(column: $table.goal, builder: (column) => column);
 
-  GeneratedColumn<int> get goal => $composableBuilder(column: $table.goal, builder: (column) => column);
-
-  GeneratedColumn<String> get dayName => $composableBuilder(column: $table.dayName, builder: (column) => column);
+  GeneratedColumn<String> get dayName =>
+      $composableBuilder(column: $table.dayName, builder: (column) => column);
 }
 
 class $$StepsTableTableManager
@@ -401,26 +439,43 @@ class $$StepsTableTableManager
         TableManagerState(
           db: db,
           table: table,
-          createFilteringComposer: () => $$StepsTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () => $$StepsTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () => $$StepsTableAnnotationComposer($db: db, $table: table),
+          createFilteringComposer: () =>
+              $$StepsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$StepsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$StepsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
-                Value<int> id = const Value.absent(),
                 Value<DateTime> date = const Value.absent(),
                 Value<int> steps = const Value.absent(),
                 Value<int> goal = const Value.absent(),
                 Value<String?> dayName = const Value.absent(),
-              }) => StepsCompanion(id: id, date: date, steps: steps, goal: goal, dayName: dayName),
+                Value<int> rowid = const Value.absent(),
+              }) => StepsCompanion(
+                date: date,
+                steps: steps,
+                goal: goal,
+                dayName: dayName,
+                rowid: rowid,
+              ),
           createCompanionCallback:
               ({
-                Value<int> id = const Value.absent(),
                 required DateTime date,
                 required int steps,
                 Value<int> goal = const Value.absent(),
                 Value<String?> dayName = const Value.absent(),
-              }) => StepsCompanion.insert(id: id, date: date, steps: steps, goal: goal, dayName: dayName),
-          withReferenceMapper: (p0) => p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+                Value<int> rowid = const Value.absent(),
+              }) => StepsCompanion.insert(
+                date: date,
+                steps: steps,
+                goal: goal,
+                dayName: dayName,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
           prefetchHooksCallback: null,
         ),
       );
@@ -444,5 +499,6 @@ typedef $$StepsTableProcessedTableManager =
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
-  $$StepsTableTableManager get steps => $$StepsTableTableManager(_db, _db.steps);
+  $$StepsTableTableManager get steps =>
+      $$StepsTableTableManager(_db, _db.steps);
 }

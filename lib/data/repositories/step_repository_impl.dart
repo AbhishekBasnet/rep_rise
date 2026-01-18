@@ -10,6 +10,24 @@ import 'package:rep_rise/domain/entity/steps/step_summary_entity.dart';
 import 'package:rep_rise/domain/repositories/step_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/*
+ * ARCHITECTURE OVERVIEW: StepRepository implementation.
+ *
+ * This repository serves as the Single Source of Truth (SSOT) for step data, mediating
+ * between three distinct data sources:
+ * 1. Remote API: The authoritative backend source for historical data and analytics.
+ * 2. Local Database (Drift): A persistent cache used to enable offline capabilities
+ * and reduce network load.
+ * 3. Health Service: The device-level sensor interface for real-time step counting.
+ *
+ * Data Strategy:
+ * - Read Operations: utilize a "Stale-While-Revalidate" or "Cache-First" approach
+ * depending on the freshness of the data (tracked via SharedPreferences).
+ * - Write Operations (Sync): Aggregates real-time device data, pushes it to the
+ * Remote API, and simultaneously updates the Local Database to ensure UI consistency
+ * without requiring a subsequent refetch.
+ */
+
 class StepRepositoryImpl implements StepRepository {
   final StepLocalDataSource stepLocalDataSource;
   final StepRemoteDataSource remoteDataSource;
@@ -22,28 +40,30 @@ class StepRepositoryImpl implements StepRepository {
     try {
       final StepModel stepModel = await remoteDataSource.getDailySteps();
 
-
       return stepModel.toEntity();
     } catch (e) {
       return StepEntity(date: DateTime.now().toDateOnly, steps: 0, goal: 0, dayName: DateTime.now().toShortDayName);
     }
   }
 
+  /*
+    Implements a caching strategy using [SharedPreferences] to track fetch frequency.
+  1. If data for the current day has already been fetched, returns cached data directly.
+  2. If data is stale, fetches from [remoteDataSource], updates the cache, and returns fresh data.
+  3. If the network request fails, falls back to the local database to preserve user experience.
+  */
   @override
   Future<List<StepEntity>> getWeeklySteps() async {
     final prefs = await SharedPreferences.getInstance();
     final String todayDate = DateTime.now().toDateOnly.toString();
     final String? lastFetchDate = prefs.getString('last_weekly_fetch_date');
 
-    // 1. OPTIMIZATION: Check if we already have fresh data
-    // If we fetched today, we skip the API and go straight to DB
     if (lastFetchDate == todayDate) {
       debugPrint("    STEP REPO: Optimization active. Fetching from Drift DB.");
 
       return _fetchFromLocalDb();
     }
 
-    // 2. ONLINE: If cache is stale, try fetching from API
     try {
       final List<StepModel> stepModels = await remoteDataSource.getWeeklySteps();
 
@@ -51,11 +71,9 @@ class StepRepositoryImpl implements StepRepository {
 
       await prefs.setString('last_weekly_fetch_date', todayDate);
 
-      // Return the fresh data directly
       return stepModels.map((model) => model.toEntity()).toList();
     } catch (e) {
       debugPrint("    STEP REPO: API Failed ($e). Falling back to local data.");
-      // 3. FALLBACK: If API fails, return whatever we have in DB
       return _fetchFromLocalDb();
     }
   }
@@ -63,8 +81,6 @@ class StepRepositoryImpl implements StepRepository {
   Future<List<StepEntity>> _fetchFromLocalDb() async {
     final localData = await stepLocalDataSource.getCachedSteps();
 
-    // "today" is 00:00:00.000 of the current day
-    // we want data from the last 7 days excluding today, the provider adds today's live data separately
     final DateTime today = DateTime.now().toDateOnly;
     final DateTime sevenDaysAgo = today.subtract(const Duration(days: 6));
     final weeklyData = localData.where((step) {
@@ -82,6 +98,14 @@ class StepRepositoryImpl implements StepRepository {
     return stepSummaryModel.toEntity();
   }
 
+  /// Synchronizes the current device step count with the remote server and local cache.
+  ///
+  /// This process involves:
+  /// 1. Reading the raw step count from [HealthService].
+  /// 2. Uploading the count to the [remoteDataSource].
+  /// 3. Calculating the current step goal based on historical user behavior.
+  /// 4. Updating the [stepLocalDataSource] to reflect the sync immediately.
+
   @override
   Future<void> syncSteps() async {
     final int deviceSteps = await healthService.getTotalStepsToday();
@@ -92,29 +116,19 @@ class StepRepositoryImpl implements StepRepository {
     await remoteDataSource.postSteps(deviceSteps, apiDateString);
     debugPrint("    Synced $deviceSteps steps for date $apiDateString to remote server.");
 
-    //----------- get latest goal from local cache -----------
-    // Get all history
     final history = await stepLocalDataSource.getCachedSteps();
     final validGoals = history.where((element) => element.goal > 0).toList();
 
     int inheritedGoal;
 
     if (validGoals.isNotEmpty) {
-      // ✅ OLD USER: Inherit their last goal
       validGoals.sort((a, b) => b.date.compareTo(a.date));
       inheritedGoal = validGoals.first.goal;
     } else {
-      // ✅ NEW USER: Default fallback (since DB is empty)
-      inheritedGoal = 5000; // Or whatever default you prefer
+      inheritedGoal = 5000;
     }
 
-    // 3. Cache locally
-    final localEntry = StepModel(
-      date: cleanDate,
-      dayName: now.toShortDayName,
-      steps: deviceSteps,
-      goal: inheritedGoal,
-    );
+    final localEntry = StepModel(date: cleanDate, dayName: now.toShortDayName, steps: deviceSteps, goal: inheritedGoal);
     await stepLocalDataSource.cacheSteps([localEntry]);
   }
 }
