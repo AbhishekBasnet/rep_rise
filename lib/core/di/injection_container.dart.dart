@@ -43,7 +43,7 @@ Future<void> init() async {
       final dbFolder = await getApplicationDocumentsDirectory();
       final file = File(p.join(dbFolder.path, 'db.sqlite'));
       debugPrint('📂 at DI : OPENING DATABASE AT: ${file.path}');
-      return NativeDatabase(file);
+      return NativeDatabase.createInBackground(file);
     });
     return AppDatabase(executor);
   });

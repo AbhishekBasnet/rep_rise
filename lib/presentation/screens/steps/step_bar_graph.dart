@@ -11,6 +11,9 @@ class StepBarGraph extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<StepProvider>(
       builder: (context, stepProvider, child) {
+        final double maxGoal = stepProvider.highestWeeklyGoal.toDouble();
+        final double interval = maxGoal/5;
+
         return Container(
           // margin: const EdgeInsetsGeometry.symmetric(horizontal: 5),
           padding: const EdgeInsets.all(16),
@@ -38,7 +41,7 @@ class StepBarGraph extends StatelessWidget {
                     ),
                     child: Row(
                       children: const [
-                        Text("Past 7 days", style: TextStyle(fontSize: 12)),
+                        Text("This Week", style: TextStyle(fontSize: 12)),
                         SizedBox(width: 4),
                       ],
                     ),
@@ -53,7 +56,7 @@ class StepBarGraph extends StatelessWidget {
                 child: BarChart(
                   BarChartData(
                     // Max Y to allow space for the tooltip at the top
-                    maxY: 10000,
+                    maxY: maxGoal,
                     minY: 0,
 
                     // Hide borders and grid
@@ -68,7 +71,7 @@ class StepBarGraph extends StatelessWidget {
 
                     // DATA GROUPS
                     barGroups: stepProvider.weeklyChartData.map((data) {
-                      return _makeBar(index:data.xIndex, steps: data.steps, isSelected: data.isToday);
+                      return _makeBar(index:data.xIndex, steps: data.steps, isSelected: data.isToday,maxGoal: maxGoal );
                     }).toList(),
                   ),
                 ),
@@ -81,7 +84,7 @@ class StepBarGraph extends StatelessWidget {
   }
 
   // Helper Functions
-  BarChartGroupData _makeBar({required int index,required double steps, required bool isSelected}) {
+  BarChartGroupData _makeBar({required int index,required double steps, required bool isSelected, required double maxGoal}) {
     return BarChartGroupData(
       x: index,
       barRods: [
@@ -92,7 +95,7 @@ class StepBarGraph extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
-            toY: steps >= 10000 ? steps : 10000,
+            toY: steps >= maxGoal? steps : maxGoal,
             color: Colors.transparent,
           ),
         ),
@@ -139,10 +142,13 @@ class StepBarGraph extends StatelessWidget {
         sideTitles: SideTitles(
           showTitles: true,
           reservedSize: 40,
-          interval: 1000, // Show label every 1000 steps
+          interval: 1000,
           getTitlesWidget: (value, meta) {
-            if (value == 0) return Container(); // Hide 0
-            return Text('${(value / 1000).toInt()}k', style: const TextStyle(color: Colors.grey, fontSize: 12));
+            if (value == 0) return Container();
+            if (value >= 1000) {
+              return Text('${(value / 1000).toInt()}k', style: const TextStyle(color: Colors.grey, fontSize: 12));
+            }
+            return Text(value.toInt().toString(), style: const TextStyle(color: Colors.grey, fontSize: 12));
           },
         ),
       ),

@@ -7,7 +7,6 @@ import 'package:rep_rise/domain/usecase/step/get_weekly_step_usecase.dart';
 import 'package:rep_rise/domain/usecase/step/sync_step_usecase.dart';
 import 'package:rep_rise/presentation/provider/step_provider/WeekelyChartData.dart';
 
-import '../../../core/util/extension/date/date_formatter.dart';
 
 class StepProvider extends ChangeNotifier {
   final GetDailyStepUsecase getDailyStepUsecase;
@@ -28,6 +27,7 @@ class StepProvider extends ChangeNotifier {
   int _walkedDailySteps = 0;
   double _percentage = 1;
   bool _isLoading = false;
+  int _highestWeeklyGoal =10000 ;
   List<WeeklyChartData> _weeklyChartData = [];
 
   List<WeeklyChartData> get weeklyChartData => _weeklyChartData;
@@ -35,6 +35,7 @@ class StepProvider extends ChangeNotifier {
   double get percentage => _percentage;
   int get totalDailySteps => _totalDailySteps;
   int get walkedDailySteps => _walkedDailySteps;
+  int get highestWeeklyGoal => _highestWeeklyGoal;
 
   Future<void> initSteps() async {
     _isLoading = true;
@@ -57,6 +58,7 @@ class StepProvider extends ChangeNotifier {
   Future<void> fetchDailySteps() async {
     _isLoading = true;
     notifyListeners();
+
     try {
       await Future.delayed(const Duration(seconds: 1));
       final StepEntity stepData = await getDailyStepUsecase.execute();
@@ -93,6 +95,16 @@ class StepProvider extends ChangeNotifier {
       // 3. Stitch Step Entities together
       final fullWeekEntities = [...history, todayEntity];
       debugPrint('   on Step provider: Full week entities: \n$fullWeekEntities');
+
+      //max steps in the week for highestWeeklyGoal
+      int maxGoal = 0;
+      for(var entity in fullWeekEntities){
+        if(entity.goal > maxGoal){
+          maxGoal = entity.goal;
+        }
+      }
+      _highestWeeklyGoal = maxGoal;
+      // debugPrint('   on Step provider: Highest weekly goal: $_highestWeeklyGoal and calculated maxGoal: $maxGoal');
 
       // 4. TRANSFORM LOGIC (Entity -> View Model)
       // This is the logic we moved out of the UI!

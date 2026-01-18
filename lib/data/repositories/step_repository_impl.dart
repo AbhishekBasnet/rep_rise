@@ -22,22 +22,10 @@ class StepRepositoryImpl implements StepRepository {
     try {
       final StepModel stepModel = await remoteDataSource.getDailySteps();
 
-      await stepLocalDataSource.cacheSteps([stepModel]);
 
       return stepModel.toEntity();
     } catch (e) {
-      //TODO use ths for offline
-      final localData = await stepLocalDataSource.getCachedSteps();
-      if (localData.isNotEmpty) {
-        final cachedStep = localData.last;
-        return StepEntity(
-          date: cachedStep.date,
-          steps: cachedStep.steps,
-          goal: cachedStep.goal,
-          dayName: cachedStep.dayName,
-        );
-      }
-      rethrow;
+      return StepEntity(date: DateTime.now().toDateOnly, steps: 0, goal: 0, dayName: DateTime.now().toShortDayName);
     }
   }
 
@@ -97,8 +85,10 @@ class StepRepositoryImpl implements StepRepository {
   @override
   Future<void> syncSteps() async {
     final int deviceSteps = await healthService.getTotalStepsToday();
-    final DateTime cleanDate = DateTime.now().toDateOnly;
+    final now = DateTime.now();
+    final DateTime cleanDate = DateTime(now.year, now.month, now.day);
     final String apiDateString = cleanDate.toIso8601String().split('T')[0];
+
     await remoteDataSource.postSteps(deviceSteps, apiDateString);
     debugPrint("    Synced $deviceSteps steps for date $apiDateString to remote server.");
 
@@ -121,7 +111,7 @@ class StepRepositoryImpl implements StepRepository {
     // 3. Cache locally
     final localEntry = StepModel(
       date: cleanDate,
-      dayName: DateTime.now().toShortDayName,
+      dayName: now.toShortDayName,
       steps: deviceSteps,
       goal: inheritedGoal,
     );

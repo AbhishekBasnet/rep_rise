@@ -5,12 +5,13 @@ class StepModel extends StepEntity {
   const StepModel({required super.date, required super.steps, required super.goal, super.dayName});
 
   factory StepModel.fromJson(Map<String, dynamic> json) {
+    final rawDate = DateTime.parse(json['date']);
+    final cleanDate = DateTime(rawDate.year, rawDate.month, rawDate.day);
+
     return StepModel(
-      date: DateTime.parse(json['date']),
+      date: cleanDate,
       steps: (json['steps'] as num).toInt(),
-
       goal: (json['goal'] ?? 0) as int,
-
       dayName: json['day_name'],
     );
   }

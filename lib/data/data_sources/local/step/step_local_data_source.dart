@@ -3,8 +3,8 @@ import 'package:rep_rise/data/model/steps/step_model.dart';
 part 'step_local_data_source.g.dart';
 
 class Steps extends Table {
+  int get schemaVersion => 2;
   // changing mode/entity will conflict with existing db so update accordingly
-
 
   DateTimeColumn get date => dateTime()();
 
@@ -17,6 +17,13 @@ class Steps extends Table {
   // Composite Key (Optional):  to ensure only one entry per date exists
   @override
   Set<Column> get primaryKey => {date};
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {date},
+  ];
+
+
+
 }
 
 // Defining the Database
@@ -49,15 +56,16 @@ class StepLocalDataSourceImpl implements StepLocalDataSource {
     await db.batch((batch) {
       batch.insertAll(
         db.steps,
-        steps.map((s) => StepsCompanion.insert(
-          date: s.date,
-          steps: s.steps,
-          goal: Value(s.goal),
-          dayName: Value(s.dayName),
-        )).toList(),
+        steps
+            .map(
+              (s) =>
+                  StepsCompanion.insert(date: s.date, steps: s.steps, goal: Value(s.goal), dayName: Value(s.dayName)),
+            )
+            .toList(),
         mode: InsertMode.insertOrReplace,
       );
     });
+
   }
 
   @override
