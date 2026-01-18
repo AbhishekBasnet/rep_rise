@@ -8,6 +8,28 @@ import 'package:rep_rise/domain/usecase/auth/register_usecase.dart';
 import 'package:rep_rise/domain/usecase/profile/create_profile_usecase.dart';
 import '../../domain/usecase/auth/check_auth_status_usecase.dart';
 
+
+/*
+ * Centralizes authentication state management and bridges the Presentation layer
+ * with Auth/Profile Domain UseCases.
+ *
+ * Architecture & Responsibilities:
+ * --------------------------------
+ * 1. Session Management:
+ * - Tracks `_isAuthenticated` and `_isInitialized` to guide the `RootWrapper`
+ * in making routing decisions (Splash -> Login vs. Home).
+ * - Handles forced logouts via `handleExpiredToken` when API calls return 401s.
+ *
+ * 2. Composite Transactions:
+ * - The `registerAndSetupProfile` method orchestrates a complex flow: ensuring
+ * a user is registered *and* their profile data is seeded in the remote DB
+ * before granting access to the app.
+ *
+ * 3. Error Sanitation:
+ * - Catches raw Domain/Data exceptions and sanitizes the messages (removing
+ * prefixes) for consumption by the UI layer.
+ */
+
 class AuthProvider extends ChangeNotifier {
   final CheckAuthStatusUseCase checkAuthStatusUseCase;
   final LoginUseCase loginUseCase;
@@ -39,7 +61,6 @@ class AuthProvider extends ChangeNotifier {
   bool get isInitialized => _isInitialized;
 
   /// for root wrapper, don't delete
-
   Future<void> checkAuthStatus() async {
     _isAuthenticated = await checkAuthStatusUseCase.execute();
     debugPrint('    --- AUTH STATUS CHECK on auth provider while reloading ---');
@@ -49,6 +70,8 @@ class AuthProvider extends ChangeNotifier {
     _isInitialized = true;
     notifyListeners();
   }
+
+
 
   Future<bool> login(String username, String password) async {
     _setLoading(true);
@@ -102,6 +125,11 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  /// Orchestrates the multi-step user onboarding flow: Registration followed
+  /// immediately by Profile Creation.
+  ///
+  /// This ensures atomic-like behavior from the user's perspective: they are
+  /// not considered "logged in" until both the Auth Account and User Profile are successfully created.
   Future<bool> registerAndSetupProfile({
     required UserRegistrationEntity user,
     required UserProfileEntity profile,
@@ -138,7 +166,10 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-
+  /// Forcefully resets authentication state upon token expiration detection.
+  ///
+  /// This is typically called by an interceptor or service when a 401 Unauthorized
+  /// response is received. It triggers a rebuild in `RootWrapper` to redirect to Login.
   void handleExpiredToken() {
     _isAuthenticated = false;
     _errorMessage = "Session expired. Please login again.";

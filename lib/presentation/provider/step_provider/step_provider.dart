@@ -7,6 +7,36 @@ import 'package:rep_rise/domain/usecase/step/get_weekly_step_usecase.dart';
 import 'package:rep_rise/domain/usecase/step/sync_step_usecase.dart';
 import 'package:rep_rise/presentation/provider/step_provider/WeekelyChartData.dart';
 
+/*
+ * Manages the state and business logic integration for the Step Tracking feature.
+ *
+ * Architecture & Responsibilities:
+ * --------------------------------
+ * This provider acts as the Presentation Layer controller, orchestrating data flow
+ * between the UI and the Domain Layer UseCases. It is responsible for:
+ *
+ * 1. Initialization Sequence:
+ * Upon instantiation, `initSteps` executes a sequential data load:
+ * - Synchronization: Triggers `syncStepsUseCase` to align local/remote dat.
+ * - Daily Fetch: Retrieves current day statistics via `getDailyStepUsecase`.
+ * - Weekly Aggregation: Compiles historical data via `getWeeklyStepUsecase`.
+ *
+ * 2. Data Aggregation & Stitching:
+ * A key responsibility of this provider is the 'stitching' logic within `fetchWeeklySteps`.
+ * Since the weekly history UseCase returns past data, this provider manually injects
+ * the live `_walkedDailySteps` (from memory) into the dataset to ensure the
+ * UI reflects real-time updates without re-fetching history unnecessarily.
+ *
+ * 3. View Model Transformation:
+ * - Converts Domain Entities (`StepEntity`) into UI-specific models (`WeeklyChartData`).
+ * - Normalizes data for visualization (e.g., mapping DateTime weekdays to x-axis indices).
+ * - Calculates UI metadata, such as `_highestWeeklyGoal` for dynamic chart scaling.
+ *
+ * State Management:
+ * -----------------
+ * Uses `ChangeNotifier` to broadcast updates. The `_isLoading` flag serves as a
+ * synchronization primitive to prevent UI jitter during the multi-step fetch process.
+ */
 
 class StepProvider extends ChangeNotifier {
   final GetDailyStepUsecase getDailyStepUsecase;
@@ -27,7 +57,7 @@ class StepProvider extends ChangeNotifier {
   int _walkedDailySteps = 0;
   double _percentage = 1;
   bool _isLoading = false;
-  int _highestWeeklyGoal =10000 ;
+  int _highestWeeklyGoal = 10000;
   List<WeeklyChartData> _weeklyChartData = [];
 
   List<WeeklyChartData> get weeklyChartData => _weeklyChartData;
@@ -80,11 +110,9 @@ class StepProvider extends ChangeNotifier {
 
   Future<void> fetchWeeklySteps() async {
     try {
-      // 1. Get History (e.g., Sun, Mon)
       final history = await getWeeklyStepUsecase.execute();
 
       final String todayStr = DateTime.now().toShortDayName;
-      // 2. Get Live Today
       final todayEntity = StepEntity(
         date: DateTime.now(),
         steps: _walkedDailySteps,
@@ -92,32 +120,23 @@ class StepProvider extends ChangeNotifier {
         dayName: todayStr,
       );
 
-      // 3. Stitch Step Entities together
       final fullWeekEntities = [...history, todayEntity];
       debugPrint('   on Step provider: Full week entities: \n$fullWeekEntities');
 
-      //max steps in the week for highestWeeklyGoal
       int maxGoal = 0;
-      for(var entity in fullWeekEntities){
-        if(entity.goal > maxGoal){
+      for (var entity in fullWeekEntities) {
+        if (entity.goal > maxGoal) {
           maxGoal = entity.goal;
         }
       }
       _highestWeeklyGoal = maxGoal;
-      // debugPrint('   on Step provider: Highest weekly goal: $_highestWeeklyGoal and calculated maxGoal: $maxGoal');
-
-      // 4. TRANSFORM LOGIC (Entity -> View Model)
-      // This is the logic we moved out of the UI!
 
       _weeklyChartData = fullWeekEntities.map((e) {
         return WeeklyChartData(
-          // Logic: Convert DateTime weekday (1=Mon...7=Sun) to Chart Index (0=Sun...6=Sat)
           xIndex: e.date.weekday % 7,
 
-          // Logic: Convert to double for the library
           steps: e.steps.toDouble(),
 
-          // Logic: Determine highlight status
           isToday: e.date.toShortDayName == todayStr,
         );
       }).toList();
