@@ -72,6 +72,7 @@ class StepProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
+      debugPrint('  on Step provider: Initializing step data...');
       await syncStepsUseCase.execute();
 
       await fetchDailySteps();

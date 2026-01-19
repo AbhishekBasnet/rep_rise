@@ -131,4 +131,14 @@ class StepRepositoryImpl implements StepRepository {
     final localEntry = StepModel(date: cleanDate, dayName: now.toShortDayName, steps: deviceSteps, goal: inheritedGoal);
     await stepLocalDataSource.cacheSteps([localEntry]);
   }
+
+  @override
+  Future<void> clearLocalCache() async {
+    await stepLocalDataSource.deleteAllSteps();
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('last_weekly_fetch_date');
+
+    debugPrint("    STEP REPO: Local cache & preferences cleared.");
+  }
 }

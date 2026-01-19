@@ -8,7 +8,6 @@ import 'package:rep_rise/domain/usecase/auth/register_usecase.dart';
 import 'package:rep_rise/domain/usecase/profile/create_profile_usecase.dart';
 import '../../domain/usecase/auth/check_auth_status_usecase.dart';
 
-
 /*
  * Centralizes authentication state management and bridges the Presentation layer
  * with Auth/Profile Domain UseCases.
@@ -70,8 +69,6 @@ class AuthProvider extends ChangeNotifier {
     _isInitialized = true;
     notifyListeners();
   }
-
-
 
   Future<bool> login(String username, String password) async {
     _setLoading(true);
@@ -170,9 +167,16 @@ class AuthProvider extends ChangeNotifier {
   ///
   /// This is typically called by an interceptor or service when a 401 Unauthorized
   /// response is received. It triggers a rebuild in `RootWrapper` to redirect to Login.
-  void handleExpiredToken() {
+  /// It also attempts to wipe local data to ensure security.
+  Future<void> handleExpiredToken() async {
+    try {
+      await logoutUseCase.execute();
+    } catch (e) {
+      debugPrint("Error wiping data during token expiry: $e");
+    }
+
     _isAuthenticated = false;
     _errorMessage = "Session expired. Please login again.";
-    notifyListeners(); // This triggers the RootWrapper to rebuild
+    notifyListeners();
   }
 }

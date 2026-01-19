@@ -10,4 +10,6 @@ abstract class StepRepository {
   Future<StepSummaryEntity> getMonthlyStats(int year, int month);
 
   Future<void> syncSteps();
+
+  Future<void> clearLocalCache();
 }
