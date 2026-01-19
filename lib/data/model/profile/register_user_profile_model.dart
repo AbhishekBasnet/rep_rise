@@ -1,17 +1,16 @@
-import 'package:rep_rise/domain/entity/profile/user_profile_data_entity.dart';
+import 'package:rep_rise/domain/entity/profile/register_user_profile_data_entity.dart';
 
-class UserProfileModel extends UserProfileEntity {
-  UserProfileModel({
+class RegisterUserProfileModel extends RegisterUserProfileEntity {
+  RegisterUserProfileModel({
     required super.age,
     required super.weight,
     required super.height,
     required super.stepGoal,
     required super.gender,
-    required super.bmi,
   });
 
-  factory UserProfileModel.fromJson(Map<String, dynamic> json) {
-    return UserProfileModel(
+  factory RegisterUserProfileModel.fromJson(Map<String, dynamic> json) {
+    return RegisterUserProfileModel(
       age: json['age'],
 
       weight: (json['weight'] as num).toInt(),
@@ -20,18 +19,16 @@ class UserProfileModel extends UserProfileEntity {
       stepGoal: json['daily_step_goal'],
 
       gender: json['gender'],
-      bmi: json['bmi'],
     );
   }
 
-  factory UserProfileModel.fromEntity(UserProfileEntity entity) {
-    return UserProfileModel(
+  factory RegisterUserProfileModel.fromEntity(RegisterUserProfileEntity entity) {
+    return RegisterUserProfileModel(
       age: entity.age,
       weight: entity.weight,
       height: entity.height,
       stepGoal: entity.stepGoal,
       gender: entity.gender,
-      bmi: entity.bmi,
     );
   }
 

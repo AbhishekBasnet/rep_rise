@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:rep_rise/presentation/screens/home_screen.dart';
-import 'package:rep_rise/presentation/screens/profile/profile_home_screen.dart';
 import 'package:rep_rise/presentation/screens/steps_screen.dart';
 import 'package:rep_rise/presentation/screens/workout_screen.dart';
 
@@ -17,7 +16,6 @@ class _MainScreenState extends State<MainScreen> {
     GlobalKey<NavigatorState>(), // Home
     GlobalKey<NavigatorState>(), //Workout
     GlobalKey<NavigatorState>(), //Steps
-    GlobalKey<NavigatorState>(), //Profile
   ];
 
   void _onItemTapped(int index) {
@@ -56,7 +54,6 @@ class _MainScreenState extends State<MainScreen> {
             _buildNavigator(0, const HomeScreen()),
             _buildNavigator(1, const WorkoutScreen()),
             _buildNavigator(2, const StepsScreen()),
-            _buildNavigator(3, const ProfileHomeScreen()),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
@@ -67,7 +64,6 @@ class _MainScreenState extends State<MainScreen> {
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
             BottomNavigationBarItem(icon: Icon(Icons.fitness_center), label: 'Workout'),
             BottomNavigationBarItem(icon: Icon(Icons.snowshoeing), label: 'Steps'),
-            BottomNavigationBarItem(icon: Icon(Icons.photo_camera_front_outlined), label: 'Profile'),
           ],
         ),
       ),

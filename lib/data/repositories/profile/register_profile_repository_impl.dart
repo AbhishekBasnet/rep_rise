@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rep_rise/core/network/api_client.dart';
-import 'package:rep_rise/data/model/user_profile_model.dart';
-import 'package:rep_rise/domain/entity/profile/user_profile_data_entity.dart';
+import 'package:rep_rise/data/model/profile/register_user_profile_model.dart';
+import 'package:rep_rise/domain/entity/profile/register_user_profile_data_entity.dart';
 import 'package:rep_rise/domain/repositories/profile_repository.dart';
 
 class ProfileRepositoryImpl implements ProfileRepository {
@@ -44,9 +44,9 @@ class ProfileRepositoryImpl implements ProfileRepository {
   /// Throws an [Exception] containing the specific error message from the server
   /// if the request fails (e.g., validation errors)
   @override
-  Future<void> createProfile(UserProfileEntity profileEntity) async {
+  Future<void> createProfile(RegisterUserProfileEntity profileEntity) async {
     try {
-      final profileModel = UserProfileModel.fromEntity(profileEntity);
+      final profileModel = RegisterUserProfileModel.fromEntity(profileEntity);
 
       await apiClient.patch('user/profile/', data: profileModel.toJson());
 

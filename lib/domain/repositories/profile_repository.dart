@@ -1,5 +1,5 @@
-import '../entity/profile/user_profile_data_entity.dart';
+import '../entity/profile/register_user_profile_data_entity.dart';
 
 abstract class ProfileRepository {
-  Future<void> createProfile(UserProfileEntity profile);
+  Future<void> createProfile(RegisterUserProfileEntity profile);
 } 

@@ -1,5 +1,5 @@
 
-import '../../domain/entity/auth/user_registration_entity.dart';
+import '../../../domain/entity/auth/user_registration_entity.dart';
 
 class UserRegistrationModel extends UserRegistrationEntity {
   UserRegistrationModel({

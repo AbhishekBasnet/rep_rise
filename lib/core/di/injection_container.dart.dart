@@ -7,7 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:rep_rise/core/services/health_steps_service.dart';
 import 'package:rep_rise/data/data_sources/local/step/step_local_data_source.dart';
 import 'package:rep_rise/data/data_sources/remote/step_remote_data_source.dart';
-import 'package:rep_rise/data/repositories/profile_repository_impl.dart';
+import 'package:rep_rise/data/repositories/profile/register_profile_repository_impl.dart';
 import 'package:rep_rise/data/repositories/step_repository_impl.dart';
 import 'package:rep_rise/domain/repositories/profile_repository.dart';
 import 'package:rep_rise/domain/repositories/step_repository.dart';

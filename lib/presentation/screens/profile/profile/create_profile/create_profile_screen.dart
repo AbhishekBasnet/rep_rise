@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rep_rise/domain/entity/profile/user_profile_data_entity.dart';
+import 'package:rep_rise/domain/entity/profile/register_user_profile_data_entity.dart';
 import 'package:rep_rise/domain/entity/auth/user_registration_entity.dart';
 import 'package:rep_rise/presentation/provider/auth_provider.dart';
 import 'package:rep_rise/presentation/provider/profile_setup_provider.dart';
@@ -117,13 +117,12 @@ class CreateProfileScreen extends StatelessWidget {
     if (provider.isLastPage) {
       debugPrint('    On last page, triggering FINAL API call...');
 
-      final profileData = UserProfileEntity(
+      final profileData = RegisterUserProfileEntity(
         age: provider.age,
         weight: provider.weight,
         height: provider.height,
         gender: provider.gender.name,
         stepGoal: provider.goalSteps,
-        bmi: 0.00,
       );
 
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
