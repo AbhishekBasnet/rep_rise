@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rep_rise/core/di/injection_container.dart.dart';
 import 'package:rep_rise/domain/repositories/step_repository.dart';
+import 'package:rep_rise/presentation/provider/step_provider/step_provider.dart';
 import 'package:rep_rise/presentation/screens/auth/register_new_user_screen.dart';
 import 'package:rep_rise/presentation/screens/profile/font_test_screen.dart';
 import 'package:rep_rise/presentation/screens/tests/step_api_test_screen.api.dart';
@@ -17,6 +18,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _isProcessing = false;
+
+
+
+
   void _handleLogout() async {
     if (_isProcessing) return;
 

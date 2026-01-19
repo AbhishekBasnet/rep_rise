@@ -11,7 +11,9 @@ class StepCounterCircularProgress extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<StepProvider>(
       builder: (context, stepsProvider, child) {
+        final bool isGoalReached = stepsProvider.percentage >= 1.0;
 
+        final double percentToDraw = stepsProvider.percentage > 1.0 ? 1.0 : stepsProvider.percentage;
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 5),
           decoration: BoxDecoration(
@@ -23,7 +25,7 @@ class StepCounterCircularProgress extends StatelessWidget {
             radius: 120.0,
             lineWidth: 20.0,
             animation: true,
-            percent: stepsProvider.percentage,
+            percent: percentToDraw,
 
             startAngle: 225.0,
             animationDuration: 1200,
@@ -34,6 +36,7 @@ class StepCounterCircularProgress extends StatelessWidget {
             center: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+             //
                 Text("Steps", style: AppTheme.profileSetupSubHeader),
                 SizedBox(height: 8),
                 Text("${stepsProvider.walkedDailySteps}", style: AppTheme.stepsProgressNumber),

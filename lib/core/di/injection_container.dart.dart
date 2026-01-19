@@ -123,12 +123,11 @@ Future<void> init() async {
   // ---------------------------------------------------------------------------
   // Domain Use Cases
   // ---------------------------------------------------------------------------
-  // Atomic business logic units. Each Use Case corresponds to a single
-  // user action or data calculation.
+  // Atomic business logic units. Each Use Case corresponds to a single user action or data calculation.
   //  Auth and Profile Use Cases
   sl.registerLazySingleton(() => LoginUseCase(sl()));
   sl.registerLazySingleton(() => RegisterUseCase(sl()));
-  sl.registerLazySingleton(() => LogoutUseCase(authRepository: sl()));
+  sl.registerLazySingleton(() => LogoutUseCase(authRepository: sl(), stepRepository: sl()));
   sl.registerLazySingleton(() => CheckAuthStatusUseCase(tokenService: sl(), authRepository: sl()));
   sl.registerLazySingleton(() => CheckUsernameUseCase(sl()));
   sl.registerLazySingleton(() => CreateProfileUseCase(sl()));
