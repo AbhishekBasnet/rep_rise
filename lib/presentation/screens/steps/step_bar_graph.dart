@@ -12,7 +12,7 @@ class StepBarGraph extends StatelessWidget {
     return Consumer<StepProvider>(
       builder: (context, stepProvider, child) {
         final double maxGoal = stepProvider.highestWeeklyGoal.toDouble();
-        final double interval = maxGoal/5;
+        final double interval = maxGoal / 5;
 
         return Container(
           // margin: const EdgeInsetsGeometry.symmetric(horizontal: 5),
@@ -67,11 +67,16 @@ class StepBarGraph extends StatelessWidget {
                     barTouchData: _barTouchData(),
 
                     // Axis Titles
-                    titlesData: _flTitlesData(),
+                    titlesData: _flTitlesData(interval),
 
                     // DATA GROUPS
                     barGroups: stepProvider.weeklyChartData.map((data) {
-                      return _makeBar(index:data.xIndex, steps: data.steps, isSelected: data.isToday,maxGoal: maxGoal );
+                      return _makeBar(
+                        index: data.xIndex,
+                        steps: data.steps,
+                        isSelected: data.isToday,
+                        maxGoal: maxGoal,
+                      );
                     }).toList(),
                   ),
                 ),
@@ -84,7 +89,12 @@ class StepBarGraph extends StatelessWidget {
   }
 
   // Helper Functions
-  BarChartGroupData _makeBar({required int index,required double steps, required bool isSelected, required double maxGoal}) {
+  BarChartGroupData _makeBar({
+    required int index,
+    required double steps,
+    required bool isSelected,
+    required double maxGoal,
+  }) {
     return BarChartGroupData(
       x: index,
       barRods: [
@@ -95,7 +105,7 @@ class StepBarGraph extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
-            toY: steps >= maxGoal? steps : maxGoal,
+            toY: steps >= maxGoal ? steps : maxGoal,
             color: Colors.transparent,
           ),
         ),
@@ -131,7 +141,19 @@ class StepBarGraph extends StatelessWidget {
     );
   }
 
-  FlTitlesData _flTitlesData() {
+  /* * ARCHITECTURE CONSTRUCT: AXIS & TITLES CONFIGURATION
+   * ---------------------------------------------------------------------------
+   * This section defines the coordinate system logic for the chart.
+   * * Y-Axis Strategy:
+   * - Dynamic Interval: Calculated based on maxGoal / 5.
+   * - Formatting: Uses 'k' notation for values >= 1000 to save horizontal space.
+   * - Decimals: Shows decimals only if significant (e.g., 1.5k vs 2k).
+   * * X-Axis Strategy:
+   * - Index Mapping: Maps integer indices (0-6) to String labels ('Sun'-'Sat').
+   * - Bounds Checking: Ensures index exists within the [days] array.
+   * ---------------------------------------------------------------------------
+   */
+  FlTitlesData _flTitlesData(double interval) {
     return FlTitlesData(
       show: true,
       rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
@@ -142,13 +164,20 @@ class StepBarGraph extends StatelessWidget {
         sideTitles: SideTitles(
           showTitles: true,
           reservedSize: 40,
-          interval: 1000,
+          interval: interval,
           getTitlesWidget: (value, meta) {
             if (value == 0) return Container();
+
             if (value >= 1000) {
-              return Text('${(value / 1000).toInt()}k', style: const TextStyle(color: Colors.grey, fontSize: 12));
+              final double kValue = value / 1000;
+
+              if (kValue == kValue.toInt()) {
+                return Text('${kValue.toInt()}k', style: AppTheme.barGraphXYAxisLabel);
+              } else {
+                return Text('${kValue.toStringAsFixed(1)}k', style: AppTheme.barGraphXYAxisLabel);
+              }
             }
-            return Text(value.toInt().toString(), style: const TextStyle(color: Colors.grey, fontSize: 12));
+            return Text(value.toInt().toString(), style: AppTheme.barGraphXYAxisLabel);
           },
         ),
       ),

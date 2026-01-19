@@ -49,9 +49,7 @@ class StepProvider extends ChangeNotifier {
     required this.getWeeklyStepUsecase,
     required this.getMonthlyStepUsecase,
     required this.syncStepsUseCase,
-  }) {
-    initSteps();
-  }
+  });
 
   int _totalDailySteps = 0;
   int _walkedDailySteps = 0;
@@ -124,13 +122,15 @@ class StepProvider extends ChangeNotifier {
       final fullWeekEntities = [...history, todayEntity];
       debugPrint('   on Step provider: Full week entities: \n$fullWeekEntities');
 
-      int maxGoal = 0;
+      int maxVal = 0;
       for (var entity in fullWeekEntities) {
-        if (entity.goal > maxGoal) {
-          maxGoal = entity.goal;
-        }
+        if (entity.goal > maxVal) maxVal = entity.goal;
+        // this is for getting highest value among steps and goal for better chart scaling
+        if (entity.steps > maxVal) maxVal = entity.steps;
       }
-      _highestWeeklyGoal = maxGoal;
+      // rounding up to nearest 1000 to avoid double digit max goal values on chart
+      final int roundedMaxGoal = (maxVal / 1000).ceil() * 1000;
+      _highestWeeklyGoal = roundedMaxGoal;
 
       _weeklyChartData = fullWeekEntities.map((e) {
         return WeeklyChartData(

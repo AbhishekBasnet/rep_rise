@@ -7,7 +7,7 @@ class AppTheme {
   static const Color appBackgroundColor = Color(0xFFEEF1DA);
   static const Color appContentColor = Color(0xFF1E201E);
   static const Color purple = Color(0xFF7F56D9);
-  static const Color lavender =  Color(0xFFD0BCFF);
+  static const Color lavender = Color(0xFFD0BCFF);
 
   //--------------- Text styles for profile setup ------------------
 
@@ -67,7 +67,7 @@ class AppTheme {
     blurRadius: 10,
     offset: const Offset(0, 4),
   );
-
+  static const TextStyle barGraphXYAxisLabel = TextStyle(color: Colors.grey, fontSize: 12);
 
   static ThemeData get lightTheme {
     return ThemeData(
