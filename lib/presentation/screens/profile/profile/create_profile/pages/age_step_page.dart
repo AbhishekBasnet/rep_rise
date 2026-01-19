@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rep_rise/core/theme/app_theme.dart';
 
-import '../../../../../provider/profile_setup_provider.dart';
+import '../../../../../provider/profile/register_profile_provider.dart';
 import '../profile_wheel_picker.dart';
 
 class AgeStepPage extends StatelessWidget {
@@ -10,7 +10,7 @@ class AgeStepPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ProfileSetupProvider>(
+    return Consumer<RegisterProfileProvider>(
       builder: (context, provider, child) {
         return Padding(
           padding: const EdgeInsetsGeometry.all(16),

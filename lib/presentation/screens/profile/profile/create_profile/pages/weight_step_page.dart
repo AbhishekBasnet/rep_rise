@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rep_rise/core/theme/app_theme.dart';
-import 'package:rep_rise/presentation/provider/profile_setup_provider.dart';
+import 'package:rep_rise/presentation/provider/profile/register_profile_provider.dart';
 import 'package:rep_rise/presentation/screens/profile/profile/create_profile/profile_wheel_picker.dart';
 
 class WeightStepPage extends StatelessWidget {
@@ -10,7 +10,7 @@ class WeightStepPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ProfileSetupProvider>(
+    return Consumer<RegisterProfileProvider>(
       builder: (context, provider, child) {
         return Padding(
           padding: const EdgeInsetsGeometry.all(16),

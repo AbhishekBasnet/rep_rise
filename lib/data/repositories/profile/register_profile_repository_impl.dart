@@ -3,12 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:rep_rise/core/network/api_client.dart';
 import 'package:rep_rise/data/model/profile/register_user_profile_model.dart';
 import 'package:rep_rise/domain/entity/profile/register_user_profile_data_entity.dart';
-import 'package:rep_rise/domain/repositories/profile_repository.dart';
+import 'package:rep_rise/domain/repositories/profile/register_profile_repository.dart';
 
-class ProfileRepositoryImpl implements ProfileRepository {
+class RegisterProfileRepositoryImpl implements RegisterProfileRepository {
   final ApiClient apiClient;
 
-  ProfileRepositoryImpl(this.apiClient);
+  RegisterProfileRepositoryImpl(this.apiClient);
 
   /*
  * FLOW: Profile Creation Process

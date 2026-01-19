@@ -23,7 +23,7 @@ enum Gender { male, female }
  * state is reset when the wizard is exited or completed.
  */
 
-class ProfileSetupProvider extends ChangeNotifier {
+class RegisterProfileProvider extends ChangeNotifier {
   int _age = 25;
   int _goalSteps = 5000;
   Gender _gender = Gender.male;

@@ -6,7 +6,7 @@ import 'package:rep_rise/domain/usecase/auth/login_usecase.dart';
 import 'package:rep_rise/domain/usecase/auth/logout_usecase.dart';
 import 'package:rep_rise/domain/usecase/auth/register_usecase.dart';
 import 'package:rep_rise/domain/usecase/profile/create_profile_usecase.dart';
-import '../../domain/usecase/auth/check_auth_status_usecase.dart';
+import '../../../domain/usecase/auth/check_auth_status_usecase.dart';
 
 /*
  * Centralizes authentication state management and bridges the Presentation layer

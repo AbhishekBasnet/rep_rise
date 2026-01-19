@@ -6,10 +6,13 @@ import 'package:get_it/get_it.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rep_rise/core/services/health_steps_service.dart';
 import 'package:rep_rise/data/data_sources/local/step/step_local_data_source.dart';
+import 'package:rep_rise/data/data_sources/remote/profile_remote_data_source.dart';
 import 'package:rep_rise/data/data_sources/remote/step_remote_data_source.dart';
+import 'package:rep_rise/data/repositories/profile/profile_repository.dart';
 import 'package:rep_rise/data/repositories/profile/register_profile_repository_impl.dart';
 import 'package:rep_rise/data/repositories/step_repository_impl.dart';
-import 'package:rep_rise/domain/repositories/profile_repository.dart';
+import 'package:rep_rise/domain/repositories/profile/profile_repository.dart';
+import 'package:rep_rise/domain/repositories/profile/register_profile_repository.dart';
 import 'package:rep_rise/domain/repositories/step_repository.dart';
 import 'package:rep_rise/domain/usecase/auth/check_user_name_usecase.dart';
 import 'package:rep_rise/domain/usecase/profile/create_profile_usecase.dart';
@@ -17,7 +20,8 @@ import 'package:rep_rise/domain/usecase/step/get_daily_step_usecase.dart';
 import 'package:rep_rise/domain/usecase/step/get_monthly_step_usecase.dart';
 import 'package:rep_rise/domain/usecase/step/get_weekly_step_usecase.dart';
 import 'package:rep_rise/domain/usecase/step/sync_step_usecase.dart';
-import 'package:rep_rise/presentation/provider/profile_setup_provider.dart';
+import 'package:rep_rise/presentation/provider/profile/profile_provider.dart';
+import 'package:rep_rise/presentation/provider/profile/register_profile_provider.dart';
 import 'package:rep_rise/presentation/provider/step_provider/step_provider.dart';
 
 import '../../data/repositories/auth_repository_impl.dart';
@@ -26,7 +30,7 @@ import '../../domain/usecase/auth/check_auth_status_usecase.dart';
 import '../../domain/usecase/auth/login_usecase.dart';
 import '../../domain/usecase/auth/logout_usecase.dart';
 import '../../domain/usecase/auth/register_usecase.dart';
-import '../../presentation/provider/auth_provider.dart';
+import '../../presentation/provider/auth/auth_provider.dart';
 import '../network/api_client.dart';
 import '../services/token_service.dart';
 import 'package:drift/native.dart';
@@ -107,6 +111,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => ApiClient(sl()));
   sl.registerLazySingleton(() => HealthService());
   sl.registerLazySingleton(() => StepRemoteDataSource(client: sl()));
+  sl.registerLazySingleton(() => ProfileRemoteDataSource(client: sl()));
 
   // ---------------------------------------------------------------------------
   // Data Repositories
@@ -117,8 +122,9 @@ Future<void> init() async {
   sl.registerLazySingleton<StepRepository>(
     () => StepRepositoryImpl(remoteDataSource: sl(), healthService: sl(), stepLocalDataSource: sl()),
   );
+  sl.registerLazySingleton<ProfileRepository>(() => ProfileRepositoryImpl(remoteDataSource: sl()));
   // register the Interface <ProfileRepository>, but we return the Implementation (ProfileRepositoryImpl)
-  sl.registerLazySingleton<ProfileRepository>(() => ProfileRepositoryImpl(sl()));
+  sl.registerLazySingleton<RegisterProfileRepository>(() => RegisterProfileRepositoryImpl(sl()));
 
   // ---------------------------------------------------------------------------
   // Domain Use Cases
@@ -142,7 +148,7 @@ Future<void> init() async {
   // ---------------------------------------------------------------------------
   // Registered as Factories (`registerFactory`) to ensure a new instance is
   // created whenever the UI requires it (e.g., entering a screen).
-  sl.registerFactory(() => ProfileSetupProvider());
+  sl.registerFactory(() => RegisterProfileProvider());
 
   sl.registerFactory(
     () => AuthProvider(
@@ -162,4 +168,6 @@ Future<void> init() async {
       syncStepsUseCase: sl(),
     ),
   );
+
+  sl.registerFactory(() => ProfileProvider(profileRepository: sl()));
 }

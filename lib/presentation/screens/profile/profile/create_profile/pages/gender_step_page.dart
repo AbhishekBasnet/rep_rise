@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rep_rise/core/theme/app_theme.dart';
-import 'package:rep_rise/presentation/provider/profile_setup_provider.dart';
+import 'package:rep_rise/presentation/provider/profile/register_profile_provider.dart';
 
 class GenderStepPage extends StatelessWidget {
   const GenderStepPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ProfileSetupProvider>(
+    return Consumer<RegisterProfileProvider>(
       builder: (context, provider, child) {
         return Padding(
           padding: EdgeInsetsGeometry.all(16),

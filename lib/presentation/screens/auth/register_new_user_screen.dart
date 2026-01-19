@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:rep_rise/presentation/screens/profile/profile/create_profile/create_profile_screen.dart';
 
 import '../../../domain/entity/auth/user_registration_entity.dart';
-import '../../provider/auth_provider.dart';
+import '../../provider/auth/auth_provider.dart';
 
 class RegisterNewUserScreen extends StatefulWidget {
   const RegisterNewUserScreen({super.key});

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rep_rise/domain/entity/profile/register_user_profile_data_entity.dart';
 import 'package:rep_rise/domain/entity/auth/user_registration_entity.dart';
-import 'package:rep_rise/presentation/provider/auth_provider.dart';
-import 'package:rep_rise/presentation/provider/profile_setup_provider.dart';
+import 'package:rep_rise/presentation/provider/auth/auth_provider.dart';
+import 'package:rep_rise/presentation/provider/profile/register_profile_provider.dart';
 import 'package:rep_rise/presentation/screens/profile/profile/create_profile/pages/age_step_page.dart';
 import 'package:rep_rise/presentation/screens/profile/profile/create_profile/pages/gender_step_page.dart';
 import 'package:rep_rise/presentation/screens/profile/profile/create_profile/pages/goal_step_page.dart';
@@ -16,7 +16,7 @@ class CreateProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ProfileSetupProvider>(
+    return Consumer<RegisterProfileProvider>(
       builder: (context, provider, child) {
         return Scaffold(
           body: SafeArea(
@@ -35,7 +35,7 @@ class CreateProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _topProgressBar(ProfileSetupProvider provider) {
+  Widget _topProgressBar(RegisterProfileProvider provider) {
     return Padding(
       padding: const EdgeInsetsGeometry.symmetric(horizontal: 10),
 
@@ -80,7 +80,7 @@ class CreateProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _middlePageView(ProfileSetupProvider provider) {
+  Widget _middlePageView(RegisterProfileProvider provider) {
     return Expanded(
       child: PageView(
         controller: provider.pageController,
@@ -93,7 +93,7 @@ class CreateProfileScreen extends StatelessWidget {
 
   Widget _footerNavigationButtons(
     BuildContext context,
-    ProfileSetupProvider provider,
+    RegisterProfileProvider provider,
     UserRegistrationEntity userRegistrationSData,
   ) {
     return Padding(
@@ -113,7 +113,7 @@ class CreateProfileScreen extends StatelessWidget {
     );
   }
 
-  Future<void> _submitUserData(BuildContext context, ProfileSetupProvider provider) async {
+  Future<void> _submitUserData(BuildContext context, RegisterProfileProvider provider) async {
     if (provider.isLastPage) {
       debugPrint('    On last page, triggering FINAL API call...');
 
