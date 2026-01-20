@@ -4,9 +4,11 @@ import 'package:rep_rise/core/util/extension/date/date_formatter.dart';
 import 'package:rep_rise/core/util/extension/date/short_day_name.dart';
 import 'package:rep_rise/data/data_sources/local/step/step_local_data_source.dart';
 import 'package:rep_rise/data/data_sources/remote/step_remote_data_source.dart';
-import 'package:rep_rise/data/model/steps/step_model.dart';
-import 'package:rep_rise/domain/entity/steps/step_entity.dart';
+import 'package:rep_rise/data/model/steps/daily_step_model.dart';
+import 'package:rep_rise/data/model/steps/weekly_step_model.dart';
+import 'package:rep_rise/domain/entity/steps/daily_step_entity.dart';
 import 'package:rep_rise/domain/entity/steps/step_summary_entity.dart';
+import 'package:rep_rise/domain/entity/steps/weekly_step_entity.dart';
 import 'package:rep_rise/domain/repositories/step_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -36,13 +38,21 @@ class StepRepositoryImpl implements StepRepository {
   StepRepositoryImpl({required this.remoteDataSource, required this.healthService, required this.stepLocalDataSource});
 
   @override
-  Future<StepEntity> getDailySteps() async {
+  Future<DailyStepEntity> getDailySteps() async {
     try {
-      final StepModel stepModel = await remoteDataSource.getDailySteps();
+      final DailyStepModel stepModel = await remoteDataSource.getDailySteps();
 
       return stepModel.toEntity();
     } catch (e) {
-      return StepEntity(date: DateTime.now().toDateOnly, steps: 0, goal: 0, dayName: DateTime.now().toShortDayName);
+      return DailyStepEntity(
+        date: DateTime.now().toDateOnly,
+        steps: 0,
+        goal: 0,
+        dayName: DateTime.now().toShortDayName,
+        caloriesBurned: 0,
+        distanceMeters: 0,
+        durationMinutes: 0,
+      );
     }
   }
 
@@ -53,7 +63,7 @@ class StepRepositoryImpl implements StepRepository {
   3. If the network request fails, falls back to the local database to preserve user experience.
   */
   @override
-  Future<List<StepEntity>> getWeeklySteps() async {
+  Future<List<WeeklyStepEntity>> getWeeklySteps() async {
     final prefs = await SharedPreferences.getInstance();
     final String todayDate = DateTime.now().toDateOnly.toString();
     final String? lastFetchDate = prefs.getString('last_weekly_fetch_date');
@@ -65,7 +75,7 @@ class StepRepositoryImpl implements StepRepository {
     }
 
     try {
-      final List<StepModel> stepModels = await remoteDataSource.getWeeklySteps();
+      final List<WeeklyStepModel> stepModels = await remoteDataSource.getWeeklySteps();
 
       await stepLocalDataSource.cacheSteps(stepModels);
 
@@ -78,7 +88,7 @@ class StepRepositoryImpl implements StepRepository {
     }
   }
 
-  Future<List<StepEntity>> _fetchFromLocalDb() async {
+  Future<List<WeeklyStepEntity>> _fetchFromLocalDb() async {
     final localData = await stepLocalDataSource.getCachedSteps();
 
     final DateTime today = DateTime.now().toDateOnly;
@@ -89,7 +99,9 @@ class StepRepositoryImpl implements StepRepository {
 
     weeklyData.sort((a, b) => a.date.compareTo(b.date));
 
-    return weeklyData.map((c) => StepEntity(date: c.date, steps: c.steps, goal: c.goal, dayName: c.dayName)).toList();
+    return weeklyData
+        .map((c) => WeeklyStepEntity(date: c.date, steps: c.steps, goal: c.goal, dayName: c.dayName))
+        .toList();
   }
 
   @override
@@ -127,8 +139,12 @@ class StepRepositoryImpl implements StepRepository {
     } else {
       inheritedGoal = 5000;
     }
-
-    final localEntry = StepModel(date: cleanDate, dayName: now.toShortDayName, steps: deviceSteps, goal: inheritedGoal);
+    final localEntry = WeeklyStepModel(
+      date: cleanDate,
+      dayName: now.toShortDayName,
+      steps: deviceSteps,
+      goal: inheritedGoal,
+    );
     await stepLocalDataSource.cacheSteps([localEntry]);
   }
 

@@ -1,26 +1,27 @@
 import 'package:flutter/cupertino.dart';
 import 'package:rep_rise/core/exception/api_exception.dart';
 import 'package:rep_rise/core/network/api_client.dart';
-import 'package:rep_rise/data/model/steps/step_model.dart';
+import 'package:rep_rise/data/model/steps/daily_step_model.dart';
+import 'package:rep_rise/data/model/steps/weekly_step_model.dart';
 
 ///
 /// This class handles fetching aggregated step data (daily, weekly, monthly)
 /// and syncing local step counts to the server via the provided [ApiClient].
 class StepRemoteDataSource {
-  final ApiClient client;
+  final ApiClient apiClient;
 
-  StepRemoteDataSource({required this.client});
+  StepRemoteDataSource({required this.apiClient});
 
   /// Fetches step analytics for the current day.
   ///
-  /// Returns a [StepModel] containing the data for the current period.
+  /// Returns a [DailyStepModel] containing the data for the current period.
   ///
   /// Throws an [ApiException] if the network request fails or the response
   /// cannot be parsed.
-  Future<StepModel> getDailySteps() async {
+  Future<DailyStepModel> getDailySteps() async {
     try {
-      final response = await client.get('steps/analytics/', queryParameters: {'period': 'daily'});
-      return StepModel.fromJson(response.data);
+      final response = await apiClient.get('steps/analytics/', queryParameters: {'period': 'daily'});
+      return DailyStepModel.fromJson(response.data);
     } catch (e) {
       throw ApiException(message: "Failed to fetch daily steps: $e");
     }
@@ -28,31 +29,22 @@ class StepRemoteDataSource {
 
   /// Retrieves a list of daily step data for the current week.
   ///
-  /// Returns a [List] of [StepModel] objects, where each object represents
+  /// Returns a [List] of [DailyStepModel] objects, where each object represents
   /// a specific day within the weekly period.
   ///
   /// Throws an [ApiException] if the fetch fails.
-  Future<List<StepModel>> getWeeklySteps() async {
+  Future<List<WeeklyStepModel>> getWeeklySteps() async {
     try {
-      final response = await client.get('steps/analytics/', queryParameters: {'period': 'weekly'});
+      final response = await apiClient.get('steps/analytics/', queryParameters: {'period': 'weekly'});
 
-      return (response.data as List).map((e) => StepModel.fromJson(e)).toList();
+      return (response.data as List).map((e) => WeeklyStepModel.fromJson(e)).toList();
     } catch (e) {
       throw ApiException(message: "Failed to fetch weekly steps: $e");
     }
   }
-
-  /// Retrieves a summary of step statistics for a specific month.
-  ///
-  /// * [year]: The target year (e.g., 2024).
-  /// * [month]: The target month (1-12).
-  ///
-  /// Returns a [StepSummaryModel] aggregating the month's activity.
-  ///
-  /// Throws an [ApiException] if the request fails.
   Future<StepSummaryModel> getMonthlyStats(int year, int month) async {
     try {
-      final response = await client.get(
+      final response = await apiClient.get(
         'steps/analytics/',
         queryParameters: {'period': 'monthly', 'year': year, 'month': month},
       );
@@ -70,7 +62,7 @@ class StepRemoteDataSource {
   /// Throws an [ApiException] if the synchronization fails.
   Future<void> postSteps(int stepCount, String date) async {
     try {
-      await client.post('steps/', data: {'step_count': stepCount, 'date': date});
+      await apiClient.post('steps/', data: {'step_count': stepCount, 'date': date});
     } catch (e) {
       throw ApiException(message: "Failed to sync steps: $e");
     }

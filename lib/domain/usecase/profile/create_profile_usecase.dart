@@ -5,7 +5,7 @@ import 'package:rep_rise/domain/repositories/profile/register_profile_repository
 class CreateProfileUseCase {
   final RegisterProfileRepository profileRepository;
 
-  CreateProfileUseCase(this.profileRepository);
+  CreateProfileUseCase({ required this.profileRepository});
 
   Future<void> execute(RegisterUserProfileEntity profile) async {
     return await profileRepository.createProfile(profile);

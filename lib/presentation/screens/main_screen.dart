@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:rep_rise/presentation/screens/home_screen.dart';
-import 'package:rep_rise/presentation/screens/steps_screen.dart';
-import 'package:rep_rise/presentation/screens/workout_screen.dart';
+import 'package:rep_rise/presentation/screens/home/home_screen.dart';
+import 'package:rep_rise/presentation/screens/steps/steps_screen.dart';
+import 'package:rep_rise/presentation/screens/workout/workout_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -52,7 +52,7 @@ class _MainScreenState extends State<MainScreen> {
           index: _selectedIndex,
           children: [
             _buildNavigator(0, const HomeScreen()),
-            _buildNavigator(1, const WorkoutScreen()),
+            _buildNavigator(1, const TestScreen()),
             _buildNavigator(2, const StepsScreen()),
           ],
         ),

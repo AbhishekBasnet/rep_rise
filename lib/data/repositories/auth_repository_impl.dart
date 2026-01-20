@@ -36,7 +36,7 @@ class AuthRepositoryImpl implements AuthRepository {
   final ApiClient apiClient;
   final TokenService tokenService;
 
-  AuthRepositoryImpl(this.apiClient, this.tokenService);
+  AuthRepositoryImpl({required this.apiClient, required this.tokenService});
 
   @override
   Future<void> login(String username, String password) async {

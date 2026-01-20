@@ -1,22 +1,34 @@
 import 'package:rep_rise/domain/entity/steps/step_summary_entity.dart';
-import '../../../domain/entity/steps/step_entity.dart';
+import 'package:rep_rise/domain/entity/steps/weekly_step_entity.dart';
+import '../../../domain/entity/steps/daily_step_entity.dart';
 
-class StepModel extends StepEntity {
-  const StepModel({required super.date, required super.steps, required super.goal, super.dayName});
+class WeeklyStepModel extends WeeklyStepEntity {
+  const WeeklyStepModel({
+    required super.date,
+    required super.steps,
+    required super.goal, required super.dayName,
 
-  factory StepModel.fromJson(Map<String, dynamic> json) {
+  });
+
+  factory WeeklyStepModel.fromJson(Map<String, dynamic> json) {
     final rawDate = DateTime.parse(json['date']);
     final cleanDate = DateTime(rawDate.year, rawDate.month, rawDate.day);
 
-    return StepModel(
+    return WeeklyStepModel(
       date: cleanDate,
       steps: (json['steps'] as num).toInt(),
       goal: (json['goal'] ?? 0) as int,
       dayName: json['day_name'],
+
     );
   }
-  StepEntity toEntity() {
-    return StepEntity(date: date, steps: steps, goal: goal, dayName: dayName);
+  WeeklyStepEntity toEntity() {
+    return WeeklyStepEntity(
+      date: date,
+      steps: steps,
+      goal: goal,
+      dayName: dayName,
+    );
   }
 }
 

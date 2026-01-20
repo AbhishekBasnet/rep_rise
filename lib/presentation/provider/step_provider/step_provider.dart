@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:rep_rise/core/util/extension/date/short_day_name.dart';
-import 'package:rep_rise/domain/entity/steps/step_entity.dart';
+import 'package:rep_rise/domain/entity/steps/daily_step_entity.dart';
+import 'package:rep_rise/domain/entity/steps/weekly_step_entity.dart';
 import 'package:rep_rise/domain/usecase/step/get_daily_step_usecase.dart';
 import 'package:rep_rise/domain/usecase/step/get_monthly_step_usecase.dart';
 import 'package:rep_rise/domain/usecase/step/get_weekly_step_usecase.dart';
@@ -51,7 +52,7 @@ class StepProvider extends ChangeNotifier {
     required this.syncStepsUseCase,
   });
 
-  int _totalDailySteps = 0;
+  int _dailyStepGoal = 0;
   int _walkedDailySteps = 0;
   double _percentage = 1;
   bool _isLoading = false;
@@ -61,7 +62,7 @@ class StepProvider extends ChangeNotifier {
   List<WeeklyChartData> get weeklyChartData => _weeklyChartData;
   bool get isLoading => _isLoading;
   double get percentage => _percentage;
-  int get totalDailySteps => _totalDailySteps;
+  int get totalDailySteps => _dailyStepGoal;
   int get walkedDailySteps => _walkedDailySteps;
   int get highestWeeklyGoal => _highestWeeklyGoal;
 
@@ -90,12 +91,12 @@ class StepProvider extends ChangeNotifier {
 
     try {
       await Future.delayed(const Duration(seconds: 1));
-      final StepEntity stepData = await getDailyStepUsecase.execute();
+      final DailyStepEntity stepData = await getDailyStepUsecase.execute();
       debugPrint(
         "Fetched daily steps: ${stepData.steps}, Goal: ${stepData.goal}, Percentage: ${stepData.progressPercentage}",
       );
       _walkedDailySteps = stepData.steps;
-      _totalDailySteps = stepData.goal;
+      _dailyStepGoal = stepData.goal;
       _percentage = stepData.progressPercentage;
       _isLoading = false;
       notifyListeners();
@@ -112,10 +113,10 @@ class StepProvider extends ChangeNotifier {
       final history = await getWeeklyStepUsecase.execute();
 
       final String todayStr = DateTime.now().toShortDayName;
-      final todayEntity = StepEntity(
+      final todayEntity = WeeklyStepEntity(
         date: DateTime.now(),
         steps: _walkedDailySteps,
-        goal: _totalDailySteps,
+        goal: _dailyStepGoal,
         dayName: todayStr,
       );
 

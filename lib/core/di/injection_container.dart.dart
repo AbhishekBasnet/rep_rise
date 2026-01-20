@@ -16,6 +16,7 @@ import 'package:rep_rise/domain/repositories/profile/register_profile_repository
 import 'package:rep_rise/domain/repositories/step_repository.dart';
 import 'package:rep_rise/domain/usecase/auth/check_user_name_usecase.dart';
 import 'package:rep_rise/domain/usecase/profile/create_profile_usecase.dart';
+import 'package:rep_rise/domain/usecase/profile/get_user_profile_usecase.dart';
 import 'package:rep_rise/domain/usecase/step/get_daily_step_usecase.dart';
 import 'package:rep_rise/domain/usecase/step/get_monthly_step_usecase.dart';
 import 'package:rep_rise/domain/usecase/step/get_weekly_step_usecase.dart';
@@ -110,15 +111,15 @@ Future<void> init() async {
   sl.registerLazySingleton(() => TokenService());
   sl.registerLazySingleton(() => ApiClient(sl()));
   sl.registerLazySingleton(() => HealthService());
-  sl.registerLazySingleton(() => StepRemoteDataSource(client: sl()));
-  sl.registerLazySingleton(() => ProfileRemoteDataSource(client: sl()));
+  sl.registerLazySingleton(() => StepRemoteDataSource(apiClient: sl()));
+  sl.registerLazySingleton(() => ProfileRemoteDataSource(apiClient: sl()));
 
   // ---------------------------------------------------------------------------
   // Data Repositories
   // ---------------------------------------------------------------------------
   // Repositories hide the data origin (Local vs Remote) from the Domain layer.
   // We register the Interface <T> but return the Implementation <TImpl>.
-  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl(), sl()));
+  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(apiClient: sl(), tokenService: sl()));
   sl.registerLazySingleton<StepRepository>(
     () => StepRepositoryImpl(remoteDataSource: sl(), healthService: sl(), stepLocalDataSource: sl()),
   );
@@ -130,19 +131,21 @@ Future<void> init() async {
   // Domain Use Cases
   // ---------------------------------------------------------------------------
   // Atomic business logic units. Each Use Case corresponds to a single user action or data calculation.
-  //  Auth and Profile Use Cases
-  sl.registerLazySingleton(() => LoginUseCase(sl()));
-  sl.registerLazySingleton(() => RegisterUseCase(sl()));
+  //  Auth Use Cases
+  sl.registerLazySingleton(() => LoginUseCase(authRepository: sl()));
+  sl.registerLazySingleton(() => RegisterUseCase(authRepository: sl()));
   sl.registerLazySingleton(() => LogoutUseCase(authRepository: sl(), stepRepository: sl()));
   sl.registerLazySingleton(() => CheckAuthStatusUseCase(tokenService: sl(), authRepository: sl()));
-  sl.registerLazySingleton(() => CheckUsernameUseCase(sl()));
-  sl.registerLazySingleton(() => CreateProfileUseCase(sl()));
-  // Step Use Cases
-  sl.registerLazySingleton(() => GetDailyStepUsecase(sl()));
-  sl.registerLazySingleton(() => GetWeeklyStepUsecase(sl()));
-  sl.registerLazySingleton(() => GetMonthlyStepUsecase(sl()));
-  sl.registerLazySingleton(() => SyncStepsUseCase(sl()));
+  sl.registerLazySingleton(() => CheckUsernameUseCase(authRepository: sl()));
 
+  // Step Use Cases
+  sl.registerLazySingleton(() => GetDailyStepUsecase(stepRepository: sl()));
+  sl.registerLazySingleton(() => GetWeeklyStepUsecase(stepRepository: sl()));
+  sl.registerLazySingleton(() => GetMonthlyStepUsecase(stepRepository: sl()));
+  sl.registerLazySingleton(() => SyncStepsUseCase(stepRepository: sl()));
+  //  Profile Use Cases
+  sl.registerLazySingleton(() => CreateProfileUseCase(profileRepository: sl()));
+  sl.registerLazySingleton(() => GetUserProfileUseCase(profileRepository: sl()));
   // ---------------------------------------------------------------------------
   // Presentation Layer (State Management)
   // ---------------------------------------------------------------------------
@@ -169,5 +172,5 @@ Future<void> init() async {
     ),
   );
 
-  sl.registerFactory(() => ProfileProvider(profileRepository: sl()));
+  sl.registerFactory(() => ProfileProvider(getUserProfileUseCase: sl()));
 }

@@ -1,4 +1,4 @@
-import 'package:rep_rise/domain/entity/steps/step_entity.dart';
+import 'package:rep_rise/domain/entity/steps/daily_step_entity.dart';
 import 'package:rep_rise/domain/repositories/step_repository.dart';
 
 
@@ -6,9 +6,9 @@ import 'package:rep_rise/domain/repositories/step_repository.dart';
 class GetDailyStepUsecase {
   final StepRepository stepRepository;
 
-  GetDailyStepUsecase(this.stepRepository);
+  GetDailyStepUsecase({required this.stepRepository});
 
-  Future<StepEntity> execute () async{
+  Future<DailyStepEntity> execute () async{
     return await stepRepository.getDailySteps();
 }
 }
