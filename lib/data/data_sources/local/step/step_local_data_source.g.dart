@@ -3,11 +3,12 @@
 part of 'step_local_data_source.dart';
 
 // ignore_for_file: type=lint
-class $StepsTable extends Steps with TableInfo<$StepsTable, Step> {
+class $WeeklyStepsTable extends WeeklySteps
+    with TableInfo<$WeeklyStepsTable, WeeklyStep> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $StepsTable(this.attachedDatabase, [this._alias]);
+  $WeeklyStepsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _dateMeta = const VerificationMeta('date');
   @override
   late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
@@ -43,9 +44,9 @@ class $StepsTable extends Steps with TableInfo<$StepsTable, Step> {
   late final GeneratedColumn<String> dayName = GeneratedColumn<String>(
     'day_name',
     aliasedName,
-    true,
+    false,
     type: DriftSqlType.string,
-    requiredDuringInsert: false,
+    requiredDuringInsert: true,
   );
   @override
   List<GeneratedColumn> get $columns => [date, steps, goal, dayName];
@@ -53,10 +54,10 @@ class $StepsTable extends Steps with TableInfo<$StepsTable, Step> {
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'steps';
+  static const String $name = 'weekly_steps';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Step> instance, {
+    Insertable<WeeklyStep> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -88,6 +89,8 @@ class $StepsTable extends Steps with TableInfo<$StepsTable, Step> {
         _dayNameMeta,
         dayName.isAcceptableOrUnknown(data['day_name']!, _dayNameMeta),
       );
+    } else if (isInserting) {
+      context.missing(_dayNameMeta);
     }
     return context;
   }
@@ -95,9 +98,9 @@ class $StepsTable extends Steps with TableInfo<$StepsTable, Step> {
   @override
   Set<GeneratedColumn> get $primaryKey => {date};
   @override
-  Step map(Map<String, dynamic> data, {String? tablePrefix}) {
+  WeeklyStep map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Step(
+    return WeeklyStep(
       date: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}date'],
@@ -113,26 +116,26 @@ class $StepsTable extends Steps with TableInfo<$StepsTable, Step> {
       dayName: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}day_name'],
-      ),
+      )!,
     );
   }
 
   @override
-  $StepsTable createAlias(String alias) {
-    return $StepsTable(attachedDatabase, alias);
+  $WeeklyStepsTable createAlias(String alias) {
+    return $WeeklyStepsTable(attachedDatabase, alias);
   }
 }
 
-class Step extends DataClass implements Insertable<Step> {
+class WeeklyStep extends DataClass implements Insertable<WeeklyStep> {
   final DateTime date;
   final int steps;
   final int goal;
-  final String? dayName;
-  const Step({
+  final String dayName;
+  const WeeklyStep({
     required this.date,
     required this.steps,
     required this.goal,
-    this.dayName,
+    required this.dayName,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -140,33 +143,29 @@ class Step extends DataClass implements Insertable<Step> {
     map['date'] = Variable<DateTime>(date);
     map['steps'] = Variable<int>(steps);
     map['goal'] = Variable<int>(goal);
-    if (!nullToAbsent || dayName != null) {
-      map['day_name'] = Variable<String>(dayName);
-    }
+    map['day_name'] = Variable<String>(dayName);
     return map;
   }
 
-  StepsCompanion toCompanion(bool nullToAbsent) {
-    return StepsCompanion(
+  WeeklyStepsCompanion toCompanion(bool nullToAbsent) {
+    return WeeklyStepsCompanion(
       date: Value(date),
       steps: Value(steps),
       goal: Value(goal),
-      dayName: dayName == null && nullToAbsent
-          ? const Value.absent()
-          : Value(dayName),
+      dayName: Value(dayName),
     );
   }
 
-  factory Step.fromJson(
+  factory WeeklyStep.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Step(
+    return WeeklyStep(
       date: serializer.fromJson<DateTime>(json['date']),
       steps: serializer.fromJson<int>(json['steps']),
       goal: serializer.fromJson<int>(json['goal']),
-      dayName: serializer.fromJson<String?>(json['dayName']),
+      dayName: serializer.fromJson<String>(json['dayName']),
     );
   }
   @override
@@ -176,23 +175,23 @@ class Step extends DataClass implements Insertable<Step> {
       'date': serializer.toJson<DateTime>(date),
       'steps': serializer.toJson<int>(steps),
       'goal': serializer.toJson<int>(goal),
-      'dayName': serializer.toJson<String?>(dayName),
+      'dayName': serializer.toJson<String>(dayName),
     };
   }
 
-  Step copyWith({
+  WeeklyStep copyWith({
     DateTime? date,
     int? steps,
     int? goal,
-    Value<String?> dayName = const Value.absent(),
-  }) => Step(
+    String? dayName,
+  }) => WeeklyStep(
     date: date ?? this.date,
     steps: steps ?? this.steps,
     goal: goal ?? this.goal,
-    dayName: dayName.present ? dayName.value : this.dayName,
+    dayName: dayName ?? this.dayName,
   );
-  Step copyWithCompanion(StepsCompanion data) {
-    return Step(
+  WeeklyStep copyWithCompanion(WeeklyStepsCompanion data) {
+    return WeeklyStep(
       date: data.date.present ? data.date.value : this.date,
       steps: data.steps.present ? data.steps.value : this.steps,
       goal: data.goal.present ? data.goal.value : this.goal,
@@ -202,7 +201,7 @@ class Step extends DataClass implements Insertable<Step> {
 
   @override
   String toString() {
-    return (StringBuffer('Step(')
+    return (StringBuffer('WeeklyStep(')
           ..write('date: $date, ')
           ..write('steps: $steps, ')
           ..write('goal: $goal, ')
@@ -216,35 +215,36 @@ class Step extends DataClass implements Insertable<Step> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Step &&
+      (other is WeeklyStep &&
           other.date == this.date &&
           other.steps == this.steps &&
           other.goal == this.goal &&
           other.dayName == this.dayName);
 }
 
-class StepsCompanion extends UpdateCompanion<Step> {
+class WeeklyStepsCompanion extends UpdateCompanion<WeeklyStep> {
   final Value<DateTime> date;
   final Value<int> steps;
   final Value<int> goal;
-  final Value<String?> dayName;
+  final Value<String> dayName;
   final Value<int> rowid;
-  const StepsCompanion({
+  const WeeklyStepsCompanion({
     this.date = const Value.absent(),
     this.steps = const Value.absent(),
     this.goal = const Value.absent(),
     this.dayName = const Value.absent(),
     this.rowid = const Value.absent(),
   });
-  StepsCompanion.insert({
+  WeeklyStepsCompanion.insert({
     required DateTime date,
     required int steps,
     this.goal = const Value.absent(),
-    this.dayName = const Value.absent(),
+    required String dayName,
     this.rowid = const Value.absent(),
   }) : date = Value(date),
-       steps = Value(steps);
-  static Insertable<Step> custom({
+       steps = Value(steps),
+       dayName = Value(dayName);
+  static Insertable<WeeklyStep> custom({
     Expression<DateTime>? date,
     Expression<int>? steps,
     Expression<int>? goal,
@@ -260,14 +260,14 @@ class StepsCompanion extends UpdateCompanion<Step> {
     });
   }
 
-  StepsCompanion copyWith({
+  WeeklyStepsCompanion copyWith({
     Value<DateTime>? date,
     Value<int>? steps,
     Value<int>? goal,
-    Value<String?>? dayName,
+    Value<String>? dayName,
     Value<int>? rowid,
   }) {
-    return StepsCompanion(
+    return WeeklyStepsCompanion(
       date: date ?? this.date,
       steps: steps ?? this.steps,
       goal: goal ?? this.goal,
@@ -299,7 +299,7 @@ class StepsCompanion extends UpdateCompanion<Step> {
 
   @override
   String toString() {
-    return (StringBuffer('StepsCompanion(')
+    return (StringBuffer('WeeklyStepsCompanion(')
           ..write('date: $date, ')
           ..write('steps: $steps, ')
           ..write('goal: $goal, ')
@@ -313,33 +313,34 @@ class StepsCompanion extends UpdateCompanion<Step> {
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
-  late final $StepsTable steps = $StepsTable(this);
+  late final $WeeklyStepsTable weeklySteps = $WeeklyStepsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [steps];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [weeklySteps];
 }
 
-typedef $$StepsTableCreateCompanionBuilder =
-    StepsCompanion Function({
+typedef $$WeeklyStepsTableCreateCompanionBuilder =
+    WeeklyStepsCompanion Function({
       required DateTime date,
       required int steps,
       Value<int> goal,
-      Value<String?> dayName,
+      required String dayName,
       Value<int> rowid,
     });
-typedef $$StepsTableUpdateCompanionBuilder =
-    StepsCompanion Function({
+typedef $$WeeklyStepsTableUpdateCompanionBuilder =
+    WeeklyStepsCompanion Function({
       Value<DateTime> date,
       Value<int> steps,
       Value<int> goal,
-      Value<String?> dayName,
+      Value<String> dayName,
       Value<int> rowid,
     });
 
-class $$StepsTableFilterComposer extends Composer<_$AppDatabase, $StepsTable> {
-  $$StepsTableFilterComposer({
+class $$WeeklyStepsTableFilterComposer
+    extends Composer<_$AppDatabase, $WeeklyStepsTable> {
+  $$WeeklyStepsTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -367,9 +368,9 @@ class $$StepsTableFilterComposer extends Composer<_$AppDatabase, $StepsTable> {
   );
 }
 
-class $$StepsTableOrderingComposer
-    extends Composer<_$AppDatabase, $StepsTable> {
-  $$StepsTableOrderingComposer({
+class $$WeeklyStepsTableOrderingComposer
+    extends Composer<_$AppDatabase, $WeeklyStepsTable> {
+  $$WeeklyStepsTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -397,9 +398,9 @@ class $$StepsTableOrderingComposer
   );
 }
 
-class $$StepsTableAnnotationComposer
-    extends Composer<_$AppDatabase, $StepsTable> {
-  $$StepsTableAnnotationComposer({
+class $$WeeklyStepsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $WeeklyStepsTable> {
+  $$WeeklyStepsTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -419,40 +420,43 @@ class $$StepsTableAnnotationComposer
       $composableBuilder(column: $table.dayName, builder: (column) => column);
 }
 
-class $$StepsTableTableManager
+class $$WeeklyStepsTableTableManager
     extends
         RootTableManager<
           _$AppDatabase,
-          $StepsTable,
-          Step,
-          $$StepsTableFilterComposer,
-          $$StepsTableOrderingComposer,
-          $$StepsTableAnnotationComposer,
-          $$StepsTableCreateCompanionBuilder,
-          $$StepsTableUpdateCompanionBuilder,
-          (Step, BaseReferences<_$AppDatabase, $StepsTable, Step>),
-          Step,
+          $WeeklyStepsTable,
+          WeeklyStep,
+          $$WeeklyStepsTableFilterComposer,
+          $$WeeklyStepsTableOrderingComposer,
+          $$WeeklyStepsTableAnnotationComposer,
+          $$WeeklyStepsTableCreateCompanionBuilder,
+          $$WeeklyStepsTableUpdateCompanionBuilder,
+          (
+            WeeklyStep,
+            BaseReferences<_$AppDatabase, $WeeklyStepsTable, WeeklyStep>,
+          ),
+          WeeklyStep,
           PrefetchHooks Function()
         > {
-  $$StepsTableTableManager(_$AppDatabase db, $StepsTable table)
+  $$WeeklyStepsTableTableManager(_$AppDatabase db, $WeeklyStepsTable table)
     : super(
         TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$StepsTableFilterComposer($db: db, $table: table),
+              $$WeeklyStepsTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$StepsTableOrderingComposer($db: db, $table: table),
+              $$WeeklyStepsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$StepsTableAnnotationComposer($db: db, $table: table),
+              $$WeeklyStepsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
                 Value<DateTime> date = const Value.absent(),
                 Value<int> steps = const Value.absent(),
                 Value<int> goal = const Value.absent(),
-                Value<String?> dayName = const Value.absent(),
+                Value<String> dayName = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
-              }) => StepsCompanion(
+              }) => WeeklyStepsCompanion(
                 date: date,
                 steps: steps,
                 goal: goal,
@@ -464,9 +468,9 @@ class $$StepsTableTableManager
                 required DateTime date,
                 required int steps,
                 Value<int> goal = const Value.absent(),
-                Value<String?> dayName = const Value.absent(),
+                required String dayName,
                 Value<int> rowid = const Value.absent(),
-              }) => StepsCompanion.insert(
+              }) => WeeklyStepsCompanion.insert(
                 date: date,
                 steps: steps,
                 goal: goal,
@@ -481,24 +485,27 @@ class $$StepsTableTableManager
       );
 }
 
-typedef $$StepsTableProcessedTableManager =
+typedef $$WeeklyStepsTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
-      $StepsTable,
-      Step,
-      $$StepsTableFilterComposer,
-      $$StepsTableOrderingComposer,
-      $$StepsTableAnnotationComposer,
-      $$StepsTableCreateCompanionBuilder,
-      $$StepsTableUpdateCompanionBuilder,
-      (Step, BaseReferences<_$AppDatabase, $StepsTable, Step>),
-      Step,
+      $WeeklyStepsTable,
+      WeeklyStep,
+      $$WeeklyStepsTableFilterComposer,
+      $$WeeklyStepsTableOrderingComposer,
+      $$WeeklyStepsTableAnnotationComposer,
+      $$WeeklyStepsTableCreateCompanionBuilder,
+      $$WeeklyStepsTableUpdateCompanionBuilder,
+      (
+        WeeklyStep,
+        BaseReferences<_$AppDatabase, $WeeklyStepsTable, WeeklyStep>,
+      ),
+      WeeklyStep,
       PrefetchHooks Function()
     >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
-  $$StepsTableTableManager get steps =>
-      $$StepsTableTableManager(_db, _db.steps);
+  $$WeeklyStepsTableTableManager get weeklySteps =>
+      $$WeeklyStepsTableTableManager(_db, _db.weeklySteps);
 }

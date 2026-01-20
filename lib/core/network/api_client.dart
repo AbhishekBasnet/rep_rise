@@ -38,7 +38,7 @@ import '../exception/api_exception.dart';
 /// A network client wrapper around [Dio] that handles HTTP requests,
 /// authentication, and error transformation.
 ///
-/// This class is responsible for:
+
 /// * managing the base configuration (timeouts, headers).
 /// * injecting authentication tokens into requests.
 /// * automatically refreshing expired tokens (401 handling).
@@ -49,7 +49,8 @@ import '../exception/api_exception.dart';
 /// final response = await apiClient.get('/endpoint');
 /// ```
 class ApiClient {
-  static const String baseApiUrl = "http://10.0.2.2:8000/api/v1/";
+  static const String baseApiUrl = "http://127.0.0.1:8000/api/v1/";
+  // static const String baseApiUrl = "http://10.0.2.2:8000/api/v1/";
   final Dio _dio;
   final TokenService _tokenService;
 

@@ -1,11 +1,11 @@
 import 'package:rep_rise/domain/repositories/step_repository.dart';
 
 class SyncStepsUseCase {
-  final StepRepository repository;
+  final StepRepository stepRepository;
 
-  SyncStepsUseCase(this.repository);
+  SyncStepsUseCase({required this.stepRepository});
 
   Future<void> execute() async {
-    return repository.syncSteps();
+    return stepRepository.syncSteps();
   }
 }

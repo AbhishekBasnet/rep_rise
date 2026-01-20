@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rep_rise/presentation/provider/auth_provider.dart';
+import 'package:rep_rise/presentation/provider/auth/auth_provider.dart';
 
 /// A centralized navigation handler that allows navigation from outside the
 /// widget tree (e.g., from [ApiClient] or Business Logic Components).

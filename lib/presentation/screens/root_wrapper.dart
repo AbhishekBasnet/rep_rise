@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rep_rise/presentation/provider/auth_provider.dart';
+import 'package:rep_rise/presentation/provider/auth/auth_provider.dart';
 import 'package:rep_rise/presentation/screens/auth/login_screen.dart';
 import 'package:rep_rise/presentation/screens/main_screen.dart';
 

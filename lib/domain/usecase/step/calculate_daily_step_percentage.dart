@@ -1,7 +1,7 @@
-import 'package:rep_rise/domain/entity/steps/step_entity.dart';
+import 'package:rep_rise/domain/entity/steps/daily_step_entity.dart';
 
 class CalculateDailyStepPercentage {
-  final StepEntity stepEntity;
+  final DailyStepEntity stepEntity;
 
   const CalculateDailyStepPercentage({required this.stepEntity});
 
