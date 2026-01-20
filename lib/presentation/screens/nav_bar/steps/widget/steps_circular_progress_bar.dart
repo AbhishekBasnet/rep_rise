@@ -40,7 +40,7 @@ class StepCounterCircularProgress extends StatelessWidget {
                 Text("Steps", style: AppTheme.profileSetupSubHeader),
                 SizedBox(height: 8),
                 Text("${stepsProvider.walkedDailySteps}", style: AppTheme.stepsProgressNumber),
-                Text("/${stepsProvider.totalDailySteps}"),
+                Text("/${stepsProvider.dailyStepGoal}"),
               ],
             ),
           ),

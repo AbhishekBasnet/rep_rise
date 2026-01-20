@@ -16,7 +16,7 @@ class AiWorkoutCard extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [_upperTile(), const SizedBox(height: 15),_mainBody()],
+        children: [_upperTile(), const SizedBox(height: 15), _mainBody()],
       ),
     );
   }

@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:rep_rise/core/theme/app_theme.dart';
 import 'package:rep_rise/presentation/provider/profile/register_profile_provider.dart';
-import 'package:rep_rise/presentation/screens/profile/profile/create_profile/profile_wheel_picker.dart';
+import 'package:rep_rise/presentation/screens/profile/create_profile/widget/profile_wheel_picker.dart';
 
 class HeightStepPage extends StatelessWidget {
   const HeightStepPage({super.key});

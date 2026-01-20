@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:rep_rise/core/util/extension/date/short_day_name.dart';
+import 'package:rep_rise/core/util/extension/to_precision.dart';
 import 'package:rep_rise/domain/entity/steps/daily_step_entity.dart';
 import 'package:rep_rise/domain/entity/steps/weekly_step_entity.dart';
 import 'package:rep_rise/domain/usecase/step/get_daily_step_usecase.dart';
@@ -57,14 +58,21 @@ class StepProvider extends ChangeNotifier {
   double _percentage = 1;
   bool _isLoading = false;
   int _highestWeeklyGoal = 10000;
+
+  double _caloriesBurned = 0;
+  double _distanceMeters = 0;
+  int _durationMinutes = 0;
   List<WeeklyChartData> _weeklyChartData = [];
 
   List<WeeklyChartData> get weeklyChartData => _weeklyChartData;
   bool get isLoading => _isLoading;
   double get percentage => _percentage;
-  int get totalDailySteps => _dailyStepGoal;
+  int get dailyStepGoal => _dailyStepGoal;
   int get walkedDailySteps => _walkedDailySteps;
   int get highestWeeklyGoal => _highestWeeklyGoal;
+  double get caloriesBurned => _caloriesBurned;
+  double get distanceKiloMeters => (_distanceMeters/1000).toPrecision(2);
+  int get durationMinutes => _durationMinutes;
 
   Future<void> initSteps() async {
     _isLoading = true;
@@ -98,6 +106,9 @@ class StepProvider extends ChangeNotifier {
       _walkedDailySteps = stepData.steps;
       _dailyStepGoal = stepData.goal;
       _percentage = stepData.progressPercentage;
+      _caloriesBurned = stepData.caloriesBurned;
+      _distanceMeters = stepData.distanceMeters;
+      _durationMinutes = stepData.durationMinutes;
       _isLoading = false;
       notifyListeners();
     } catch (e) {

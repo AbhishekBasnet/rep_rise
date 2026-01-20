@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rep_rise/core/theme/app_theme.dart';
 
-import '../../../../../provider/profile/register_profile_provider.dart';
-import '../profile_wheel_picker.dart';
+import '../../../../provider/profile/register_profile_provider.dart';
+import '../widget/profile_wheel_picker.dart';
 
 class AgeStepPage extends StatelessWidget {
   const AgeStepPage({super.key});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:rep_rise/presentation/screens/home/home_screen.dart';
-import 'package:rep_rise/presentation/screens/steps/steps_screen.dart';
-import 'package:rep_rise/presentation/screens/workout/workout_screen.dart';
+import 'package:rep_rise/presentation/screens/nav_bar/home/home_screen.dart';
+import 'package:rep_rise/presentation/screens/nav_bar/steps/steps_screen.dart';
+import 'package:rep_rise/presentation/screens/nav_bar/workout/workout_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
