@@ -4,10 +4,12 @@ import 'package:rep_rise/domain/usecase/profile/get_user_profile_usecase.dart';
 
 import '../../../domain/entity/profile/user_profile_entity.dart';
 
-class ProfileProvider extends ChangeNotifier {
+class UserProfileProvider extends ChangeNotifier {
   final GetUserProfileUseCase getUserProfileUseCase;
 
-  ProfileProvider({ required this.getUserProfileUseCase});
+  UserProfileProvider({required this.getUserProfileUseCase}){
+    fetchUserProfile();
+  }
 
   UserProfileEntity? _userProfile;
   bool _isLoading = false;
@@ -27,16 +29,19 @@ class ProfileProvider extends ChangeNotifier {
 
   int get dailyStepGoal => _userProfile?.dailyStepGoal ?? 0;
   double get bmi => _userProfile?.bmi ?? 0.0;
+  UserProfileEntity? get userProfile => _userProfile;
 
-  Future<void> fetchUserProfile() async {
+  Future<UserProfileEntity?> fetchUserProfile() async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      _userProfile = await  getUserProfileUseCase.execute();
+      _userProfile = await getUserProfileUseCase.execute();
+      return _userProfile!;
     } catch (e) {
       _errorMessage = e.toString();
+      return null;
     } finally {
       _isLoading = false;
       notifyListeners();

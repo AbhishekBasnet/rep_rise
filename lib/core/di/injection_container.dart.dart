@@ -8,10 +8,10 @@ import 'package:rep_rise/core/services/health_steps_service.dart';
 import 'package:rep_rise/data/data_sources/local/step/step_local_data_source.dart';
 import 'package:rep_rise/data/data_sources/remote/profile_remote_data_source.dart';
 import 'package:rep_rise/data/data_sources/remote/step_remote_data_source.dart';
-import 'package:rep_rise/data/repositories/profile/profile_repository.dart';
+import 'package:rep_rise/data/repositories/profile/User_profile_repository_impl.dart';
 import 'package:rep_rise/data/repositories/profile/register_profile_repository_impl.dart';
 import 'package:rep_rise/data/repositories/step_repository_impl.dart';
-import 'package:rep_rise/domain/repositories/profile/profile_repository.dart';
+import 'package:rep_rise/domain/repositories/profile/user_profile_repository.dart';
 import 'package:rep_rise/domain/repositories/profile/register_profile_repository.dart';
 import 'package:rep_rise/domain/repositories/step_repository.dart';
 import 'package:rep_rise/domain/usecase/auth/check_user_name_usecase.dart';
@@ -21,7 +21,7 @@ import 'package:rep_rise/domain/usecase/step/get_daily_step_usecase.dart';
 import 'package:rep_rise/domain/usecase/step/get_monthly_step_usecase.dart';
 import 'package:rep_rise/domain/usecase/step/get_weekly_step_usecase.dart';
 import 'package:rep_rise/domain/usecase/step/sync_step_usecase.dart';
-import 'package:rep_rise/presentation/provider/profile/profile_provider.dart';
+import 'package:rep_rise/presentation/provider/profile/user_profile_provider.dart';
 import 'package:rep_rise/presentation/provider/profile/register_profile_provider.dart';
 import 'package:rep_rise/presentation/provider/step_provider/step_provider.dart';
 
@@ -172,5 +172,5 @@ Future<void> init() async {
     ),
   );
 
-  sl.registerFactory(() => ProfileProvider(getUserProfileUseCase: sl()));
+  sl.registerFactory(() => UserProfileProvider(getUserProfileUseCase: sl()));
 }

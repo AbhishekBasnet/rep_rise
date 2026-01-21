@@ -2,7 +2,6 @@ import '../../../domain/entity/profile/user_profile_entity.dart';
 
 class UserProfileModel extends UserProfileEntity {
   const UserProfileModel({
-    required super.id,
     required super.username,
     required super.email,
     required super.height,
@@ -17,7 +16,6 @@ class UserProfileModel extends UserProfileEntity {
     final profileData = json['profile'] as Map<String, dynamic>;
 
     return UserProfileModel(
-      id: (json['id'] as num).toInt(),
       username: json['username'] ?? '',
       email: json['email'] ?? '',
 
@@ -32,7 +30,6 @@ class UserProfileModel extends UserProfileEntity {
 
   UserProfileEntity toEntity() {
     return UserProfileEntity(
-      id: id,
       username: username,
       email: email,
       height: height,

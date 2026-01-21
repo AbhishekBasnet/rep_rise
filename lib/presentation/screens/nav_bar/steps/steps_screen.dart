@@ -28,19 +28,7 @@ class _StepsScreenState extends State<StepsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Steps Overview'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.storage_rounded, color: Colors.red),
-            onPressed: () {
-              final db = sl<AppDatabase>();
 
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => DriftDbViewer(db)));
-            },
-          ),
-        ],
-      ),
       body: CustomScrollView(
         slivers: [
           SliverFillRemaining(

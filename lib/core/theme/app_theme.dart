@@ -70,13 +70,13 @@ class AppTheme {
   static const TextStyle barGraphXYAxisLabel = TextStyle(color: Colors.grey, fontSize: 12);
 
   //--------------- Styles for Home screen ------------------
-  static final BoxDecoration homeActivityCardDecoration = BoxDecoration(
+  static final BoxDecoration homeActivityCardDecoration =BoxDecoration(
+    borderRadius: BorderRadius.circular(30),
     gradient: const LinearGradient(
-      colors: [primaryPurple, Color(0xFF563A9C)],
+      colors: [Color(0xFF5B3FD8), Color(0xFF8F5AFF)], // Electric Purple
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
     ),
-    borderRadius: BorderRadius.circular(30),
     boxShadow: [
       BoxShadow(color: primaryPurple.withValues(alpha: 0.4), blurRadius: 20, offset: const Offset(0, 10)),
     ],
