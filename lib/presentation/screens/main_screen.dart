@@ -52,7 +52,7 @@ class _MainScreenState extends State<MainScreen> {
           index: _selectedIndex,
           children: [
             _buildNavigator(0, const HomeScreen()),
-            _buildNavigator(1, const TestScreen()),
+            _buildNavigator(1, const WorkoutScreen()),
             _buildNavigator(2, const StepsScreen()),
           ],
         ),

@@ -47,23 +47,31 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: Consumer<StepProvider>(
           builder: (context, stepProvider, child) {
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  DailySummaryCard(
-                    stepsTaken: stepProvider.walkedDailySteps,
-                    stepGoal: stepProvider.dailyStepGoal,
-                    calories: stepProvider.caloriesBurned,
-                    distanceK: stepProvider.distanceKiloMeters,
+            return CustomScrollView(
+              slivers: [
+                SliverFillRemaining(
+                  hasScrollBody: false,
+
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        DailySummaryCard(
+                          stepsTaken: stepProvider.walkedDailySteps,
+                          stepGoal: stepProvider.dailyStepGoal,
+                          calories: stepProvider.caloriesBurned,
+                          distanceK: stepProvider.distanceKiloMeters,
+                        ),
+
+                        AiWorkoutCard(),
+                      ],
+                    ),
                   ),
-            
-                  AiWorkoutCard(),
-                ],
-              ),
+                ),
+              ],
             );
-          }
+          },
         ),
       ),
     );
@@ -80,10 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
               shape: BoxShape.circle,
               border: Border.all(color: AppTheme.primaryPurple, width: 2),
             ),
-            child: const CircleAvatar(
-              radius: 18,
-              backgroundImage: AssetImage('assets/images/user_placeholder.png'),
-            ),
+            child: const CircleAvatar(radius: 18, backgroundImage: AssetImage('assets/images/user_placeholder.png')),
           ),
           const SizedBox(width: 12),
           Column(

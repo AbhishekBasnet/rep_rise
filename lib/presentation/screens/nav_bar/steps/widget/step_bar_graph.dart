@@ -15,7 +15,6 @@ class StepBarGraph extends StatelessWidget {
         final double interval = maxGoal / 5;
 
         return Container(
-          // margin: const EdgeInsetsGeometry.symmetric(horizontal: 5),
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.white,
@@ -25,7 +24,6 @@ class StepBarGraph extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 1. THE HEADER (Statistics + Dropdown)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -50,7 +48,6 @@ class StepBarGraph extends StatelessWidget {
               ),
               const SizedBox(height: 24),
 
-              // 2. THE CHART
               SizedBox(
                 height: 200,
                 child: BarChart(
@@ -88,7 +85,6 @@ class StepBarGraph extends StatelessWidget {
     );
   }
 
-  // Helper Functions
   BarChartGroupData _makeBar({
     required int index,
     required double steps,
@@ -112,7 +108,6 @@ class StepBarGraph extends StatelessWidget {
       ],
     );
   }
-  //Helper Widget
 
   BarTouchData _barTouchData() {
     return BarTouchData(

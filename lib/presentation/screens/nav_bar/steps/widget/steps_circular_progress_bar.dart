@@ -11,11 +11,11 @@ class StepCounterCircularProgress extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<StepProvider>(
       builder: (context, stepsProvider, child) {
-        final bool isGoalReached = stepsProvider.percentage >= 1.0;
 
         final double percentToDraw = stepsProvider.percentage > 1.0 ? 1.0 : stepsProvider.percentage;
         return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 5),
+          padding: const EdgeInsets.symmetric(horizontal: 130, vertical: 30),
+          width: double.infinity,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(18),

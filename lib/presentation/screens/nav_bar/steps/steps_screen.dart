@@ -50,9 +50,15 @@ class _StepsScreenState extends State<StepsScreen> {
               padding: const EdgeInsets.all(10),
 
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.start,
 
-                children: const [StepCounterCircularProgress(), StepBarGraph(), StepsCounterMonthly()],
+                children: const [
+                  StepCounterCircularProgress(),
+                  SizedBox(height: 15),
+                  StepBarGraph(),
+                  SizedBox(height: 15),
+                  StepsCounterMonthly(),
+                ],
               ),
             ),
           ),

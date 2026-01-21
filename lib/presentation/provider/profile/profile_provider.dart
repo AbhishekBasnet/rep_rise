@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:rep_rise/domain/entity/profile/user_profile_entity.dart' show UserProfileEntity;
-import 'package:rep_rise/domain/repositories/profile/profile_repository.dart';
 import 'package:rep_rise/domain/usecase/profile/get_user_profile_usecase.dart';
 
 import '../../../domain/entity/profile/user_profile_entity.dart';
