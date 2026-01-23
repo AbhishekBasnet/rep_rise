@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rep_rise/presentation/screens/nav_bar/home/home_screen.dart';
+import 'package:rep_rise/presentation/screens/nav_bar/main_app_bar/main_app_bar.dart';
 import 'package:rep_rise/presentation/screens/nav_bar/steps/steps_screen.dart';
 import 'package:rep_rise/presentation/screens/nav_bar/workout/workout_screen.dart';
 
@@ -48,6 +49,7 @@ class _MainScreenState extends State<MainScreen> {
         }
       },
       child: Scaffold(
+        appBar: const MainAppBar(),
         body: IndexedStack(
           index: _selectedIndex,
           children: [

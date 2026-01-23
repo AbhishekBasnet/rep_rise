@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rep_rise/core/theme/app_theme.dart';
+import 'package:rep_rise/presentation/provider/profile/user_profile_provider.dart';
 import 'package:rep_rise/presentation/provider/step_provider/step_provider.dart';
 import 'package:rep_rise/presentation/screens/nav_bar/home/widget/ai_workout_card.dart';
 import 'package:rep_rise/presentation/screens/nav_bar/home/widget/daily_summary_card.dart';
+import 'package:rep_rise/presentation/screens/nav_bar/home/widget/user_header_card.dart';
 
 import '../../../provider/auth/auth_provider.dart';
 
@@ -43,10 +45,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.appBackgroundColor,
-      appBar: _appBar(),
       body: SafeArea(
-        child: Consumer<StepProvider>(
-          builder: (context, stepProvider, child) {
+        child: Consumer2<StepProvider, UserProfileProvider>(
+          builder: (context, stepProvider, userProfileProvider, child) {
             return CustomScrollView(
               slivers: [
                 SliverFillRemaining(
@@ -57,6 +58,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
+                        UserHeaderCard(
+                          userProfile: userProfileProvider.userProfile,
+                        ),
+
                         DailySummaryCard(
                           stepsTaken: stepProvider.walkedDailySteps,
                           stepGoal: stepProvider.dailyStepGoal,

@@ -1,5 +1,5 @@
 import '../../entity/profile/user_profile_entity.dart';
-import '../../repositories/profile/profile_repository.dart';
+import '../../repositories/profile/user_profile_repository.dart';
 
 class GetUserProfileUseCase {
   final ProfileRepository profileRepository;

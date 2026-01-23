@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 
 class UserProfileEntity extends Equatable {
-  final int id;
   final String username;
   final String email;
   final double height;
@@ -12,7 +11,6 @@ class UserProfileEntity extends Equatable {
   final double bmi;
 
   const UserProfileEntity({
-    required this.id,
     required this.username,
     required this.email,
     required this.height,
@@ -25,7 +23,6 @@ class UserProfileEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-    id,
     username,
     email,
     height,

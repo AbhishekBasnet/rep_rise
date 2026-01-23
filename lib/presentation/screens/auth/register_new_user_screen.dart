@@ -15,8 +15,15 @@ class RegisterNewUserScreen extends StatefulWidget {
 class _RegisterNewUserScreenState extends State<RegisterNewUserScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _isPasswordValid = false;
+  bool _hasPasswordStarted = false;
+  final FocusNode _passwordFocusNode = FocusNode();
+  bool _isPasswordFocused = false;
+  final LayerLink _layerLink = LayerLink();
+  OverlayEntry? _overlayEntry;
 
   final FocusNode _usernameFocusNode = FocusNode();
   bool _isCheckingUsername = false;
@@ -27,6 +34,38 @@ class _RegisterNewUserScreenState extends State<RegisterNewUserScreen> {
   void initState() {
     super.initState();
     _usernameFocusNode.addListener(_onUsernameFocusChange);
+
+    _passwordFocusNode.addListener(() {
+      setState(() {
+        _isPasswordFocused = _passwordFocusNode.hasFocus;
+      });
+      if (_passwordFocusNode.hasFocus) {
+        _toggleOverlay(true);
+      } else {
+        _toggleOverlay(false);
+      }
+    });
+
+    _passwordController.addListener(() {
+      final regex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*?[!@#\$&*~]).{7,}$');
+      final bool currentlyValid = regex.hasMatch(_passwordController.text);
+
+      setState(() {
+        _isPasswordValid = currentlyValid;
+        if (_passwordController.text.isNotEmpty) _hasPasswordStarted = true;
+      });
+
+      if (_isPasswordFocused) {
+        if (_isPasswordValid) {
+          _toggleOverlay(false);
+        } else {
+          _toggleOverlay(true);
+        }
+      }
+    });
+    _confirmPasswordController.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -35,7 +74,9 @@ class _RegisterNewUserScreenState extends State<RegisterNewUserScreen> {
     _usernameFocusNode.dispose();
     _usernameController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     _emailController.dispose();
+    _passwordFocusNode.dispose();
     super.dispose();
   }
 
@@ -53,31 +94,27 @@ class _RegisterNewUserScreenState extends State<RegisterNewUserScreen> {
 
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-    try {
-      final success = await authProvider.checkUsername(username);
+      try {
+        final success = await authProvider.checkUsername(username);
 
-
-      if (mounted) {
-        setState(() {
-          _isCheckingUsername = false;
-          _isUsernameAvailable = success;
-          if (!success) {
-            _usernameError = authProvider.errorMessage;
-          }
-        });
+        if (mounted) {
+          setState(() {
+            _isCheckingUsername = false;
+            _isUsernameAvailable = success;
+            if (!success) {
+              _usernameError = authProvider.errorMessage;
+            }
+          });
+        }
+      } catch (e) {
+        _usernameError = e.toString();
       }
-    } catch(e){
-      _usernameError = e.toString();
-    }
-
     }
   }
 
   void _handleNextStep() {
     if (_isUsernameAvailable == false) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fix the username errors first')),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fix the username errors first')));
       return;
     }
 
@@ -93,12 +130,9 @@ class _RegisterNewUserScreenState extends State<RegisterNewUserScreen> {
 
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => CreateProfileScreen(userRegistrationData: incompleteUser),
-      ),
+      MaterialPageRoute(builder: (context) => CreateProfileScreen(userRegistrationData: incompleteUser)),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -137,13 +171,39 @@ class _RegisterNewUserScreenState extends State<RegisterNewUserScreen> {
                   decoration: const InputDecoration(labelText: 'E-mail', border: OutlineInputBorder()),
                 ),
                 SizedBox(height: 16),
-                TextFormField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  validator: (value) => (value == null || value.isEmpty) ? 'Enter password' : null,
-                  decoration: const InputDecoration(labelText: 'Password', border: OutlineInputBorder()),
+                Column(
+                  children: [
+                    CompositedTransformTarget(
+                      link: _layerLink,
+                      child: TextFormField(
+                        controller: _passwordController,
+                        focusNode: _passwordFocusNode,
+                        obscureText: true,
+                        decoration: const InputDecoration(labelText: 'Password', border: OutlineInputBorder()),
+                        validator: (value) => _isPasswordValid ? null : 'Weak password',
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 16),
+                TextFormField(
+                  controller: _confirmPasswordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'Confirm Password',
+                    border: const OutlineInputBorder(),
+                    suffixIcon:
+                        (_confirmPasswordController.text.isNotEmpty &&
+                            _confirmPasswordController.text == _passwordController.text)
+                        ? const Icon(Icons.check_circle, color: Colors.green)
+                        : null,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) return 'Please confirm your password';
+                    if (value != _passwordController.text) return 'Passwords do not match';
+                    return null;
+                  },
+                ),
                 ElevatedButton(onPressed: _handleNextStep, child: const Text('Register')),
               ],
             ),
@@ -151,5 +211,48 @@ class _RegisterNewUserScreenState extends State<RegisterNewUserScreen> {
         ),
       ),
     );
+  }
+
+  OverlayEntry _createOverlayEntry() {
+    return OverlayEntry(
+      builder: (context) => Positioned(
+        width: 300,
+        child: CompositedTransformFollower(
+          link: _layerLink,
+          showWhenUnlinked: false,
+          offset: const Offset(0, -60),
+          child: Material(
+            color: Colors.transparent,
+            child: AnimatedOpacity(
+              duration: const Duration(milliseconds: 500),
+              opacity: _isPasswordValid ? 0 : 1,
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 10)],
+                  border: Border.all(color: _isPasswordValid ? Colors.green : Colors.red),
+                ),
+                child: Text(
+                  'Must be 7+ chars with Uppercase, Lowercase, and Symbol',
+                  style: TextStyle(color: _isPasswordValid ? Colors.green : Colors.red, fontSize: 12),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _toggleOverlay(bool show) {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+
+    if (show && !_isPasswordValid) {
+      _overlayEntry = _createOverlayEntry();
+      Overlay.of(context).insert(_overlayEntry!);
+    }
   }
 }
