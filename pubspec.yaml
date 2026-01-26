@@ -37,7 +37,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   flutter_lints: ^6.0.0
   isar_community_generator: 3.3.0
   drift_dev: ^2.30.1
