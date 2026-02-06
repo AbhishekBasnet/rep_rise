@@ -22,7 +22,7 @@ dependencies:
   provider: ^6.1.5+1
   jwt_decoder: ^2.0.1
   get_it: ^9.2.0
-  google_fonts: ^6.3.3
+  google_fonts: ^8.0.1
   percent_indicator: ^4.2.5
   syncfusion_flutter_gauges: ^32.1.22
   equatable: ^2.0.8
