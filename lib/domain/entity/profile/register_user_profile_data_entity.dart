@@ -4,6 +4,8 @@ class RegisterUserProfileEntity {
   final int height;
   final int stepGoal;
   final String gender;
+  final int targetWeight;
+
 
   const RegisterUserProfileEntity({
     required this.age,
@@ -11,5 +13,7 @@ class RegisterUserProfileEntity {
     required this.height,
     required this.stepGoal,
     required this.gender,
+    required this.targetWeight,
+
   });
 }

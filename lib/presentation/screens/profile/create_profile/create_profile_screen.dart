@@ -8,7 +8,9 @@ import 'package:rep_rise/presentation/screens/profile/create_profile/pages/age_s
 import 'package:rep_rise/presentation/screens/profile/create_profile/pages/gender_step_page.dart';
 import 'package:rep_rise/presentation/screens/profile/create_profile/pages/goal_step_page.dart';
 import 'package:rep_rise/presentation/screens/profile/create_profile/pages/height_step_page.dart';
+import 'package:rep_rise/presentation/screens/profile/create_profile/pages/target_weight_step_page.dart';
 import 'package:rep_rise/presentation/screens/profile/create_profile/pages/weight_step_page.dart';
+import 'package:rep_rise/presentation/screens/profile/create_profile/pages/workout_level_step_page.dart';
 
 class CreateProfileScreen extends StatelessWidget {
   final UserRegistrationEntity userRegistrationData;
@@ -62,7 +64,7 @@ class CreateProfileScreen extends StatelessWidget {
           ),
           Expanded(
             child: TweenAnimationBuilder<double>(
-              tween: Tween<double>(begin: 0, end: (provider.currentPage + 1) / 5),
+              tween: Tween<double>(begin: 0, end: (provider.currentPage + 1) / 7),
               duration: Duration(milliseconds: 450),
 
               builder: (context, tweenAnimationValue, _) => LinearProgressIndicator(
@@ -74,7 +76,7 @@ class CreateProfileScreen extends StatelessWidget {
               ),
             ),
           ),
-          Padding(padding: const EdgeInsets.symmetric(horizontal: 30), child: Text('${provider.currentPage + 1}/5')),
+          Padding(padding: const EdgeInsets.symmetric(horizontal: 30), child: Text('${provider.currentPage + 1}/7')),
         ],
       ),
     );
@@ -86,7 +88,15 @@ class CreateProfileScreen extends StatelessWidget {
         controller: provider.pageController,
         physics: const NeverScrollableScrollPhysics(),
         onPageChanged: provider.onPageChanged,
-        children: const [AgeStepPage(), GenderStepPage(), HeightStepPage(), WeightStepPage(), GoalStepPage()],
+        children: const [
+          AgeStepPage(),
+          GenderStepPage(),
+          HeightStepPage(),
+          WeightStepPage(),
+          TargetWeightStepPage(),
+          GoalStepPage(),
+          WorkoutLevelStepPage(),
+        ],
       ),
     );
   }
@@ -123,22 +133,20 @@ class CreateProfileScreen extends StatelessWidget {
         height: provider.height,
         gender: provider.gender.name,
         stepGoal: provider.goalSteps,
+        targetWeight: provider.targetWeight,
       );
 
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-      final success = await authProvider.registerAndSetupProfile(
-        user: userRegistrationData,
-        profile: profileData,
-      );
+      final success = await authProvider.registerAndSetupProfile(user: userRegistrationData, profile: profileData);
 
       if (context.mounted) {
         if (success) {
           Navigator.of(context).popUntil((route) => route.isFirst);
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(authProvider.errorMessage ?? "Setup failed")),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(authProvider.errorMessage ?? "Setup failed")));
         }
       }
     } else {

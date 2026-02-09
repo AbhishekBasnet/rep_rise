@@ -9,6 +9,10 @@ class UserProfileEntity extends Equatable {
   final String gender;
   final int dailyStepGoal;
   final double bmi;
+  final String fitnessGoal;
+  final String fitnessLevel;
+  final String split;
+  final double targetWeight;
 
   const UserProfileEntity({
     required this.username,
@@ -19,6 +23,10 @@ class UserProfileEntity extends Equatable {
     required this.gender,
     required this.dailyStepGoal,
     required this.bmi,
+    required this.fitnessGoal,
+    required this.fitnessLevel,
+    required this.split,
+    required this.targetWeight,
   });
 
   @override
@@ -31,5 +39,9 @@ class UserProfileEntity extends Equatable {
     gender,
     dailyStepGoal,
     bmi,
+    fitnessGoal,
+    fitnessLevel,
+    split,
+    targetWeight,
   ];
 }

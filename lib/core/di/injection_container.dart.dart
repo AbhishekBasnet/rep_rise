@@ -8,12 +8,15 @@ import 'package:rep_rise/core/services/health_steps_service.dart';
 import 'package:rep_rise/data/data_sources/local/step/step_local_data_source.dart';
 import 'package:rep_rise/data/data_sources/remote/profile_remote_data_source.dart';
 import 'package:rep_rise/data/data_sources/remote/step_remote_data_source.dart';
+import 'package:rep_rise/data/data_sources/remote/workout_remote_data_source.dart';
 import 'package:rep_rise/data/repositories/profile/User_profile_repository_impl.dart';
 import 'package:rep_rise/data/repositories/profile/register_profile_repository_impl.dart';
 import 'package:rep_rise/data/repositories/step_repository_impl.dart';
+import 'package:rep_rise/data/repositories/workout/workout_repository_impl.dart';
 import 'package:rep_rise/domain/repositories/profile/user_profile_repository.dart';
 import 'package:rep_rise/domain/repositories/profile/register_profile_repository.dart';
 import 'package:rep_rise/domain/repositories/step_repository.dart';
+import 'package:rep_rise/domain/repositories/workout/workout_repository.dart';
 import 'package:rep_rise/domain/usecase/auth/check_user_name_usecase.dart';
 import 'package:rep_rise/domain/usecase/profile/create_profile_usecase.dart';
 import 'package:rep_rise/domain/usecase/profile/get_user_profile_usecase.dart';
@@ -21,9 +24,11 @@ import 'package:rep_rise/domain/usecase/step/get_daily_step_usecase.dart';
 import 'package:rep_rise/domain/usecase/step/get_monthly_step_usecase.dart';
 import 'package:rep_rise/domain/usecase/step/get_weekly_step_usecase.dart';
 import 'package:rep_rise/domain/usecase/step/sync_step_usecase.dart';
+import 'package:rep_rise/domain/usecase/workout/get_workout_usecase.dart';
 import 'package:rep_rise/presentation/provider/profile/user_profile_provider.dart';
 import 'package:rep_rise/presentation/provider/profile/register_profile_provider.dart';
 import 'package:rep_rise/presentation/provider/step_provider/step_provider.dart';
+import 'package:rep_rise/presentation/provider/workout/workout_provider.dart';
 
 import '../../data/repositories/auth_repository_impl.dart';
 import '../../domain/repositories/auth_repository.dart';
@@ -113,6 +118,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => HealthService());
   sl.registerLazySingleton(() => StepRemoteDataSource(apiClient: sl()));
   sl.registerLazySingleton(() => ProfileRemoteDataSource(apiClient: sl()));
+  sl.registerLazySingleton(() => WorkoutRemoteDataSource(apiClient: sl()));
 
   // ---------------------------------------------------------------------------
   // Data Repositories
@@ -126,6 +132,7 @@ Future<void> init() async {
   sl.registerLazySingleton<ProfileRepository>(() => ProfileRepositoryImpl(remoteDataSource: sl()));
   // register the Interface <ProfileRepository>, but we return the Implementation (ProfileRepositoryImpl)
   sl.registerLazySingleton<RegisterProfileRepository>(() => RegisterProfileRepositoryImpl(sl()));
+  sl.registerLazySingleton<WorkoutRepository>(() => WorkoutRepositoryImpl(remoteDataSource: sl()));
 
   // ---------------------------------------------------------------------------
   // Domain Use Cases
@@ -146,6 +153,8 @@ Future<void> init() async {
   //  Profile Use Cases
   sl.registerLazySingleton(() => CreateProfileUseCase(profileRepository: sl()));
   sl.registerLazySingleton(() => GetUserProfileUseCase(profileRepository: sl()));
+  //Workout Use Cases
+  sl.registerLazySingleton(() => GetWorkoutUseCase(workoutRepository: sl()));
   // ---------------------------------------------------------------------------
   // Presentation Layer (State Management)
   // ---------------------------------------------------------------------------
@@ -173,4 +182,5 @@ Future<void> init() async {
   );
 
   sl.registerFactory(() => UserProfileProvider(getUserProfileUseCase: sl()));
+  sl.registerFactory(() => WorkoutProvider(getWorkoutUseCase: sl()));
 }

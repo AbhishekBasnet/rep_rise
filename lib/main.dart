@@ -5,6 +5,7 @@ import 'package:rep_rise/presentation/provider/auth/auth_provider.dart';
 import 'package:rep_rise/presentation/provider/profile/register_profile_provider.dart';
 import 'package:rep_rise/presentation/provider/profile/user_profile_provider.dart';
 import 'package:rep_rise/presentation/provider/step_provider/step_provider.dart';
+import 'package:rep_rise/presentation/provider/workout/workout_provider.dart';
 import 'package:rep_rise/presentation/screens/auth/login_screen.dart';
 import 'package:rep_rise/presentation/screens/main_screen.dart';
 import 'package:rep_rise/presentation/screens/root_wrapper.dart';
@@ -22,6 +23,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => sl<RegisterProfileProvider>()),
         ChangeNotifierProvider(create: (_) => sl<StepProvider>()),
         ChangeNotifierProvider(create: (_) => sl<UserProfileProvider>()),
+        ChangeNotifierProvider(create: (_) => sl<WorkoutProvider>()),
 
       ],
       child: const MyApp(),
