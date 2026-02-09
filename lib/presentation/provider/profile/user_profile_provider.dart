@@ -7,7 +7,7 @@ import '../../../domain/entity/profile/user_profile_entity.dart';
 class UserProfileProvider extends ChangeNotifier {
   final GetUserProfileUseCase getUserProfileUseCase;
 
-  UserProfileProvider({required this.getUserProfileUseCase}){
+  UserProfileProvider({required this.getUserProfileUseCase}) {
     fetchUserProfile();
   }
 

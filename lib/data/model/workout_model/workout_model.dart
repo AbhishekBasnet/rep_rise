@@ -1,18 +1,11 @@
 import 'package:rep_rise/domain/entity/workout/workout_entity.dart';
 
 class WorkoutModel extends WorkoutEntity {
-  const WorkoutModel({
-    required WorkoutSummaryModel super.summary,
-    required Map<String, List<WorkoutExerciseModel>> super.schedule,
-  });
+  const WorkoutModel({required Map<String, List<WorkoutExerciseModel>> super.schedule});
 
   factory WorkoutModel.fromJson(Map<String, dynamic> json) {
-    final data = json['data'] as Map<String, dynamic>;
+    final scheduleData = json['data'] as Map<String, dynamic>;
 
-    final summaryData = data['summary'] as Map<String, dynamic>;
-    final summaryModel = WorkoutSummaryModel.fromJson(summaryData);
-
-    final scheduleData = data['schedule'] as Map<String, dynamic>;
     final Map<String, List<WorkoutExerciseModel>> scheduleModel = {};
 
     scheduleData.forEach((day, exercises) {
@@ -21,43 +14,48 @@ class WorkoutModel extends WorkoutEntity {
       }
     });
 
-    return WorkoutModel(summary: summaryModel, schedule: scheduleModel);
+    return WorkoutModel(schedule: scheduleModel);
   }
 
   WorkoutEntity toEntity() {
-    return WorkoutEntity(
-      summary: (summary as WorkoutSummaryModel).toEntity(),
-      schedule: schedule.map(
-        (key, value) => MapEntry(key, value.map((e) => (e as WorkoutExerciseModel).toEntity()).toList()),
-      ),
-    );
-  }
-}
+    final Map<String, List<WorkoutExerciseEntity>> entitySchedule = {};
 
-class WorkoutSummaryModel extends WorkoutSummaryEntity {
-  const WorkoutSummaryModel({required super.goal, required super.level, required super.split});
+    schedule.forEach((day, exercises) {
+      entitySchedule[day] = exercises.map((e) => (e as WorkoutExerciseModel).toEntity()).toList();
+    });
 
-  factory WorkoutSummaryModel.fromJson(Map<String, dynamic> json) {
-    return WorkoutSummaryModel(goal: json['goal'] ?? '', level: json['level'] ?? '', split: json['split'] ?? '');
-  }
-
-  WorkoutSummaryEntity toEntity() {
-    return WorkoutSummaryEntity(goal: goal, level: level, split: split);
+    return WorkoutEntity(schedule: entitySchedule);
   }
 }
 
 class WorkoutExerciseModel extends WorkoutExerciseEntity {
-  const WorkoutExerciseModel({required super.name, required super.sets, required super.reps});
+  const WorkoutExerciseModel({
+    required super.name,
+    required super.sets,
+    required super.reps,
+    required super.restTime,
+    required super.targetMuscle,
+    required super.bodyPart,
+  });
 
   factory WorkoutExerciseModel.fromJson(Map<String, dynamic> json) {
     return WorkoutExerciseModel(
-      name: json['Workout'] ?? 'Unknown',
-      sets: json['Sets'] ?? '0',
-      reps: json['Reps per Set'] ?? '0',
+      name: json['exercise'] ?? 'Unknown',
+      sets: json['sets']?.toString() ?? '0',
+      reps: json['reps']?.toString() ?? '0',
+      restTime: json['rest_time'] ?? '60s',
+      targetMuscle: json['target_muscle'] ?? '',
+      bodyPart: json['body_part'] ?? '',
     );
   }
-
   WorkoutExerciseEntity toEntity() {
-    return WorkoutExerciseEntity(name: name, sets: sets, reps: reps);
+    return WorkoutExerciseEntity(
+      name: name,
+      sets: sets,
+      reps: reps,
+      restTime: restTime,
+      targetMuscle: targetMuscle,
+      bodyPart: bodyPart,
+    );
   }
 }

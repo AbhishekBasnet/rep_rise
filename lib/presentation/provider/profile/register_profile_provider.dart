@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-enum Gender { male, female }
+import '../../screens/profile/create_profile/widget/profile_enums.dart';
 
 /*
  * Manages the state and navigation logic for the multi-step Profile Setup Wizard.
@@ -28,19 +28,26 @@ class RegisterProfileProvider extends ChangeNotifier {
   int _goalSteps = 5000;
   Gender _gender = Gender.male;
   int _weight = 50;
+  int _targetWeight = 60;
   int _height = 150;
   int _currentPage = 0;
+  FitnessGoal _fitnessGoal = FitnessGoal.weightLoss;
+  WorkoutLevel _workoutLevel = WorkoutLevel.beginner;
 
   int get goalSteps => _goalSteps;
   Gender get gender => _gender;
   int get weight => _weight;
+  int get targetWeight => _targetWeight;
   int get height => _height;
   int get age => _age;
 
   int get currentPage => _currentPage;
   final PageController _pageController = PageController();
   PageController get pageController => _pageController;
-  bool get isLastPage => _currentPage == 4;
+  bool get isLastPage => _currentPage == 6;
+
+  FitnessGoal get fitnessGoal => _fitnessGoal;
+  WorkoutLevel get workoutLevel => _workoutLevel;
 
   void setGoalSteps(int goalSteps) {
     _goalSteps = goalSteps;
@@ -57,6 +64,11 @@ class RegisterProfileProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setTargetWeight(int weight) {
+    _targetWeight = weight;
+    notifyListeners();
+  }
+
   void setHeight(int height) {
     _height = height;
     notifyListeners();
@@ -64,6 +76,16 @@ class RegisterProfileProvider extends ChangeNotifier {
 
   void setAge(int newAge) {
     _age = newAge;
+    notifyListeners();
+  }
+
+  void setFitnessGoal(FitnessGoal goal) {
+    _fitnessGoal = goal;
+    notifyListeners();
+  }
+
+  void setWorkoutLevel(WorkoutLevel level) {
+    _workoutLevel = level;
     notifyListeners();
   }
 

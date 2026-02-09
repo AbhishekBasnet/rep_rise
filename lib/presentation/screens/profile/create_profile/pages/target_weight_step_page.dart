@@ -5,8 +5,8 @@ import 'package:rep_rise/core/theme/app_theme.dart';
 import 'package:rep_rise/presentation/provider/profile/register_profile_provider.dart';
 import 'package:rep_rise/presentation/screens/profile/create_profile/widget/profile_wheel_picker.dart';
 
-class WeightStepPage extends StatelessWidget {
-  const WeightStepPage({super.key});
+class TargetWeightStepPage extends StatelessWidget {
+  const TargetWeightStepPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,15 +18,15 @@ class WeightStepPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text('Enter your current weight.',style: AppTheme.profileSetupHeader,),
-              SizedBox(height: 5,),
-              Text('This helps us create you personalized plan.',style: AppTheme.profileSetupSubHeader,),
-              SizedBox(height: 10,),
+              Text('Enter your target weight.', style: AppTheme.profileSetupHeader),
+              SizedBox(height: 5),
+              Text('This helps us create you personalized plan.', style: AppTheme.profileSetupSubHeader),
+              SizedBox(height: 10),
               Text.rich(
                 TextSpan(
-                    text: 'Selected age: ',
-                    children: [TextSpan(text: '${provider.weight} kg', style:AppTheme.profileSetupWheelSelectedText)],
-                    style: AppTheme.profileSetupHeader3
+                  text: 'Selected age: ',
+                  children: [TextSpan(text: '${provider.weight} kg', style: AppTheme.profileSetupWheelSelectedText)],
+                  style: AppTheme.profileSetupHeader3,
                 ),
               ),
               Expanded(
@@ -34,9 +34,9 @@ class WeightStepPage extends StatelessWidget {
                   unit: 'kg',
                   minValue: 35,
                   maxValue: 100,
-                  initialValue: provider.weight,
+                  initialValue: provider.targetWeight,
                   onChanged: (newWeight) {
-                    provider.setWeight(newWeight);
+                    provider.setTargetWeight(newWeight);
                   },
                 ),
               ),
@@ -44,5 +44,6 @@ class WeightStepPage extends StatelessWidget {
           ),
         );
       },
-    );}
+    );
+  }
 }

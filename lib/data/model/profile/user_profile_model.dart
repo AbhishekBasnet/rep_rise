@@ -10,6 +10,10 @@ class UserProfileModel extends UserProfileEntity {
     required super.gender,
     required super.dailyStepGoal,
     required super.bmi,
+    required super.fitnessGoal,
+    required super.fitnessLevel,
+    required super.split,
+    required super.targetWeight,
   });
 
   factory UserProfileModel.fromJson(Map<String, dynamic> json) {
@@ -25,6 +29,10 @@ class UserProfileModel extends UserProfileEntity {
       gender: profileData['gender'] ?? 'unknown',
       dailyStepGoal: (profileData['daily_step_goal'] as num).toInt(),
       bmi: (profileData['bmi'] as num).toDouble(),
+      fitnessGoal: profileData['goal'] ?? 'unknown',
+      fitnessLevel: profileData['level'] ?? 'unknown',
+      split: profileData['level'] ?? 'unknown',
+      targetWeight: (profileData['target_weight'] as num?)?.toDouble() ?? 0.0,
     );
   }
 
@@ -38,6 +46,10 @@ class UserProfileModel extends UserProfileEntity {
       gender: gender,
       dailyStepGoal: dailyStepGoal,
       bmi: bmi,
+      fitnessGoal: fitnessGoal,
+      fitnessLevel: fitnessLevel,
+      split: split,
+      targetWeight: targetWeight,
     );
   }
 }

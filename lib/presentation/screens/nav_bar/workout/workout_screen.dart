@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rep_rise/presentation/provider/workout/workout_provider.dart';
+import 'package:rep_rise/core/theme/app_theme.dart'; // Ensure correct import path
+import 'package:rep_rise/presentation/screens/nav_bar/workout/widget/day_section.dart';
 import '../../../../domain/entity/workout/workout_entity.dart';
 
 class WorkoutScreen extends StatefulWidget {
@@ -24,14 +26,19 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     final provider = context.watch<WorkoutProvider>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('AI Workout Plan')),
+      backgroundColor: AppTheme.appBackgroundColor,
+      appBar: AppBar(
+        title: const Text('Your Plan'),
+        backgroundColor: AppTheme.appBackgroundColor,
+        scrolledUnderElevation: 0,
+      ),
       body: _buildBody(provider),
     );
   }
 
   Widget _buildBody(WorkoutProvider provider) {
     if (provider.isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator(color: AppTheme.primaryPurple));
     }
 
     if (provider.errorMessage != null) {
@@ -39,84 +46,51 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              provider.errorMessage!,
-              style: const TextStyle(color: Colors.red),
-              textAlign: TextAlign.center,
-            ),
+            const Icon(Icons.error_outline, size: 48, color: Colors.redAccent),
             const SizedBox(height: 16),
-            ElevatedButton(onPressed: () => context.read<WorkoutProvider>().fetchWorkout(), child: const Text('Retry')),
+            Text(
+              "Could not load plan",
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            const SizedBox(height: 8),
+            ElevatedButton(
+              onPressed: () => context.read<WorkoutProvider>().fetchWorkout(),
+              child: const Text('Retry'),
+            ),
           ],
         ),
       );
     }
 
     if (provider.workoutEntity != null) {
-      return _buildWorkoutContent(provider.workoutEntity!);
+      return _buildScheduleList(provider.workoutEntity!);
     }
 
-    return const Center(child: Text("No workout recommendations found."));
-  }
-
-  Widget _buildWorkoutContent(WorkoutEntity data) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildSummaryCard(data.summary),
-          const SizedBox(height: 20),
-          const Text("Weekly Schedule", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 10),
-          // Dynamic Schedule List
-          ...data.schedule.entries.map((entry) {
-            return _buildDayCard(entry.key, entry.value);
-          }),
-        ],
+    return Center(
+      child: Text(
+        "No workout plan found.",
+        style: Theme.of(context).textTheme.bodyMedium,
       ),
     );
   }
 
-  Widget _buildSummaryCard(WorkoutSummaryEntity summary) {
-    return Card(
-      color: Colors.blue.shade50,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _statItem("Goal", summary.goal),
-            _statItem("Level", summary.level),
-            _statItem("Split", summary.split),
-          ],
-        ),
-      ),
-    );
-  }
+  Widget _buildScheduleList(WorkoutEntity data) {
+    final sortedDays = data.schedule.keys.toList()..sort((a, b) => a.compareTo(b));
 
-  Widget _statItem(String label, String value) {
-    return Column(
-      children: [
-        Text(label, style: const TextStyle(color: Colors.grey, fontSize: 12)),
-        Text(value.toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-      ],
-    );
-  }
+    return ListView.separated(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+      itemCount: sortedDays.length,
+      separatorBuilder: (c, i) => const SizedBox(height: 16),
+      itemBuilder: (context, index) {
+        final day = sortedDays[index];
+        final exercises = data.schedule[day]!;
 
-  Widget _buildDayCard(String day, List<WorkoutExerciseEntity> exercises) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: ExpansionTile(
-        title: Text(day, style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text("${exercises.length} Exercises"),
-        children: exercises.map((exercise) {
-          return ListTile(
-            leading: const Icon(Icons.fitness_center),
-            title: Text(exercise.name),
-            subtitle: Text("Sets: ${exercise.sets} • Reps: ${exercise.reps}"),
-          );
-        }).toList(),
-      ),
+        return DaySection(
+          dayTitle: day,
+          exercises: exercises,
+          initiallyExpanded: index == 0,
+        );
+      },
     );
   }
 }

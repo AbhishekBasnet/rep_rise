@@ -3,9 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:rep_rise/core/theme/app_theme.dart';
 import 'package:rep_rise/presentation/provider/profile/register_profile_provider.dart';
 import 'package:rep_rise/presentation/screens/profile/create_profile/widget/profile_enums.dart';
+import 'package:rep_rise/presentation/screens/profile/create_profile/widget/profile_selection_card.dart';
 
-class LevelStepPage extends StatelessWidget {
-  const LevelStepPage({super.key});
+class WorkoutLevelStepPage extends StatelessWidget {
+  const WorkoutLevelStepPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,17 +21,19 @@ class LevelStepPage extends StatelessWidget {
               Text('What\'s your workout level?', style: AppTheme.profileSetupHeader),
               Column(
                 children: [
-                  _WorkoutLevelCard(
+                  ProfileSelectionCard(
                     isSelected: provider.workoutLevel == WorkoutLevel.beginner,
                     label: 'Beginner',
                     icon: Icons.light_mode,
                     onTap: () => provider.setWorkoutLevel(WorkoutLevel.beginner),
                   ),
                   const SizedBox(height: 50),
-                  _WorkoutLevelCard(
+                  ProfileSelectionCard(
                     isSelected: provider.workoutLevel == WorkoutLevel.intermediate,
                     label: 'Intermediate',
                     icon: Icons.bolt,
+                    isEnabled: false,
+                    disabledMessage: 'You can change this later in your profile',
                     onTap: () => provider.setWorkoutLevel(WorkoutLevel.intermediate),
                   ),
                 ],
@@ -40,44 +43,6 @@ class LevelStepPage extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class _WorkoutLevelCard extends StatelessWidget {
-  final bool isSelected;
-  final String label;
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _WorkoutLevelCard({required this.isSelected, required this.label, required this.icon, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        children: [
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOutBack,
-            height: isSelected ? 160 : 120,
-            width: isSelected ? 160 : 120,
-            decoration: BoxDecoration(
-              color: isSelected ? Colors.purple : Colors.purple,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(color: Colors.purple, blurRadius: isSelected ? 30 : 10, offset: const Offset(0, 10)),
-              ],
-            ),
-            child: Icon(icon, size: isSelected ? 80 : 50, color: isSelected ? Colors.white : Colors.grey),
-          ),
-          const SizedBox(height: 20),
-          isSelected
-              ? Text(label, style: const TextStyle(fontSize: 22))
-              : Text(label, style: const TextStyle(fontSize: 15)),
-        ],
-      ),
     );
   }
 }
