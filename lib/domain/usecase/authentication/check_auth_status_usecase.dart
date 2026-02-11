@@ -3,7 +3,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 
 import '../../../core/services/token_service.dart';
 import '../../../core/util/extension/jwt_decoder.dart';
-import '../../repositories/auth_repository.dart';
+import '../../repositories/authentication/auth_repository.dart';
 
 class CheckAuthStatusUseCase {
   final TokenService tokenService;

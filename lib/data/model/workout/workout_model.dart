@@ -1,20 +1,24 @@
 import 'package:rep_rise/domain/entity/workout/workout_entity.dart';
 
 class WorkoutModel extends WorkoutEntity {
-  const WorkoutModel({required Map<String, List<WorkoutExerciseModel>> super.schedule});
+  const WorkoutModel({required Map<String, List<WorkoutExerciseModel>> super.schedule, required super.progress});
 
   factory WorkoutModel.fromJson(Map<String, dynamic> json) {
-    final scheduleData = json['data'] as Map<String, dynamic>;
+    final data = json['data'] as Map<String, dynamic>? ?? {};
+
+    final scheduleData = data['schedule'] as Map<String, dynamic>? ?? {};
+    final progressData = data['progress'] as Map<String, dynamic>? ?? {};
 
     final Map<String, List<WorkoutExerciseModel>> scheduleModel = {};
-
     scheduleData.forEach((day, exercises) {
       if (exercises is List) {
         scheduleModel[day] = exercises.map((e) => WorkoutExerciseModel.fromJson(e as Map<String, dynamic>)).toList();
       }
     });
 
-    return WorkoutModel(schedule: scheduleModel);
+    final Map<String, bool> progressModel = progressData.map((key, value) => MapEntry(key, value as bool));
+
+    return WorkoutModel(schedule: scheduleModel, progress: progressModel);
   }
 
   WorkoutEntity toEntity() {
@@ -24,7 +28,7 @@ class WorkoutModel extends WorkoutEntity {
       entitySchedule[day] = exercises.map((e) => (e as WorkoutExerciseModel).toEntity()).toList();
     });
 
-    return WorkoutEntity(schedule: entitySchedule);
+    return WorkoutEntity(schedule: entitySchedule, progress: progress); // PASS PROGRESS HERE
   }
 }
 
@@ -36,6 +40,7 @@ class WorkoutExerciseModel extends WorkoutExerciseEntity {
     required super.restTime,
     required super.targetMuscle,
     required super.bodyPart,
+    required super.videoUrl,
   });
 
   factory WorkoutExerciseModel.fromJson(Map<String, dynamic> json) {
@@ -46,8 +51,10 @@ class WorkoutExerciseModel extends WorkoutExerciseEntity {
       restTime: json['rest_time'] ?? '60s',
       targetMuscle: json['target_muscle'] ?? '',
       bodyPart: json['body_part'] ?? '',
+      videoUrl: json['video_url'],
     );
   }
+
   WorkoutExerciseEntity toEntity() {
     return WorkoutExerciseEntity(
       name: name,
@@ -56,6 +63,7 @@ class WorkoutExerciseModel extends WorkoutExerciseEntity {
       restTime: restTime,
       targetMuscle: targetMuscle,
       bodyPart: bodyPart,
+      videoUrl: videoUrl,
     );
   }
 }

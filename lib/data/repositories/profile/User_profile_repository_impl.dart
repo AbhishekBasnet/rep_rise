@@ -1,4 +1,4 @@
-import 'package:rep_rise/data/data_sources/remote/profile_remote_data_source.dart';
+import 'package:rep_rise/data/data_sources/remote/profile/profile_remote_data_source.dart';
 
 import '../../../domain/entity/profile/user_profile_entity.dart';
 import '../../../domain/repositories/profile/user_profile_repository.dart';

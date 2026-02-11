@@ -3,17 +3,10 @@ import 'package:rep_rise/core/theme/app_theme.dart';
 import 'package:rep_rise/presentation/screens/nav_bar/workout/widget/workout_widget.dart';
 import '../../../../../../domain/entity/workout/workout_entity.dart';
 
-class ExerciseCard extends StatefulWidget {
+class ExerciseCard extends StatelessWidget {
   final WorkoutExerciseEntity exercise;
 
   const ExerciseCard({super.key, required this.exercise});
-
-  @override
-  State<ExerciseCard> createState() => _ExerciseCardState();
-}
-
-class _ExerciseCardState extends State<ExerciseCard> {
-  bool isCompleted = false;
 
   @override
   Widget build(BuildContext context) {
@@ -60,12 +53,10 @@ class _ExerciseCardState extends State<ExerciseCard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.exercise.name,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  decoration: isCompleted ? TextDecoration.lineThrough : null,
-                  color: isCompleted ? Colors.grey : AppTheme.appContentColor,
-                ),
+                exercise.name,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold, color: AppTheme.appContentColor),
               ),
               const SizedBox(height: 8),
               Wrap(
@@ -73,34 +64,18 @@ class _ExerciseCardState extends State<ExerciseCard> {
                 runSpacing: 4,
                 children: [
                   ExerciseTag(
-                    label: widget.exercise.bodyPart,
+                    label: exercise.bodyPart,
                     backgroundColor: AppTheme.lavender.withOpacity(0.3),
                     textColor: AppTheme.primaryPurple,
                   ),
                   ExerciseTag(
-                    label: widget.exercise.targetMuscle,
+                    label: exercise.targetMuscle,
                     backgroundColor: AppTheme.secondaryGrey,
                     textColor: Colors.black54,
                   ),
                 ],
               ),
             ],
-          ),
-        ),
-        const SizedBox(width: 8),
-        GestureDetector(
-          onTap: () => setState(() => isCompleted = !isCompleted),
-          behavior: HitTestBehavior.opaque,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            height: 28,
-            width: 28,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: isCompleted ? AppTheme.primaryPurple : Colors.transparent,
-              border: Border.all(color: isCompleted ? AppTheme.primaryPurple : Colors.grey.shade300, width: 2),
-            ),
-            child: isCompleted ? const Icon(Icons.check, size: 18, color: Colors.white) : null,
           ),
         ),
       ],
@@ -111,11 +86,11 @@ class _ExerciseCardState extends State<ExerciseCard> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        ExerciseStat(icon: Icons.layers_outlined, value: widget.exercise.sets, label: "Sets"),
+        ExerciseStat(icon: Icons.layers_outlined, value: exercise.sets, label: "Sets"),
         _verticalDivider(),
-        ExerciseStat(icon: Icons.refresh_rounded, value: widget.exercise.reps, label: "Reps"),
+        ExerciseStat(icon: Icons.refresh_rounded, value: exercise.reps, label: "Reps"),
         _verticalDivider(),
-        ExerciseStat(icon: Icons.timer_outlined, value: widget.exercise.restTime, label: "Rest"),
+        ExerciseStat(icon: Icons.timer_outlined, value: exercise.restTime, label: "Rest"),
       ],
     );
   }

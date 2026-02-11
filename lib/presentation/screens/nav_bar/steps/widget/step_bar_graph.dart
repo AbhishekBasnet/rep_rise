@@ -2,7 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rep_rise/core/theme/app_theme.dart';
-import 'package:rep_rise/presentation/provider/step_provider/step_provider.dart';
+import 'package:rep_rise/presentation/provider/step/step_provider.dart';
 
 class StepBarGraph extends StatelessWidget {
   const StepBarGraph({super.key});

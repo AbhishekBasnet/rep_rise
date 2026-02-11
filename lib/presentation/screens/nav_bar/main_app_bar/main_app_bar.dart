@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rep_rise/core/theme/app_theme.dart';
-import 'package:rep_rise/presentation/provider/auth/auth_provider.dart';
+import 'package:rep_rise/presentation/provider/authentication/auth_provider.dart';
 import 'package:rep_rise/presentation/provider/profile/user_profile_provider.dart';
 
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {

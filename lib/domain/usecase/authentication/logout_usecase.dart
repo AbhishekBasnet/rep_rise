@@ -1,6 +1,6 @@
-import 'package:rep_rise/domain/repositories/step_repository.dart';
+import 'package:rep_rise/domain/repositories/step/step_repository.dart';
 
-import '../../repositories/auth_repository.dart';
+import '../../repositories/authentication/auth_repository.dart';
 
 class LogoutUseCase {
   final AuthRepository authRepository;

@@ -7,7 +7,7 @@ import 'package:rep_rise/domain/usecase/step/get_daily_step_usecase.dart';
 import 'package:rep_rise/domain/usecase/step/get_monthly_step_usecase.dart';
 import 'package:rep_rise/domain/usecase/step/get_weekly_step_usecase.dart';
 import 'package:rep_rise/domain/usecase/step/sync_step_usecase.dart';
-import 'package:rep_rise/presentation/provider/step_provider/WeekelyChartData.dart';
+import 'package:rep_rise/presentation/provider/step/WeekelyChartData.dart';
 
 /*
  * Manages the state and business logic integration for the Step Tracking feature.

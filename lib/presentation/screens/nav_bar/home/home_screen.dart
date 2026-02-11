@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rep_rise/core/theme/app_theme.dart';
 import 'package:rep_rise/presentation/provider/profile/user_profile_provider.dart';
-import 'package:rep_rise/presentation/provider/step_provider/step_provider.dart';
+import 'package:rep_rise/presentation/provider/step/step_provider.dart';
 import 'package:rep_rise/presentation/screens/nav_bar/home/widget/ai_workout_card.dart';
 import 'package:rep_rise/presentation/screens/nav_bar/home/widget/daily_summary_card.dart';
 import 'package:rep_rise/presentation/screens/nav_bar/home/widget/user_header_card.dart';
 
-import '../../../provider/auth/auth_provider.dart';
+import '../../../provider/authentication/auth_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

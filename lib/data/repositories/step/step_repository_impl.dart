@@ -3,13 +3,13 @@ import 'package:rep_rise/core/services/health_steps_service.dart';
 import 'package:rep_rise/core/util/extension/date/date_formatter.dart';
 import 'package:rep_rise/core/util/extension/date/short_day_name.dart';
 import 'package:rep_rise/data/data_sources/local/step/step_local_data_source.dart';
-import 'package:rep_rise/data/data_sources/remote/step_remote_data_source.dart';
+import 'package:rep_rise/data/data_sources/remote/step/step_remote_data_source.dart';
 import 'package:rep_rise/data/model/steps/daily_step_model.dart';
 import 'package:rep_rise/data/model/steps/weekly_step_model.dart';
 import 'package:rep_rise/domain/entity/steps/daily_step_entity.dart';
 import 'package:rep_rise/domain/entity/steps/step_summary_entity.dart';
 import 'package:rep_rise/domain/entity/steps/weekly_step_entity.dart';
-import 'package:rep_rise/domain/repositories/step_repository.dart';
+import 'package:rep_rise/domain/repositories/step/step_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /*

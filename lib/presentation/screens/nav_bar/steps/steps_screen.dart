@@ -1,7 +1,7 @@
 import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rep_rise/presentation/provider/step_provider/step_provider.dart';
+import 'package:rep_rise/presentation/provider/step/step_provider.dart';
 import 'package:rep_rise/presentation/screens/nav_bar/steps/widget/step_bar_graph.dart';
 import 'package:rep_rise/presentation/screens/nav_bar/steps/widget/steps_circular_progress_bar.dart';
 import 'package:rep_rise/presentation/screens/nav_bar/steps/widget/steps_counter_monthly.dart';

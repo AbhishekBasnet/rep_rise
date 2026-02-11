@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:rep_rise/core/theme/app_theme.dart';
-import 'package:rep_rise/presentation/provider/step_provider/step_provider.dart';
+import 'package:rep_rise/presentation/provider/step/step_provider.dart';
 
 class StepCounterCircularProgress extends StatelessWidget {
   const StepCounterCircularProgress({super.key});

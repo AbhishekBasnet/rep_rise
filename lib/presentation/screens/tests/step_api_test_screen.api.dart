@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:rep_rise/domain/repositories/step_repository.dart';
+import 'package:rep_rise/domain/repositories/step/step_repository.dart';
 
 class StepApiTestScreen extends StatefulWidget {
   // We ask for the repository here.

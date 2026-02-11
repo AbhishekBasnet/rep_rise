@@ -1,0 +1,162 @@
+.
+├── core
+│   ├── di
+│   │   └── injection_container.dart.dart
+│   ├── exception
+│   │   └── api_exception.dart
+│   ├── network
+│   │   └── api_client.dart
+│   ├── services
+│   │   ├── expired_token_login_navigation.dart
+│   │   ├── health_steps_service.dart
+│   │   └── token_service.dart
+│   ├── theme
+│   │   └── app_theme.dart
+│   └── util
+│       └── extension
+│           ├── date
+│           │   ├── date_formatter.dart
+│           │   ├── short_day_name.dart
+│           │   └── toMonthDay.dart
+│           ├── jwt_decoder.dart
+│           └── to_precision.dart
+├── data
+│   ├── data_sources
+│   │   ├── local
+│   │   │   └── step
+│   │   │       ├── step_local_data_source.dart
+│   │   │       └── step_local_data_source.g.dart
+│   │   └── remote
+│   │       ├── profile
+│   │       │   └── profile_remote_data_source.dart
+│   │       ├── step
+│   │       │   └── step_remote_data_source.dart
+│   │       └── workout
+│   │           └── workout_remote_data_source.dart
+│   ├── model
+│   │   ├── authentication
+│   │   │   ├── auth_model.dart
+│   │   │   ├── login_user_model.dart
+│   │   │   └── user_registration_model.dart
+│   │   ├── profile
+│   │   │   ├── register_user_profile_model.dart
+│   │   │   └── user_profile_model.dart
+│   │   ├── steps
+│   │   │   ├── daily_step_model.dart
+│   │   │   └── weekly_step_model.dart
+│   │   └── workout
+│   │       └── workout_model.dart
+│   └── repositories
+│       ├── authentication
+│       │   └── auth_repository_impl.dart
+│       ├── profile
+│       │   ├── register_profile_repository_impl.dart
+│       │   └── User_profile_repository_impl.dart
+│       ├── step
+│       │   └── step_repository_impl.dart
+│       └── workout
+│           └── workout_repository_impl.dart
+├── domain
+│   ├── entity
+│   │   ├── authentication
+│   │   │   └── user_registration_entity.dart
+│   │   ├── profile
+│   │   │   ├── register_user_profile_data_entity.dart
+│   │   │   └── user_profile_entity.dart
+│   │   ├── steps
+│   │   │   ├── daily_step_entity.dart
+│   │   │   ├── step_summary_entity.dart
+│   │   │   └── weekly_step_entity.dart
+│   │   └── workout
+│   │       └── workout_entity.dart
+│   ├── repositories
+│   │   ├── authentication
+│   │   │   └── auth_repository.dart
+│   │   ├── profile
+│   │   │   ├── register_profile_repository.dart
+│   │   │   └── user_profile_repository.dart
+│   │   ├── step
+│   │   │   └── step_repository.dart
+│   │   └── workout
+│   │       └── workout_repository.dart
+│   └── usecase
+│       ├── authentication
+│       │   ├── check_auth_status_usecase.dart
+│       │   ├── check_user_name_usecase.dart
+│       │   ├── login_usecase.dart
+│       │   ├── logout_usecase.dart
+│       │   └── register_usecase.dart
+│       ├── profile
+│       │   ├── create_profile_usecase.dart
+│       │   └── get_user_profile_usecase.dart
+│       ├── step
+│       │   ├── calculate_daily_step_percentage.dart
+│       │   ├── get_daily_step_usecase.dart
+│       │   ├── get_monthly_step_usecase.dart
+│       │   ├── get_weekly_step_usecase.dart
+│       │   └── sync_step_usecase.dart
+│       └── workout
+│           ├── get_workout_usecase.dart
+│           └── update_workout_status.dart
+├── main.dart
+├── presentation
+│   ├── provider
+│   │   ├── authentication
+│   │   │   └── auth_provider.dart
+│   │   ├── profile
+│   │   │   ├── register_profile_provider.dart
+│   │   │   └── user_profile_provider.dart
+│   │   ├── step
+│   │   │   ├── step_provider.dart
+│   │   │   └── WeekelyChartData.dart
+│   │   └── workout
+│   │       └── workout_provider.dart
+│   └── screens
+│       ├── authentication
+│       │   ├── login_screen.dart
+│       │   └── register_new_user_screen.dart
+│       ├── main_screen.dart
+│       ├── nav_bar
+│       │   ├── home
+│       │   │   ├── home_screen.dart
+│       │   │   └── widget
+│       │   │       ├── ai_workout_card.dart
+│       │   │       ├── daily_summary_card.dart
+│       │   │       ├── mini_stat.dart
+│       │   │       └── user_header_card.dart
+│       │   ├── main_app_bar
+│       │   │   ├── main_app_bar.dart
+│       │   │   └── widget
+│       │   ├── steps
+│       │   │   ├── steps_screen.dart
+│       │   │   └── widget
+│       │   │       ├── step_bar_graph.dart
+│       │   │       ├── steps_circular_progress_bar.dart
+│       │   │       └── steps_counter_monthly.dart
+│       │   └── workout
+│       │       ├── widget
+│       │       │   ├── day_section.dart
+│       │       │   ├── exercise_card.dart
+│       │       │   └── workout_widget.dart
+│       │       └── workout_screen.dart
+│       ├── profile
+│       │   └── create_profile
+│       │       ├── create_profile_screen.dart
+│       │       ├── pages
+│       │       │   ├── age_step_page.dart
+│       │       │   ├── gender_step_page.dart
+│       │       │   ├── goal_step_page.dart
+│       │       │   ├── height_step_page.dart
+│       │       │   ├── target_weight_step_page.dart
+│       │       │   ├── weight_step_page.dart
+│       │       │   └── workout_level_step_page.dart
+│       │       └── widget
+│       │           ├── profile_enums.dart
+│       │           ├── profile_selection_card.dart
+│       │           └── profile_wheel_picker.dart
+│       ├── root_wrapper.dart
+│       └── tests
+│           ├── font_test_screen.dart
+│           ├── step_api_test_screen.api.dart
+│           └── test_screen.dart
+└── tree.txt

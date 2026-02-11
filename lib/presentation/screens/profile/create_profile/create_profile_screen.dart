@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rep_rise/domain/entity/profile/register_user_profile_data_entity.dart';
-import 'package:rep_rise/domain/entity/auth/user_registration_entity.dart';
-import 'package:rep_rise/presentation/provider/auth/auth_provider.dart';
+import 'package:rep_rise/domain/entity/authentication/user_registration_entity.dart';
+import 'package:rep_rise/presentation/provider/authentication/auth_provider.dart';
 import 'package:rep_rise/presentation/provider/profile/register_profile_provider.dart';
 import 'package:rep_rise/presentation/screens/profile/create_profile/pages/age_step_page.dart';
 import 'package:rep_rise/presentation/screens/profile/create_profile/pages/gender_step_page.dart';

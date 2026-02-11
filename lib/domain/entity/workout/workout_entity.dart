@@ -2,11 +2,12 @@ import 'package:equatable/equatable.dart';
 
 class WorkoutEntity extends Equatable {
   final Map<String, List<WorkoutExerciseEntity>> schedule;
+  final Map<String, bool> progress;
 
-  const WorkoutEntity({required this.schedule});
+  const WorkoutEntity({required this.schedule, required this.progress});
 
   @override
-  List<Object?> get props => [schedule];
+  List<Object?> get props => [schedule, progress];
 }
 
 class WorkoutExerciseEntity extends Equatable {
@@ -16,6 +17,7 @@ class WorkoutExerciseEntity extends Equatable {
   final String restTime;
   final String targetMuscle;
   final String bodyPart;
+  final String? videoUrl;
 
   const WorkoutExerciseEntity({
     required this.name,
@@ -24,8 +26,9 @@ class WorkoutExerciseEntity extends Equatable {
     required this.restTime,
     required this.targetMuscle,
     required this.bodyPart,
+    required this.videoUrl,
   });
 
   @override
-  List<Object?> get props => [name, sets, reps, restTime, targetMuscle, bodyPart];
+  List<Object?> get props => [name, sets, reps, restTime, targetMuscle, bodyPart, videoUrl];
 }

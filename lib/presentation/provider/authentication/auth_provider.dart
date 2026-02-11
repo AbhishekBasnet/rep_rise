@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:rep_rise/domain/entity/profile/register_user_profile_data_entity.dart';
-import 'package:rep_rise/domain/entity/auth/user_registration_entity.dart';
-import 'package:rep_rise/domain/usecase/auth/check_user_name_usecase.dart';
-import 'package:rep_rise/domain/usecase/auth/login_usecase.dart';
-import 'package:rep_rise/domain/usecase/auth/logout_usecase.dart';
-import 'package:rep_rise/domain/usecase/auth/register_usecase.dart';
+import 'package:rep_rise/domain/entity/authentication/user_registration_entity.dart';
+import 'package:rep_rise/domain/usecase/authentication/check_user_name_usecase.dart';
+import 'package:rep_rise/domain/usecase/authentication/login_usecase.dart';
+import 'package:rep_rise/domain/usecase/authentication/logout_usecase.dart';
+import 'package:rep_rise/domain/usecase/authentication/register_usecase.dart';
 import 'package:rep_rise/domain/usecase/profile/create_profile_usecase.dart';
-import '../../../domain/usecase/auth/check_auth_status_usecase.dart';
+import '../../../domain/usecase/authentication/check_auth_status_usecase.dart';
 
 /*
  * Centralizes authentication state management and bridges the Presentation layer

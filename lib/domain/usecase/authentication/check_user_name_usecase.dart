@@ -1,4 +1,4 @@
-import 'package:rep_rise/domain/repositories/auth_repository.dart';
+import 'package:rep_rise/domain/repositories/authentication/auth_repository.dart';
 
 class CheckUsernameUseCase {
   final AuthRepository authRepository;

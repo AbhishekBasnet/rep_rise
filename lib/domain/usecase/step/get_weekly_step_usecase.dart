@@ -1,6 +1,6 @@
 import 'package:rep_rise/domain/entity/steps/daily_step_entity.dart';
 import 'package:rep_rise/domain/entity/steps/weekly_step_entity.dart';
-import 'package:rep_rise/domain/repositories/step_repository.dart';
+import 'package:rep_rise/domain/repositories/step/step_repository.dart';
 
 class GetWeeklyStepUsecase {
 
