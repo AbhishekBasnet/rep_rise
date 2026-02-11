@@ -33,6 +33,7 @@ dependencies:
   path: ^1.9.1
   shared_preferences: ^2.5.4
   drift_db_viewer: ^2.1.0
+  youtube_player_iframe: ^5.2.2
 
 dev_dependencies:
   flutter_test:

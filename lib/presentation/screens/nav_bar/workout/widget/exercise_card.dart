@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rep_rise/core/theme/app_theme.dart';
+import 'package:rep_rise/presentation/screens/nav_bar/workout/widget/exercise_video_sheet.dart';
 import 'package:rep_rise/presentation/screens/nav_bar/workout/widget/workout_widget.dart';
 import '../../../../../../domain/entity/workout/workout_entity.dart';
 
@@ -24,7 +25,18 @@ class ExerciseCard extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
           onTap: () {
-            debugPrint("Card tapped: Load Video/GIF logic here");
+            if (exercise.videoUrl != null && exercise.videoUrl!.isNotEmpty) {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (context) => ExerciseVideoSheet(videoUrl: exercise.videoUrl!),
+              );
+            } else {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text("No video available for this exercise.")));
+            }
           },
           child: Padding(
             padding: const EdgeInsets.all(16.0),
