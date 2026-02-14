@@ -16,15 +16,11 @@ class UserHeaderCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      height: 240, // Taller to dominate the top
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
       child: Stack(
         children: [
-          // 1. FLASHY BACKGROUND
-          Container(
-            decoration: AppTheme.homeActivityCardDecoration,
-          ),
-          // 2. DECORATIVE CIRCLES (The "Flashy" part)
+          Positioned.fill(child: Container(decoration: AppTheme.homeActivityCardDecoration)),
+
           Positioned(
             top: -50,
             right: -50,
@@ -44,7 +40,6 @@ class UserHeaderCard extends StatelessWidget {
             ),
           ),
 
-          // 3. CONTENT
           Padding(
             padding: const EdgeInsets.all(25.0),
             child: Column(
@@ -52,39 +47,42 @@ class UserHeaderCard extends StatelessWidget {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Welcome back,", style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 14)),
-                        const SizedBox(height: 5),
-                        Text(
-                          name.toUpperCase(),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 26,
-                            fontWeight: FontWeight.w900, // Thicker font
-                            letterSpacing: 1.0,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Welcome back,", style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 14)),
+                          const SizedBox(height: 5),
+                          Text(
+                            name.toUpperCase(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 26,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 1.0,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
+
                     Container(
-                      padding: const EdgeInsets.all(3),
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2),
+                        color: Colors.white.withOpacity(0.2), // Glassy effect
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.white.withOpacity(0.3)),
                       ),
-                      child: const CircleAvatar(
-                        radius: 25,
-                        backgroundImage: AssetImage('assets/images/user_placeholder.png'),
-                      ),
+                      child: const Icon(Icons.edit_rounded, color: Colors.white, size: 24),
                     ),
                   ],
                 ),
-                const Spacer(),
 
-                // GLASSMORPHISM STATS ROW
+                const SizedBox(height: 30),
+
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                   decoration: BoxDecoration(
@@ -121,7 +119,7 @@ class UserHeaderCard extends StatelessWidget {
         Text(
           value,
           style: TextStyle(
-            color: isHighlight ? const Color(0xFF5AFFD2) : Colors.white, // Teal accent for BMI
+            color: isHighlight ? const Color(0xFF5AFFD2) : Colors.white,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
