@@ -18,31 +18,23 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: AppTheme.appBackgroundColor,
       elevation: 0,
       toolbarHeight: 70,
-      // 1. Title is just text now (No Gesture Detector)
       title: Row(
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Hello, ${profileProvider.username}!",
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 18),
-              ),
+              Text(profileProvider.username, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 18)),
               Text("Let's crush your goals.", style: Theme.of(context).textTheme.bodySmall),
             ],
           ),
         ],
       ),
-      // 2. Added Logout Button here
       actions: [
         IconButton(
           onPressed: () => _handleLogout(context),
           icon: Container(
             padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: AppTheme.secondaryGrey,
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: AppTheme.secondaryGrey, shape: BoxShape.circle),
             child: const Icon(Icons.logout, color: Colors.red, size: 20),
           ),
         ),

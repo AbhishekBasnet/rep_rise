@@ -20,6 +20,7 @@ import 'package:rep_rise/domain/repositories/workout/workout_repository.dart';
 import 'package:rep_rise/domain/usecase/authentication/check_user_name_usecase.dart';
 import 'package:rep_rise/domain/usecase/profile/create_profile_usecase.dart';
 import 'package:rep_rise/domain/usecase/profile/get_user_profile_usecase.dart';
+import 'package:rep_rise/domain/usecase/profile/update_user_profile.dart';
 import 'package:rep_rise/domain/usecase/step/get_daily_step_usecase.dart';
 import 'package:rep_rise/domain/usecase/step/get_monthly_step_usecase.dart';
 import 'package:rep_rise/domain/usecase/step/get_weekly_step_usecase.dart';
@@ -154,6 +155,7 @@ Future<void> init() async {
   //  Profile Use Cases
   sl.registerLazySingleton(() => CreateProfileUseCase(profileRepository: sl()));
   sl.registerLazySingleton(() => GetUserProfileUseCase(profileRepository: sl()));
+  sl.registerLazySingleton(() => UpdateUserProfileUseCase(profileRepository: sl()));
   //Workout Use Cases
   sl.registerLazySingleton(() => GetWorkoutUseCase(workoutRepository: sl()));
   sl.registerLazySingleton(() => UpdateWorkoutStatus(workoutRepository: sl()));
@@ -183,6 +185,6 @@ Future<void> init() async {
     ),
   );
 
-  sl.registerFactory(() => UserProfileProvider(getUserProfileUseCase: sl()));
+  sl.registerFactory(() => UserProfileProvider(getUserProfileUseCase: sl(), updateUserProfileUseCase: sl()));
   sl.registerFactory(() => WorkoutProvider(getWorkoutUseCase: sl(), updateWorkoutStatus: sl()));
 }

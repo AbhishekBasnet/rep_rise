@@ -17,4 +17,13 @@ class ProfileRepositoryImpl implements ProfileRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<void> updateUserProfile(Map<String, dynamic> updateData) async {
+    try {
+      await remoteDataSource.updateUserProfile(updateData);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

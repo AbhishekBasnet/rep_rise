@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rep_rise/core/theme/app_theme.dart';
 import 'package:rep_rise/presentation/provider/profile/user_profile_provider.dart';
+import 'package:rep_rise/presentation/screens/profile/create_profile/widget/profile_enums.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -13,100 +14,115 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  // Controllers for form fields
-  late TextEditingController _usernameController;
   late TextEditingController _heightController;
   late TextEditingController _weightController;
+  late TextEditingController _targetWeightController;
   late TextEditingController _ageController;
+  late TextEditingController _stepGoalController;
+
+  WorkoutLevel _selectedFitnessLevel = WorkoutLevel.beginner;
 
   @override
   void initState() {
     super.initState();
     final provider = context.read<UserProfileProvider>();
-    // Initialize controllers with current data
-    _usernameController = TextEditingController(text: provider.username);
+
+    // Initialize with existing data
     _heightController = TextEditingController(text: provider.height.toString());
     _weightController = TextEditingController(text: provider.weight.toString());
     _ageController = TextEditingController(text: provider.age.toString());
+    _targetWeightController = TextEditingController(text: provider.userProfile?.targetWeight.toString() ?? "0");
+    _stepGoalController = TextEditingController(text: provider.dailyStepGoal.toString());
+
+    _selectedFitnessLevel = WorkoutLevelExtension.fromString(provider.userProfile?.fitnessLevel ?? 'beginner');
   }
 
   @override
   void dispose() {
-    _usernameController.dispose();
     _heightController.dispose();
     _weightController.dispose();
+    _targetWeightController.dispose();
     _ageController.dispose();
+    _stepGoalController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<UserProfileProvider>();
+
     return Scaffold(
       backgroundColor: AppTheme.appBackgroundColor,
-      appBar: AppBar(title: const Text("Edit Profile"), backgroundColor: AppTheme.appBackgroundColor),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 30),
-
-              _buildLabel("Username"),
-              _buildTextField(_usernameController, "Enter your username", Icons.person),
-
-              const SizedBox(height: 20),
-
-              Row(
+      appBar: AppBar(
+          title: const Text("Edit Profile"),
+          backgroundColor: AppTheme.appBackgroundColor
+      ),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: const EdgeInsets.all(24.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildLabel("Height (cm)"),
-                        _buildTextField(_heightController, "180", Icons.height, isNumber: true),
-                      ],
-                    ),
+                  _buildSectionHeader("Physical Stats"),
+                  const SizedBox(height: 15),
+
+                  Row(
+                    children: [
+                      Expanded(child: _buildTextField("Height (cm)", _heightController, Icons.height)),
+                      const SizedBox(width: 15),
+                      Expanded(child: _buildTextField("Weight (kg)", _weightController, Icons.monitor_weight)),
+                    ],
                   ),
-                  const SizedBox(width: 15),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildLabel("Weight (kg)"),
-                        _buildTextField(_weightController, "75", Icons.monitor_weight, isNumber: true),
-                      ],
+                  const SizedBox(height: 15),
+
+                  Row(
+                    children: [
+                      Expanded(child: _buildTextField("Age", _ageController, Icons.calendar_today)),
+                      const SizedBox(width: 15),
+                      Expanded(child: _buildTextField("Target Wgt (kg)", _targetWeightController, Icons.flag)),
+                    ],
+                  ),
+
+                  const SizedBox(height: 30),
+                  _buildSectionHeader("Goals & Activity"),
+                  const SizedBox(height: 15),
+
+                  _buildTextField("Daily Step Goal", _stepGoalController, Icons.directions_walk),
+
+                  const SizedBox(height: 20),
+                  _buildLabel("Fitness Level"),
+                  _buildDropdown(),
+
+                  const SizedBox(height: 40),
+
+                  ElevatedButton(
+                    onPressed: provider.isLoading ? null : _handleSave,
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      backgroundColor: AppTheme.primaryPurple,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      elevation: 5,
                     ),
+                    child: provider.isLoading
+                        ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                        : const Text("Save Changes", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                   ),
                 ],
               ),
-
-              const SizedBox(height: 20),
-
-              _buildLabel("Age"),
-              _buildTextField(_ageController, "25", Icons.calendar_today, isNumber: true),
-
-              const SizedBox(height: 40),
-
-              ElevatedButton(
-                onPressed: _handleSave,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor: AppTheme.primaryPurple,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                  elevation: 5,
-                  shadowColor: AppTheme.primaryPurple.withOpacity(0.4),
-                ),
-                child: const Text(
-                  "Save Changes",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title) {
+    return Text(
+      title,
+      style: AppTheme.lightTheme.textTheme.titleLarge?.copyWith(fontSize: 18),
     );
   }
 
@@ -120,46 +136,90 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String hint, IconData icon, {bool isNumber = false}) {
+  Widget _buildTextField(String label, TextEditingController controller, IconData icon) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildLabel(label),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [BoxShadow(color: Colors.grey.withValues(alpha: 0.1), blurRadius: 10, offset: const Offset(0, 4))],
+          ),
+          child: TextFormField(
+            controller: controller,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            decoration: InputDecoration(
+              prefixIcon: Icon(icon, color: AppTheme.primaryPurple.withValues(alpha: 0.7)),
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            ),
+            validator: (value) => value == null || value.isEmpty ? 'Required' : null,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDropdown() {
     return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 4))],
+        boxShadow: [BoxShadow(color: Colors.grey.withValues(alpha: 0.1), blurRadius: 10, offset: const Offset(0, 4))],
       ),
-      child: TextFormField(
-        controller: controller,
-        keyboardType: isNumber ? TextInputType.number : TextInputType.text,
-        decoration: InputDecoration(
-          hintText: hint,
-          prefixIcon: Icon(icon, color: AppTheme.primaryPurple.withOpacity(0.7)),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<WorkoutLevel>(
+          value: _selectedFitnessLevel,
+          isExpanded: true,
+          icon: const Icon(Icons.arrow_drop_down, color: AppTheme.primaryPurple),
+          items: WorkoutLevel.values.map((WorkoutLevel level) {
+            return DropdownMenuItem<WorkoutLevel>(
+              value: level,
+              child: Text(level.displayName),
+            );
+          }).toList(),
+          onChanged: (WorkoutLevel? newValue) {
+            if (newValue != null) {
+              setState(() {
+                _selectedFitnessLevel = newValue;
+              });
+            }
+          },
         ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter a value';
-          }
-          return null;
-        },
       ),
     );
   }
 
-  void _handleSave() {
-    if (_formKey.currentState!.validate()) {
-      // TODO: Call your PATCH API here using the values from controllers
-      final updatedData = {
-        'username': _usernameController.text,
-        'height': _heightController.text,
-        'weight': _weightController.text,
-        'age': _ageController.text,
-      };
+  Future<void> _handleSave() async {
+    if (!_formKey.currentState!.validate()) return;
 
-      // Print for debug
-      debugPrint("Saving profile: $updatedData");
+    final provider = context.read<UserProfileProvider>();
 
-      Navigator.pop(context);
+    final Map<String, dynamic> updateData = {
+      "daily_step_goal": int.parse(_stepGoalController.text),
+      "height": double.parse(_heightController.text),
+      "weight": double.parse(_weightController.text),
+      "age": int.parse(_ageController.text),
+      "target_weight": double.parse(_targetWeightController.text),
+      "fitness_level": _selectedFitnessLevel.apiValue,
+    };
+
+    final success = await provider.updateProfile(updateData);
+
+    if (mounted) {
+      if (success) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Profile updated successfully!")),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(provider.errorMessage ?? "Update failed")),
+        );
+      }
     }
   }
 }

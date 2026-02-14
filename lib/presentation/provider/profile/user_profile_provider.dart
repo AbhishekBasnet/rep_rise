@@ -3,11 +3,13 @@ import 'package:rep_rise/domain/entity/profile/user_profile_entity.dart' show Us
 import 'package:rep_rise/domain/usecase/profile/get_user_profile_usecase.dart';
 
 import '../../../domain/entity/profile/user_profile_entity.dart';
+import '../../../domain/usecase/profile/update_user_profile.dart';
 
 class UserProfileProvider extends ChangeNotifier {
   final GetUserProfileUseCase getUserProfileUseCase;
+  final UpdateUserProfileUseCase updateUserProfileUseCase;
 
-  UserProfileProvider({required this.getUserProfileUseCase}) {
+  UserProfileProvider({required this.getUserProfileUseCase, required this.updateUserProfileUseCase}) {
     fetchUserProfile();
   }
 
@@ -42,6 +44,26 @@ class UserProfileProvider extends ChangeNotifier {
     } catch (e) {
       _errorMessage = e.toString();
       return null;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> updateProfile(Map<String, dynamic> updateData) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      await updateUserProfileUseCase.execute(updateData);
+
+      _userProfile = await getUserProfileUseCase.execute();
+
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString();
+      return false;
     } finally {
       _isLoading = false;
       notifyListeners();

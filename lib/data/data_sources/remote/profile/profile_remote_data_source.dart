@@ -24,4 +24,12 @@ class ProfileRemoteDataSource {
       throw ApiException(message: "   on profile remote data source: Failed to fetch user profile: $e");
     }
   }
+
+  Future<void> updateUserProfile(Map<String, dynamic> updateData) async {
+    try {
+      await apiClient.patch('user/profile/', data: updateData);
+    } catch (e) {
+      throw ApiException(message: "Failed to update user profile: $e");
+    }
+  }
 }
