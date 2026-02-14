@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:rep_rise/core/theme/app_theme.dart';
-import 'package:rep_rise/domain/entity/profile/user_profile_entity.dart';
 
 class UserHeaderCard extends StatelessWidget {
-  final UserProfileEntity? userProfile;
+  // 1. Accept specific fields instead of the whole object
+  final String name;
+  final String height;
+  final String weight;
+  final String bmi;
+  final VoidCallback onEditTap;
 
-  const UserHeaderCard({super.key, this.userProfile});
+  const UserHeaderCard({
+    super.key,
+    required this.name,
+    required this.height,
+    required this.weight,
+    required this.bmi,
+    required this.onEditTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final name = userProfile?.username ?? "Athlete";
-    final bmi = userProfile?.bmi.toStringAsFixed(1) ?? "--";
-    final height = userProfile?.height.toString() ?? "--";
-    final weight = userProfile?.weight.toString() ?? "--";
-
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
@@ -21,6 +27,7 @@ class UserHeaderCard extends StatelessWidget {
         children: [
           Positioned.fill(child: Container(decoration: AppTheme.homeActivityCardDecoration)),
 
+          // Decorative Background Circles
           Positioned(
             top: -50,
             right: -50,
@@ -69,20 +76,25 @@ class UserHeaderCard extends StatelessWidget {
                       ),
                     ),
 
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2), // Glassy effect
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.white.withOpacity(0.3)),
+                    // Edit Button
+                    GestureDetector(
+                      onTap: onEditTap, // Use the callback
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.white.withOpacity(0.3)),
+                        ),
+                        child: const Icon(Icons.edit_rounded, color: Colors.white, size: 24),
                       ),
-                      child: const Icon(Icons.edit_rounded, color: Colors.white, size: 24),
                     ),
                   ],
                 ),
 
                 const SizedBox(height: 30),
 
+                // Stats Row
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                   decoration: BoxDecoration(

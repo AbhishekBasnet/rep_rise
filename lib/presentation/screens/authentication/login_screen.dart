@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rep_rise/presentation/provider/step/step_provider.dart';
 import 'package:rep_rise/presentation/screens/authentication/register_new_user_screen.dart';
 
 import '../../provider/authentication/auth_provider.dart';
+import '../../provider/profile/user_profile_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -21,12 +23,19 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final authProvider = context.read<AuthProvider>();
+    final userProfileProvider = context.read<UserProfileProvider>();
+    final stepProvider = context.read<StepProvider>();
+
+    stepProvider.clearData();
+    userProfileProvider.clearData();
+
     final success = await authProvider.login(_usernameController.text.trim(), _passwordController.text.trim());
 
     if (mounted) {
       if (success) {
-        //root wrapper lae handle garcha, since its listening for isAuthenticated
+        userProfileProvider.fetchUserProfile();
+        stepProvider.initSteps();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(authProvider.errorMessage ?? 'Login Failed'), backgroundColor: Colors.red),

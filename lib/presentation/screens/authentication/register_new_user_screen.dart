@@ -13,10 +13,10 @@ class RegisterNewUserScreen extends StatefulWidget {
 }
 
 class _RegisterNewUserScreenState extends State<RegisterNewUserScreen> {
-  final TextEditingController _usernameController = TextEditingController(text: "test111");
-  final TextEditingController _passwordController = TextEditingController(text: "1234@Abcd");
-  final TextEditingController _confirmPasswordController = TextEditingController(text: "1234@Abcd");
-  final TextEditingController _emailController = TextEditingController(text: "1@1.com");
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isPasswordValid = false;
   bool _hasPasswordStarted = false;

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:rep_rise/core/theme/app_theme.dart';
 import 'package:rep_rise/presentation/provider/authentication/auth_provider.dart';
 import 'package:rep_rise/presentation/provider/profile/user_profile_provider.dart';
+import 'package:rep_rise/presentation/provider/step/step_provider.dart';
 
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   const MainAppBar({super.key});
@@ -50,7 +51,10 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
         title: const Text('Logout'),
         content: const Text('Are you sure you want to log out?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: const Text('Cancel')),
+          TextButton(
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: const Text('Cancel')
+          ),
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, true),
             style: TextButton.styleFrom(foregroundColor: Colors.red),
@@ -61,7 +65,19 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
 
     if (shouldLogout == true && context.mounted) {
-      context.read<AuthProvider>().logout();
+      // 1. Clear Data FIRST to prevent "Zombie" state
+      // We use read() because we just want to execute the function, not listen to changes
+      context.read<UserProfileProvider>().clearData();
+      context.read<StepProvider>().clearData();
+
+      // 2. Perform Auth Logout
+      await context.read<AuthProvider>().logout();
+
+      // 3. Navigation
+      // Since your AuthProvider notifies listeners, your RootWrapper
+      // likely handles the redirect to login automatically.
+      // If not, uncomment the line below:
+      // Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
     }
   }
 }

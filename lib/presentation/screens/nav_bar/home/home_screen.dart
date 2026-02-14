@@ -6,7 +6,7 @@ import 'package:rep_rise/presentation/provider/step/step_provider.dart';
 import 'package:rep_rise/presentation/screens/nav_bar/home/widget/ai_workout_card.dart';
 import 'package:rep_rise/presentation/screens/nav_bar/home/widget/daily_summary_card.dart';
 import 'package:rep_rise/presentation/screens/nav_bar/home/widget/user_header_card.dart';
-import 'package:rep_rise/presentation/screens/profile/edit_profile_screen.dart'; // Import Edit Screen
+import 'package:rep_rise/presentation/screens/profile/edit_profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,6 +23,14 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: Consumer2<StepProvider, UserProfileProvider>(
           builder: (context, stepProvider, userProfileProvider, child) {
+
+            // 1. Extract and Prepare Data Here
+            final profile = userProfileProvider.userProfile;
+            final name = profile?.username ?? "Athlete";
+            final bmi = profile?.bmi.toStringAsFixed(1) ?? "--";
+            final height = profile?.height.toString() ?? "--";
+            final weight = profile?.weight.toString() ?? "--";
+
             return CustomScrollView(
               slivers: [
                 SliverFillRemaining(
@@ -32,11 +40,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        GestureDetector(
-                          onTap: () {
+
+                        // 2. Pass Primitives directly
+                        UserHeaderCard(
+                          name: name,
+                          height: height,
+                          weight: weight,
+                          bmi: bmi,
+                          onEditTap: () {
                             Navigator.push(context, MaterialPageRoute(builder: (_) => const EditProfileScreen()));
                           },
-                          child: UserHeaderCard(userProfile: userProfileProvider.userProfile),
                         ),
 
                         DailySummaryCard(
@@ -46,7 +59,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           distanceK: stepProvider.distanceKiloMeters,
                         ),
 
-                        AiWorkoutCard(),
+                        // From previous refactor
+                        AiWorkoutCard(
+                          title: "Upper Body Power",
+                          duration: "45 mins",
+                          difficulty: "Intermediate",
+                          exerciseCount: 8,
+                          onPlayPressed: () {
+                            // Navigate logic
+                          },
+                        ),
                       ],
                     ),
                   ),

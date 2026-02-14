@@ -33,6 +33,13 @@ class UserProfileProvider extends ChangeNotifier {
   double get bmi => _userProfile?.bmi ?? 0.0;
   UserProfileEntity? get userProfile => _userProfile;
 
+  void clearData() {
+    _userProfile = null;
+    _errorMessage = null;
+    _isLoading = false;
+    notifyListeners();
+  }
+
   Future<UserProfileEntity?> fetchUserProfile() async {
     _isLoading = true;
     _errorMessage = null;
@@ -58,6 +65,7 @@ class UserProfileProvider extends ChangeNotifier {
     try {
       await updateUserProfileUseCase.execute(updateData);
 
+      // We call execute() directly to avoid double notifyListeners from fetchUserProfile
       _userProfile = await getUserProfileUseCase.execute();
 
       return true;
