@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:rep_rise/core/theme/app_theme.dart';
 
 class UserHeaderCard extends StatelessWidget {
-  // 1. Accept specific fields instead of the whole object
   final String name;
   final String height;
   final String weight;
@@ -22,12 +21,12 @@ class UserHeaderCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      clipBehavior: Clip.hardEdge,
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(AppTheme.cardBorderRadius)),
       child: Stack(
         children: [
           Positioned.fill(child: Container(decoration: AppTheme.homeActivityCardDecoration)),
 
-          // Decorative Background Circles
           Positioned(
             top: -50,
             right: -50,
@@ -75,10 +74,8 @@ class UserHeaderCard extends StatelessWidget {
                         ],
                       ),
                     ),
-
-                    // Edit Button
                     GestureDetector(
-                      onTap: onEditTap, // Use the callback
+                      onTap: onEditTap,
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
@@ -91,10 +88,7 @@ class UserHeaderCard extends StatelessWidget {
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 30),
-
-                // Stats Row
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                   decoration: BoxDecoration(

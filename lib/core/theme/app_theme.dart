@@ -8,6 +8,7 @@ class AppTheme {
   static const Color appContentColor = Color(0xFF1E201E);
   static const Color purple = Color(0xFF7F56D9);
   static const Color lavender = Color(0xFFD0BCFF);
+  static const double cardBorderRadius = 30.0;
 
   //--------------- Text styles for profile setup ------------------
 
@@ -70,16 +71,14 @@ class AppTheme {
   static const TextStyle barGraphXYAxisLabel = TextStyle(color: Colors.grey, fontSize: 12);
 
   //--------------- Styles for Home screen ------------------
-  static final BoxDecoration homeActivityCardDecoration =BoxDecoration(
-    borderRadius: BorderRadius.circular(30),
+  static final BoxDecoration homeActivityCardDecoration = BoxDecoration(
+    borderRadius: BorderRadius.circular(cardBorderRadius),
     gradient: const LinearGradient(
-      colors: [Color(0xFF5B3FD8), Color(0xFF8F5AFF)], // Electric Purple
+      colors: [Color(0xFF5B3FD8), Color(0xFF8F5AFF)],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
     ),
-    boxShadow: [
-      BoxShadow(color: primaryPurple.withValues(alpha: 0.4), blurRadius: 20, offset: const Offset(0, 10)),
-    ],
+    boxShadow: [BoxShadow(color: primaryPurple.withValues(alpha: 0.4), blurRadius: 20, offset: const Offset(0, 10))],
   );
 
   static ThemeData get lightTheme {

@@ -17,6 +17,7 @@ class WorkoutProvider extends ChangeNotifier {
   WorkoutEntity? get workoutEntity => _workoutEntity;
 
   Future<void> fetchWorkout() async {
+    if (_workoutEntity != null) return;
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
@@ -56,5 +57,18 @@ class WorkoutProvider extends ChangeNotifier {
     debugPrint("🏋️ CHECKING UI FOR: '$dayName' | FOUND IN MAP: $isDone");
 
     return isDone;
+  }
+
+  MapEntry<String, List<WorkoutExerciseEntity>>? getNextIncompleteWorkout() {
+    if (_workoutEntity == null) return null;
+
+    final sortedDays = _workoutEntity!.schedule.keys.toList()..sort((a, b) => a.compareTo(b));
+
+    for (final day in sortedDays) {
+      if (!isDayCompleted(day)) {
+        return MapEntry(day, _workoutEntity!.schedule[day]!);
+      }
+    }
+    return null;
   }
 }

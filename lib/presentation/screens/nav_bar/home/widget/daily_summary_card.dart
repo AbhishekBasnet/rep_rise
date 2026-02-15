@@ -8,6 +8,7 @@ class DailySummaryCard extends StatelessWidget {
   final int stepGoal;
   final double calories;
   final double distanceK;
+
   const DailySummaryCard({
     super.key,
     required this.stepsTaken,
@@ -18,21 +19,24 @@ class DailySummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(25),
-      decoration: AppTheme.homeActivityCardDecoration,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _topTitle(),
-          const SizedBox(height: 20),
-          _middleBody(),
-          const SizedBox(height: 25),
-          const Divider(color: Colors.white24),
-          _bottomContainer(),
-          const SizedBox(height: 10),
-        ],
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(24),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(25),
+        decoration: AppTheme.homeActivityCardDecoration,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _topTitle(),
+            const SizedBox(height: 20),
+            _middleBody(),
+            const SizedBox(height: 25),
+            const Divider(color: Colors.white24),
+            _bottomContainer(),
+            const SizedBox(height: 10),
+          ],
+        ),
       ),
     );
   }
@@ -70,10 +74,7 @@ class DailySummaryCard extends StatelessWidget {
               style: const TextStyle(color: Colors.white, fontSize: 42, fontWeight: FontWeight.bold, height: 1.0),
             ),
             const SizedBox(height: 5),
-            Text(
-              "/ $stepGoal Steps",
-              style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 14),
-            ),
+            Text("/ $stepGoal Steps", style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 14)),
           ],
         ),
         Container(

@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:rep_rise/core/theme/app_theme.dart';
 
 class AiWorkoutCard extends StatelessWidget {
-  // 1. Add final fields for the data you need
   final String title;
   final String duration;
   final String difficulty;
   final int exerciseCount;
   final VoidCallback onPlayPressed;
 
-  // 2. Add a constructor to require this data
   const AiWorkoutCard({
     super.key,
     required this.title,
@@ -22,11 +20,10 @@ class AiWorkoutCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 20),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(AppTheme.cardBorderRadius),
         boxShadow: [AppTheme.stepsCardBoxShadow],
       ),
       child: Column(
@@ -79,12 +76,11 @@ class AiWorkoutCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 3. Use the variables here instead of hardcoded strings
               Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 4),
               Text(
-                  "$duration • $difficulty • $exerciseCount Exercises",
-                  style: const TextStyle(fontSize: 12, color: Colors.grey)
+                "$duration • $difficulty • $exerciseCount Exercises",
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
             ],
           ),
@@ -93,7 +89,7 @@ class AiWorkoutCard extends StatelessWidget {
           decoration: const BoxDecoration(shape: BoxShape.circle, color: AppTheme.primaryPurple),
           child: IconButton(
             icon: const Icon(Icons.play_arrow_rounded, color: Colors.white),
-            onPressed: onPlayPressed, // 4. Use the callback
+            onPressed: onPlayPressed,
           ),
         ),
       ],

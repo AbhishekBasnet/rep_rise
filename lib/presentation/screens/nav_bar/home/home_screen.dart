@@ -8,6 +8,9 @@ import 'package:rep_rise/presentation/screens/nav_bar/home/widget/daily_summary_
 import 'package:rep_rise/presentation/screens/nav_bar/home/widget/user_header_card.dart';
 import 'package:rep_rise/presentation/screens/profile/edit_profile_screen.dart';
 
+import '../../../provider/workout/workout_provider.dart';
+import '../workout/workout_screen.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -17,31 +20,36 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<WorkoutProvider>().fetchWorkout();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.appBackgroundColor,
       body: SafeArea(
-        child: Consumer2<StepProvider, UserProfileProvider>(
-          builder: (context, stepProvider, userProfileProvider, child) {
-
-            // 1. Extract and Prepare Data Here
+        child: Consumer3<StepProvider, UserProfileProvider, WorkoutProvider>(
+          builder: (context, stepProvider, userProfileProvider, workoutProvider, child) {
             final profile = userProfileProvider.userProfile;
             final name = profile?.username ?? "Athlete";
             final bmi = profile?.bmi.toStringAsFixed(1) ?? "--";
             final height = profile?.height.toString() ?? "--";
             final weight = profile?.weight.toString() ?? "--";
+            final recommendedWorkout = workoutProvider.getNextIncompleteWorkout();
 
             return CustomScrollView(
               slivers: [
                 SliverFillRemaining(
                   hasScrollBody: false,
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-
-                        // 2. Pass Primitives directly
                         UserHeaderCard(
                           name: name,
                           height: height,
@@ -51,24 +59,39 @@ class _HomeScreenState extends State<HomeScreen> {
                             Navigator.push(context, MaterialPageRoute(builder: (_) => const EditProfileScreen()));
                           },
                         ),
-
+                        const SizedBox(height: 12),
                         DailySummaryCard(
                           stepsTaken: stepProvider.walkedDailySteps,
                           stepGoal: stepProvider.dailyStepGoal,
                           calories: stepProvider.caloriesBurned,
                           distanceK: stepProvider.distanceKiloMeters,
                         ),
-
-                        // From previous refactor
-                        AiWorkoutCard(
-                          title: "Upper Body Power",
-                          duration: "45 mins",
-                          difficulty: "Intermediate",
-                          exerciseCount: 8,
-                          onPlayPressed: () {
-                            // Navigate logic
-                          },
-                        ),
+                        const SizedBox(height: 12),
+                        if (recommendedWorkout != null)
+                          AiWorkoutCard(
+                            title: recommendedWorkout.key,
+                            duration: "${recommendedWorkout.value.length * 5} mins",
+                            difficulty: "Intermediate",
+                            exerciseCount: recommendedWorkout.value.length,
+                            onPlayPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (_) => WorkoutScreen(targetDay: recommendedWorkout.key)),
+                              );
+                            },
+                          )
+                        else if (workoutProvider.isLoading)
+                          const Padding(
+                            padding: EdgeInsets.all(20.0),
+                            child: Center(child: CircularProgressIndicator()),
+                          )
+                        else
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 20),
+                            child: Center(
+                              child: Text("All workouts completed! Great job!", style: TextStyle(color: Colors.grey)),
+                            ),
+                          ),
                       ],
                     ),
                   ),

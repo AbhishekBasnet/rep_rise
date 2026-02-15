@@ -6,7 +6,8 @@ import 'package:rep_rise/presentation/screens/nav_bar/workout/widget/day_section
 import '../../../../domain/entity/workout/workout_entity.dart';
 
 class WorkoutScreen extends StatefulWidget {
-  const WorkoutScreen({super.key});
+  final String? targetDay;
+  const WorkoutScreen({super.key, this.targetDay});
 
   @override
   State<WorkoutScreen> createState() => _WorkoutScreenState();
@@ -75,8 +76,15 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
         final exercises = data.schedule[day]!;
 
         final bool isDayDone = provider.isDayCompleted(day);
+        bool initiallyExpanded = false;
 
-        return DaySection(dayTitle: day, exercises: exercises, isDone: isDayDone, initiallyExpanded: index == 0);
+        if (widget.targetDay != null) {
+          initiallyExpanded = day == widget.targetDay;
+        } else {
+          initiallyExpanded = index == 0;
+        }
+
+        return DaySection(dayTitle: day, exercises: exercises, isDone: isDayDone, initiallyExpanded: initiallyExpanded);
       },
     );
   }
