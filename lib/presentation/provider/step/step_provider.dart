@@ -1,13 +1,11 @@
 import 'package:flutter/foundation.dart';
-import 'package:rep_rise/core/util/extension/date/short_day_name.dart';
 import 'package:rep_rise/core/util/extension/to_precision.dart';
 import 'package:rep_rise/domain/entity/steps/daily_step_entity.dart';
-import 'package:rep_rise/domain/entity/steps/weekly_step_entity.dart';
 import 'package:rep_rise/domain/usecase/step/get_daily_step_usecase.dart';
 import 'package:rep_rise/domain/usecase/step/get_monthly_step_usecase.dart';
 import 'package:rep_rise/domain/usecase/step/get_weekly_step_usecase.dart';
 import 'package:rep_rise/domain/usecase/step/sync_step_usecase.dart';
-import 'package:rep_rise/presentation/provider/step/WeekelyChartData.dart';
+import 'package:rep_rise/presentation/provider/step/WeeklyChartData.dart';
 
 /*
  * Manages the state and business logic integration for the Step Tracking feature.
@@ -63,6 +61,7 @@ class StepProvider extends ChangeNotifier {
   double _distanceMeters = 0;
   int _durationMinutes = 0;
   List<WeeklyChartData> _weeklyChartData = [];
+  int _monthlyTotalSteps = 0;
 
   List<WeeklyChartData> get weeklyChartData => _weeklyChartData;
   bool get isLoading => _isLoading;
@@ -73,6 +72,7 @@ class StepProvider extends ChangeNotifier {
   double get caloriesBurned => _caloriesBurned;
   double get distanceKiloMeters => (_distanceMeters / 1000).toPrecision(2);
   int get durationMinutes => _durationMinutes;
+  int get monthlyTotalSteps => _monthlyTotalSteps;
 
   void clearData() {
     _dailyStepGoal = 0;
@@ -97,6 +97,8 @@ class StepProvider extends ChangeNotifier {
 
       await fetchDailySteps();
       await fetchWeeklySteps();
+      final now = DateTime.now();
+      await fetchMonthlySteps(now.year, now.month);
     } catch (e) {
       debugPrint("❌ [StepProvider] Error during step initialization: $e");
     } finally {
@@ -142,55 +144,65 @@ class StepProvider extends ChangeNotifier {
 
   Future<void> fetchWeeklySteps() async {
     try {
-      debugPrint("📡 [StepProvider] fetchWeeklySteps: Requesting history...");
       final history = await getWeeklyStepUsecase.execute();
 
-      // --- DEBUG LOGS START ---
-      debugPrint("🔍 [StepProvider] RAW SERVER RESPONSE (Weekly History - ${history.length} items):");
-      if (history.isEmpty) {
-        debugPrint("   ⚠️ History list is EMPTY");
-      } else {
-        for (var item in history) {
-          debugPrint("   📅 Date: ${item.date.toShortDayName} | Steps: ${item.steps} | Goal: ${item.goal}");
-        }
-      }
-      // --- DEBUG LOGS END ---
+      final Map<int, double> stepsMap = {};
+      final Map<int, int> goalsMap = {};
 
-      final String todayStr = DateTime.now().toShortDayName;
-
-      // Stitching current local data into the history
-      final todayEntity = WeeklyStepEntity(
-        date: DateTime.now(),
-        steps: _walkedDailySteps,
-        goal: _dailyStepGoal,
-        dayName: todayStr,
-      );
-
-      final fullWeekEntities = [...history, todayEntity];
-
-      int maxVal = 0;
-      for (var entity in fullWeekEntities) {
-        if (entity.goal > maxVal) maxVal = entity.goal;
-        if (entity.steps > maxVal) maxVal = entity.steps;
+      for (var item in history) {
+        final int index = item.date.weekday % 7;
+        stepsMap[index] = item.steps.toDouble();
+        goalsMap[index] = item.goal;
       }
 
-      // Round up to nearest 1000 for chart Y-axis beauty
-      final int roundedMaxGoal = (maxVal == 0) ? 10000 : (maxVal / 1000).ceil() * 1000;
-      _highestWeeklyGoal = roundedMaxGoal;
+      final DateTime now = DateTime.now();
+      final int todayIndex = now.weekday % 7;
 
-      debugPrint("📊 [StepProvider] Chart Scaling - Highest Goal Calculated: $_highestWeeklyGoal");
+      stepsMap[todayIndex] = _walkedDailySteps.toDouble();
+      goalsMap[todayIndex] = _dailyStepGoal;
 
-      _weeklyChartData = fullWeekEntities.map((e) {
-        return WeeklyChartData(
-          xIndex: e.date.weekday % 7,
-          steps: e.steps.toDouble(),
-          isToday: e.date.toShortDayName == todayStr,
-        );
-      }).toList();
+      double maxStepOrGoal = 0;
+      final List<WeeklyChartData> filledData = [];
+
+      for (int i = 0; i < 7; i++) {
+        final double steps = stepsMap[i] ?? 0;
+        final int goal = goalsMap[i] ?? 10000;
+
+        if (steps > maxStepOrGoal) maxStepOrGoal = steps;
+        if (goal > maxStepOrGoal) maxStepOrGoal = goal.toDouble();
+
+        filledData.add(WeeklyChartData(
+          xIndex: i,
+          steps: steps,
+          isToday: i == todayIndex,
+        ));
+      }
+
+      _highestWeeklyGoal = (maxStepOrGoal == 0)
+          ? 10000
+          : (maxStepOrGoal / 1000).ceil() * 1000;
+
+      _weeklyChartData = filledData;
 
       notifyListeners();
     } catch (e) {
-      debugPrint("❌ [StepProvider] Error processing weekly steps: $e");
+      debugPrint("Error processing weekly steps: $e");
+    }
+  }
+
+
+
+  Future<void> fetchMonthlySteps(int year, int month) async {
+    try {
+      debugPrint("📡 [StepProvider] fetchMonthlySteps: Requesting for $month/$year");
+
+      final summary = await getMonthlyStepUsecase.execute(year, month);
+
+      _monthlyTotalSteps = summary.totalSteps;
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint("❌ [StepProvider] Error fetching monthly steps: $e");
     }
   }
 }
