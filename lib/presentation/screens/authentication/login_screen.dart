@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rep_rise/presentation/provider/step/step_provider.dart';
 import 'package:rep_rise/presentation/screens/authentication/register_new_user_screen.dart';
+import 'package:rep_rise/presentation/screens/authentication/widget/password_text_field.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../provider/authentication/auth_provider.dart';
@@ -31,8 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
     stepProvider.clearData();
     userProfileProvider.clearData();
 
-    final success = await authProvider.login(
-        _usernameController.text.trim(), _passwordController.text.trim());
+    final success = await authProvider.login(_usernameController.text.trim(), _passwordController.text.trim());
 
     if (mounted) {
       if (success) {
@@ -40,9 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
         stepProvider.initSteps();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(authProvider.errorMessage ?? 'Login Failed'),
-              backgroundColor: Colors.red),
+          SnackBar(content: Text(authProvider.errorMessage ?? 'Login Failed'), backgroundColor: Colors.red),
         );
       }
     }
@@ -70,14 +68,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 16),
                 Text(
                   'Welcome Back!',
-                  style: AppTheme.lightTheme.textTheme.headlineLarge?.copyWith(
-                    color: AppTheme.primaryPurple,
-                  ),
+                  style: AppTheme.lightTheme.textTheme.headlineLarge?.copyWith(color: AppTheme.primaryPurple),
                 ),
-                Text(
-                  'Sign in to continue your streak',
-                  style: AppTheme.profileSetupSubHeader,
-                ),
+                Text('Sign in to continue your streak', style: AppTheme.profileSetupSubHeader),
                 const SizedBox(height: 32),
 
                 // 2. The Form Card
@@ -94,9 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         TextFormField(
                           controller: _usernameController,
-                          validator: (value) => (value == null || value.isEmpty)
-                              ? 'Enter username'
-                              : null,
+                          validator: (value) => (value == null || value.isEmpty) ? 'Enter username' : null,
                           decoration: InputDecoration(
                             labelText: 'Username',
                             prefixIcon: Icon(Icons.person_outline, color: primaryColor),
@@ -109,22 +100,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        TextFormField(
+                        PasswordTextField(
                           controller: _passwordController,
-                          obscureText: true,
-                          validator: (value) => (value == null || value.isEmpty)
-                              ? 'Enter password'
-                              : null,
-                          decoration: InputDecoration(
-                            labelText: 'Password',
-                            prefixIcon: Icon(Icons.lock_outline, color: primaryColor),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide.none,
-                            ),
-                            filled: true,
-                            fillColor: AppTheme.secondaryGrey,
-                          ),
+                          validator: (value) => (value == null || value.isEmpty) ? 'Enter password' : null,
                         ),
                         const SizedBox(height: 24),
 
@@ -138,16 +116,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               backgroundColor: primaryColor,
                               foregroundColor: Colors.white,
                               elevation: 2,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                             ),
                             child: authProvider.isLoading
                                 ? const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                    color: Colors.white, strokeWidth: 2))
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                                  )
                                 : const Text('Login', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                           ),
                         ),
@@ -165,17 +141,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     const Text("Don't have an account?"),
                     TextButton(
                       onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: ((_) => RegisterNewUserScreen())));
+                        Navigator.push(context, MaterialPageRoute(builder: ((_) => RegisterNewUserScreen())));
                       },
                       child: Text(
                         "Register",
-                        style: TextStyle(
-                          color: primaryColor,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],

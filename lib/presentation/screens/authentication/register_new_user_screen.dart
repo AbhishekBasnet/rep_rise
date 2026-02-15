@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rep_rise/presentation/screens/authentication/widget/password_text_field.dart';
 import 'package:rep_rise/presentation/screens/profile/create_profile/create_profile_screen.dart';
 
 import '../../../core/theme/app_theme.dart';
@@ -116,8 +117,7 @@ class _RegisterNewUserScreenState extends State<RegisterNewUserScreen> {
 
   void _handleNextStep() {
     if (_isUsernameAvailable == false) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Please fix the username errors first')));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fix the username errors first')));
       return;
     }
 
@@ -133,21 +133,16 @@ class _RegisterNewUserScreenState extends State<RegisterNewUserScreen> {
 
     Navigator.push(
       context,
-      MaterialPageRoute(
-          builder: (context) => CreateProfileScreen(userRegistrationData: incompleteUser)),
+      MaterialPageRoute(builder: (context) => CreateProfileScreen(userRegistrationData: incompleteUser)),
     );
   }
 
-  // Helper method for standard Input Decoration
   InputDecoration _buildInputDecoration(String label, IconData icon, {Widget? suffix}) {
     return InputDecoration(
       labelText: label,
       prefixIcon: Icon(icon, color: AppTheme.primaryPurple),
       suffixIcon: suffix,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide.none,
-      ),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
       filled: true,
       fillColor: AppTheme.secondaryGrey,
       errorText: label == 'Username' ? _usernameError : null,
@@ -167,7 +162,7 @@ class _RegisterNewUserScreenState extends State<RegisterNewUserScreen> {
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView( // Changed to SingleChildScrollView for smaller screens
+        child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,8 +187,7 @@ class _RegisterNewUserScreenState extends State<RegisterNewUserScreen> {
                       TextFormField(
                         controller: _usernameController,
                         focusNode: _usernameFocusNode,
-                        validator: (value) =>
-                        (value == null || value.isEmpty) ? 'Enter Username' : null,
+                        validator: (value) => (value == null || value.isEmpty) ? 'Enter Username' : null,
                         decoration: _buildInputDecoration(
                           'Username',
                           Icons.person,
@@ -211,48 +205,37 @@ class _RegisterNewUserScreenState extends State<RegisterNewUserScreen> {
                       // Email
                       TextFormField(
                         controller: _emailController,
-                        validator: (value) =>
-                        (value == null || value.isEmpty) ? 'Enter E-mail' : null,
+                        validator: (value) => (value == null || value.isEmpty) ? 'Enter E-mail' : null,
                         decoration: _buildInputDecoration('E-mail', Icons.email),
                       ),
                       const SizedBox(height: 16),
 
-                      // Password (Target for Overlay)
                       CompositedTransformTarget(
                         link: _layerLink,
-                        child: TextFormField(
+                        child: PasswordTextField(
                           controller: _passwordController,
                           focusNode: _passwordFocusNode,
-                          obscureText: true,
-                          decoration: _buildInputDecoration('Password', Icons.lock),
+                          labelText: 'Password',
                           validator: (value) => _isPasswordValid ? null : 'Weak password',
                         ),
                       ),
                       const SizedBox(height: 16),
 
-                      // Confirm Password
-                      TextFormField(
+                      PasswordTextField(
                         controller: _confirmPasswordController,
-                        obscureText: true,
-                        decoration: _buildInputDecoration(
-                          'Confirm Password',
-                          Icons.lock_clock,
-                          suffix: (_confirmPasswordController.text.isNotEmpty &&
-                              _confirmPasswordController.text == _passwordController.text)
-                              ? const Icon(Icons.check_circle, color: Colors.green)
-                              : null,
-                        ),
+                        labelText: 'Confirm Password',
                         validator: (value) {
-                          if (value == null || value.isEmpty)
+                          if (value == null || value.isEmpty) {
                             return 'Please confirm your password';
-                          if (value != _passwordController.text)
+                          }
+                          if (value != _passwordController.text) {
                             return 'Passwords do not match';
+                          }
                           return null;
                         },
                       ),
                       const SizedBox(height: 24),
 
-                      // Register Button
                       SizedBox(
                         width: double.infinity,
                         height: 50,
@@ -260,18 +243,19 @@ class _RegisterNewUserScreenState extends State<RegisterNewUserScreen> {
                           onPressed: _handleNextStep,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppTheme.primaryPurple,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                           ),
-                          child: const Text('Register', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                          child: const Text(
+                            'Register',
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-              const SizedBox(height: 20), // Bottom padding
+              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -285,7 +269,6 @@ class _RegisterNewUserScreenState extends State<RegisterNewUserScreen> {
 
   OverlayEntry _createOverlayEntry() {
     final renderBox = context.findRenderObject() as RenderBox;
-    // Calculate offset if needed, but CompositedTransformFollower usually handles it
 
     return OverlayEntry(
       builder: (context) => Positioned(
@@ -305,7 +288,7 @@ class _RegisterNewUserScreenState extends State<RegisterNewUserScreen> {
                   color: const Color(0xFF2C2C2C), // Dark tooltip background
                   borderRadius: BorderRadius.circular(8),
                   boxShadow: [
-                    BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 10, offset: const Offset(0,4))
+                    BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 10, offset: const Offset(0, 4)),
                   ],
                 ),
                 child: Row(
