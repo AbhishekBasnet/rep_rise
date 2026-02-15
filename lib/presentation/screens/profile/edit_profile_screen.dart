@@ -4,6 +4,8 @@ import 'package:rep_rise/core/theme/app_theme.dart';
 import 'package:rep_rise/presentation/provider/profile/user_profile_provider.dart';
 import 'package:rep_rise/presentation/screens/profile/create_profile/widget/profile_enums.dart';
 
+import '../../provider/workout/workout_provider.dart';
+
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
 
@@ -53,10 +55,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     return Scaffold(
       backgroundColor: AppTheme.appBackgroundColor,
-      appBar: AppBar(
-          title: const Text("Edit Profile"),
-          backgroundColor: AppTheme.appBackgroundColor
-      ),
+      appBar: AppBar(title: const Text("Edit Profile"), backgroundColor: AppTheme.appBackgroundColor),
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -107,8 +106,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       elevation: 5,
                     ),
                     child: provider.isLoading
-                        ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                        : const Text("Save Changes", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                          )
+                        : const Text(
+                            "Save Changes",
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                          ),
                   ),
                 ],
               ),
@@ -120,10 +126,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Widget _buildSectionHeader(String title) {
-    return Text(
-      title,
-      style: AppTheme.lightTheme.textTheme.titleLarge?.copyWith(fontSize: 18),
-    );
+    return Text(title, style: AppTheme.lightTheme.textTheme.titleLarge?.copyWith(fontSize: 18));
   }
 
   Widget _buildLabel(String text) {
@@ -145,7 +148,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
-            boxShadow: [BoxShadow(color: Colors.grey.withValues(alpha: 0.1), blurRadius: 10, offset: const Offset(0, 4))],
+            boxShadow: [
+              BoxShadow(color: Colors.grey.withValues(alpha: 0.1), blurRadius: 10, offset: const Offset(0, 4)),
+            ],
           ),
           child: TextFormField(
             controller: controller,
@@ -176,10 +181,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           isExpanded: true,
           icon: const Icon(Icons.arrow_drop_down, color: AppTheme.primaryPurple),
           items: WorkoutLevel.values.map((WorkoutLevel level) {
-            return DropdownMenuItem<WorkoutLevel>(
-              value: level,
-              child: Text(level.displayName),
-            );
+            return DropdownMenuItem<WorkoutLevel>(value: level, child: Text(level.displayName));
           }).toList(),
           onChanged: (WorkoutLevel? newValue) {
             if (newValue != null) {
@@ -197,6 +199,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     final provider = context.read<UserProfileProvider>();
+    final workoutProvider = context.read<WorkoutProvider>();
 
     final Map<String, dynamic> updateData = {
       "daily_step_goal": int.parse(_stepGoalController.text),
@@ -211,14 +214,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     if (mounted) {
       if (success) {
-        Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Profile updated successfully!")),
+          const SnackBar(content: Text("Profile updated! Refreshing workout plan..."), duration: Duration(seconds: 2)),
         );
+        await Future.delayed(const Duration(seconds: 2));
+
+        if (mounted) {
+          workoutProvider.fetchWorkout(forceRefresh: true);
+          Navigator.pop(context);
+        }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(provider.errorMessage ?? "Update failed")),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(provider.errorMessage ?? "Update failed")));
       }
     }
   }

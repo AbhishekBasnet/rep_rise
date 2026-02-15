@@ -16,8 +16,8 @@ class WorkoutProvider extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   WorkoutEntity? get workoutEntity => _workoutEntity;
 
-  Future<void> fetchWorkout() async {
-    if (_workoutEntity != null) return;
+  Future<void> fetchWorkout({bool forceRefresh = false}) async {
+    if (_workoutEntity != null && !forceRefresh) return;
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
@@ -25,6 +25,7 @@ class WorkoutProvider extends ChangeNotifier {
     try {
       _workoutEntity = await getWorkoutUseCase.call();
       debugPrint("🏋️ FETCHED PROGRESS FROM JSON: ${_workoutEntity?.progress}");
+      notifyListeners();
     } catch (e) {
       _errorMessage = e.toString();
     } finally {
