@@ -300,7 +300,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ##  Acknowledgments
 
 - **Flutter Team** - For the amazing framework
-- **Anthropic Claude** - For development assistance
 - **Open Source Community** - For the excellent packages used
 
 ---
