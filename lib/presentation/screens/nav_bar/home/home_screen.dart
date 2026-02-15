@@ -24,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<WorkoutProvider>().fetchWorkout();
+      context.read<UserProfileProvider>().fetchUserProfile();
     });
   }
 

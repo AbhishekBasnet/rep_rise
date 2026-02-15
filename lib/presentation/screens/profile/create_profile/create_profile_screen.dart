@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rep_rise/domain/entity/profile/register_user_profile_data_entity.dart';
@@ -11,6 +13,8 @@ import 'package:rep_rise/presentation/screens/profile/create_profile/pages/heigh
 import 'package:rep_rise/presentation/screens/profile/create_profile/pages/target_weight_step_page.dart';
 import 'package:rep_rise/presentation/screens/profile/create_profile/pages/weight_step_page.dart';
 import 'package:rep_rise/presentation/screens/profile/create_profile/pages/workout_level_step_page.dart';
+
+import 'widget/profile_enums.dart';
 
 class CreateProfileScreen extends StatelessWidget {
   final UserRegistrationEntity userRegistrationData;
@@ -124,6 +128,7 @@ class CreateProfileScreen extends StatelessWidget {
   }
 
   Future<void> _submitUserData(BuildContext context, RegisterProfileProvider provider) async {
+    WorkoutLevel selectedFitnessLevel = WorkoutLevel.beginner;
     if (provider.isLastPage) {
       debugPrint('    On last page, triggering FINAL API call...');
 
@@ -134,7 +139,31 @@ class CreateProfileScreen extends StatelessWidget {
         gender: provider.gender.name,
         stepGoal: provider.goalSteps,
         targetWeight: provider.targetWeight,
+        fitnessLevel: selectedFitnessLevel.apiValue,
       );
+
+      final debugUserMap = {
+        "username": userRegistrationData.username,
+        "email": userRegistrationData.email,
+        "password": userRegistrationData.password,
+      };
+
+      final debugProfileMap = {
+        "age": provider.age,
+        "weight": provider.weight,
+        "height": provider.height,
+        "gender": provider.gender.name,
+        "step_goal": provider.goalSteps,
+        "target_weight": provider.targetWeight,
+        "fitness_level": selectedFitnessLevel.name,
+      };
+
+      debugPrint("\n================= RAW JSON DATA SENT =================\n");
+      debugPrint("User Registration JSON:");
+      debugPrint(jsonEncode(debugUserMap));
+      debugPrint("\nUser Profile JSON:");
+      debugPrint(jsonEncode(debugProfileMap));
+      debugPrint("\n======================================================\n");
 
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
 

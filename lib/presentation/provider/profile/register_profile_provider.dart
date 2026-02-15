@@ -31,7 +31,6 @@ class RegisterProfileProvider extends ChangeNotifier {
   int _targetWeight = 60;
   int _height = 150;
   int _currentPage = 0;
-  FitnessGoal _fitnessGoal = FitnessGoal.weightLoss;
   WorkoutLevel _workoutLevel = WorkoutLevel.beginner;
 
   int get goalSteps => _goalSteps;
@@ -46,7 +45,6 @@ class RegisterProfileProvider extends ChangeNotifier {
   PageController get pageController => _pageController;
   bool get isLastPage => _currentPage == 6;
 
-  FitnessGoal get fitnessGoal => _fitnessGoal;
   WorkoutLevel get workoutLevel => _workoutLevel;
 
   void setGoalSteps(int goalSteps) {
@@ -79,10 +77,7 @@ class RegisterProfileProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setFitnessGoal(FitnessGoal goal) {
-    _fitnessGoal = goal;
-    notifyListeners();
-  }
+
 
   void setWorkoutLevel(WorkoutLevel level) {
     _workoutLevel = level;

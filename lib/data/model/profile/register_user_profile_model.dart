@@ -8,6 +8,7 @@ class RegisterUserProfileModel extends RegisterUserProfileEntity {
     required super.stepGoal,
     required super.gender,
     required super.targetWeight,
+    required super.fitnessLevel,
   });
 
   factory RegisterUserProfileModel.fromJson(Map<String, dynamic> json) {
@@ -21,6 +22,7 @@ class RegisterUserProfileModel extends RegisterUserProfileEntity {
 
       gender: json['gender'],
       targetWeight: (json['target_weight'] as num).toInt(),
+      fitnessLevel: json['fitness_level'],
     );
   }
 
@@ -32,6 +34,7 @@ class RegisterUserProfileModel extends RegisterUserProfileEntity {
       stepGoal: entity.stepGoal,
       gender: entity.gender,
       targetWeight: entity.targetWeight,
+      fitnessLevel: entity.fitnessLevel,
     );
   }
 

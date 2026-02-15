@@ -1,4 +1,3 @@
-import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rep_rise/presentation/provider/step/step_provider.dart';
@@ -6,8 +5,6 @@ import 'package:rep_rise/presentation/screens/nav_bar/steps/widget/step_bar_grap
 import 'package:rep_rise/presentation/screens/nav_bar/steps/widget/steps_circular_progress_bar.dart';
 import 'package:rep_rise/presentation/screens/nav_bar/steps/widget/steps_counter_monthly.dart';
 
-import '../../../../core/di/injection_container.dart.dart';
-import '../../../../data/data_sources/local/step/step_local_data_source.dart';
 
 class StepsScreen extends StatefulWidget {
   const StepsScreen({super.key});
